@@ -16,7 +16,6 @@ start_t = datetime.now()
 #a = HikyuuCommon_old(80000000, 'SG_Flex', 5, 10, 'MM_FixedCount', 10000).cycle(sm, Query(-60))
 for arg in arg_list:
     a = HikyuuCommon(arg).running()
-    print(a)
 
 end_t = datetime.now()
 t = (end_t - start_t).total_seconds()
