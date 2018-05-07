@@ -116,7 +116,7 @@ class HikyuuCommon:
         self.o_mm = self.func_mm(mm)
         # 创建交易系统
         self.o_hi_sys  = SYS_Simple(tm=self.o_tm, sg=self.o_sg, mm=self.o_mm)
-        self.res_file = open(log_file, 'a+')
+        self.res_file = open(log_file, 'w+')
 
     def __del__(self):
         self.res_file.close()
