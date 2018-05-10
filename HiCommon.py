@@ -11,17 +11,22 @@ class HikyuuArgs:
     func_mm = ''
     list_sg = []
     list_mm = []
-    a_sm = []
+    a_stock = []
     o_qry = 0
+    id = ''
+    id_desc = ''
 
-    def __init__(self, cash, signal, signal_list, mmFixed, mm_list, sm, query):
+    def __init__(self, cash, stock, query_list_str, signal, signal_list_str, mmFixed, mm_list_str, tactics):
         self.i_cash = cash
+        self.a_stock = stock
+        query_list = query_list_str[0].split(',')
+        self.o_qry = Query(int(query_list[0]))
         self.func_sg = signal
-        self.list_sg = signal_list
+        self.list_sg = signal_list_str
         self.func_mm = mmFixed
-        self.list_mm = mm_list
-        self.a_sm = sm
-        self.o_qry = Query(query)
+        self.list_mm = mm_list_str
+        self.id = tactics[0]
+        self.id_desc = tactics[1]
         pass
 
 class HikyuuCommon_old:
@@ -91,20 +96,26 @@ class HikyuuCommon:
     i_count = 0
     func_sg = ''
     func_mm = ''
-    a_sm = []
+    a_stock = []
     o_qry = 0
+    id = ''
+    id_desc = ''
 
     def __init__(self, args):
+        if isinstance(args, HikyuuArgs) == False:
+            raise ValueError
         self.i_cash = args.i_cash
-        self.i_ema_n = args.list_sg[0]
-        self.i_slow_n = args.list_sg[1]
+        self.a_stock = args.a_stock
+        self.o_qry = args.o_qry
+        self.i_ema_n = int(args.list_sg[0].split(',')[0])
+        self.i_slow_n = int(args.list_sg[1].split(',')[0])
         self.func_sg = getattr(hikyuu.trade_sys._trade_sys, args.func_sg)
         self.func_mm = getattr(hikyuu.trade_sys._trade_sys, args.func_mm)
-        mm = args.list_mm[0]
+        mm = int(args.list_mm[0].split(',')[0])
         #print(self.func_sg)
         #print(self.func_mm)
-        self.a_sm = args.a_sm
-        self.o_qry = args.o_qry
+        self.id = args.id
+        self.id_desc = args.id_desc
 
         # 创建模拟交易账户进行回测，初始资金
         self.o_tm = crtTM(initCash=self.i_cash)
@@ -127,6 +138,7 @@ class HikyuuCommon:
 
         per = Performance()
         self.i_count += 1
+        self.res_file.write('%s'%self.id_desc + '\n')
         self.res_file.write('%06d++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++' % self.i_count + '\n')
         self.res_file.write(per.report(self.o_tm, Datetime(datetime.today())))
         self.res_file.write('\n')
@@ -134,7 +146,7 @@ class HikyuuCommon:
         return per.get("已平仓帐户收益率%".encode('gb2312'))
 
     def running(self):
-        block = self.a_sm
+        block = self.a_stock
         query = self.o_qry
         result = {}
         for s in block:
