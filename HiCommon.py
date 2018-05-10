@@ -9,25 +9,51 @@ class HikyuuArgs:
     i_cash = 0
     func_sg = ''
     func_mm = ''
-    list_sg = []
-    list_mm = []
+    list_sg_val = []
+    list_mm_val = []
+    list_qry_val = []
     a_stock = []
     o_qry = 0
     id = ''
     id_desc = ''
 
-    def __init__(self, cash, stock, query_list_str, signal, signal_list_str, mmFixed, mm_list_str, tactics):
+    def __init__(self, cash, stock, query_list, signal, signal_list, mmFixed, mm_list, tactics):
         self.i_cash = cash
         self.a_stock = stock
-        query_list = query_list_str[0].split(',')
-        self.o_qry = Query(int(query_list[0]))
         self.func_sg = signal
-        self.list_sg = signal_list_str
         self.func_mm = mmFixed
-        self.list_mm = mm_list_str
         self.id = tactics[0]
         self.id_desc = tactics[1]
-        pass
+        for query_arg in query_list:
+            query_arg_list = query_arg.split(',')
+            query_min = int(query_arg_list[0])
+            query_max = int(query_arg_list[1])
+            query_step = int(query_arg_list[2])
+            while (query_min >= query_max):
+                self.list_qry_val.append(query_min)
+                query_min = query_min + query_step
+        print(self.list_qry_val)
+        self.o_qry = Query(self.list_qry_val[0])
+
+        for sg_arg in signal_list:
+            sg_arg_list = sg_arg.split(',')
+            sg_min = int(sg_arg_list[0])
+            sg_max = int(sg_arg_list[1])
+            sg_step = int(sg_arg_list[2])
+            while (sg_min <= sg_max):
+                self.list_sg_val.append(sg_min)
+                sg_min = sg_min + sg_step
+        print(self.list_sg_val)
+
+        for mm_arg in mm_list:
+            mm_arg_list = mm_arg.split(',')
+            mm_min = int(mm_arg_list[0])
+            mm_max = int(mm_arg_list[1])
+            mm_step = int(mm_arg_list[2])
+            while (mm_min <= mm_max):
+                self.list_mm_val.append(mm_min)
+                mm_min = mm_min + mm_step
+        print(self.list_mm_val)
 
 class HikyuuCommon_old:
     i_cash = 0
@@ -107,11 +133,11 @@ class HikyuuCommon:
         self.i_cash = args.i_cash
         self.a_stock = args.a_stock
         self.o_qry = args.o_qry
-        self.i_ema_n = int(args.list_sg[0].split(',')[0])
-        self.i_slow_n = int(args.list_sg[1].split(',')[0])
+        self.i_ema_n = args.list_sg_val[0]
+        self.i_slow_n = args.list_sg_val[1]
         self.func_sg = getattr(hikyuu.trade_sys._trade_sys, args.func_sg)
         self.func_mm = getattr(hikyuu.trade_sys._trade_sys, args.func_mm)
-        mm = int(args.list_mm[0].split(',')[0])
+        mm = args.list_mm_val[0]
         #print(self.func_sg)
         #print(self.func_mm)
         self.id = args.id
