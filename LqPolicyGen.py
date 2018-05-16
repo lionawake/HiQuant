@@ -6,9 +6,11 @@
 import os
 import time
 import datetime
+import LqFilter as lqf
 
+print(lqf.stock_func_list)
 policy_id = int(time.time() * 1000000)
-policy_desc = "tactics_%d" % policy_id
+policy_desc = "policy_%d" % policy_id
 py_file = "%s.py" % policy_desc
 print(py_file)
 py_fd = open(py_file, "w+")
