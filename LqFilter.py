@@ -53,11 +53,14 @@ def str_cut(start, end, src):
             return [s, e]
     return -1
 
-py_str = "if $$F:2$($$P:A1$) and $$F:5$($$P:B1$, $$P:B2$, $$P:B3$)" \
-         "and $$F:8$($$P:C1$, $$P:C2$, $$P:C3$, $$P:C4$, $$P:C5$):\n" \
-         "    if $$F:1$() or $$F:3$($$P:D0$):\n" \
+py_str = ""
+'''
+py_str = "if $$F:2$($$P:A1$) >= 1 and $$F:5$($$P:B1$, $$P:B2$, $$P:B3$) < 100" \
+         " and $$F:8$($$P:C1$, $$P:C2$, $$P:C3$, $$P:C4$, $$P:C5$):\n" \
+         "    if $$F:1$() == 0 or $$F:3$($$P:D0$) == False :\n" \
          "        pass\n"
 print(py_str)
+'''
 str_len = len(py_str)
 remain_len = str_len
 while (remain_len > 0):
