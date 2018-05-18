@@ -52,7 +52,8 @@ def get_func_para_list(src):
 
 func_name_dict = {}
 func_para_dict = {}
-py_str = "if $$F:[1-5,8]$($$P:1-5,18,100-101, a-c, xyz, TRUE$, $$P:2018$, $$P:8888$) and $$F:[9,10]$($$P:6,100-105,30$):"
+py_str = "if $$F:[1-5,8]$(DF, DFL, 2018) and $$F:[9,10]$($$P:6,100-105,30$):"
+#py_str = "if $$F:[1-5,8]$($$P:1-5,18,100-101, a-c, xyz, TRUE$, $$P:2018$, $$P:8888$) and $$F:[9,10]$($$P:6,100-105,30$):"
 #py_str = "if $$F:[1-2,3]$($$P:1-3$, $$P:2018$):"
 remain_str = py_str
 print("Source Python Code:")
