@@ -41,6 +41,18 @@ class StockFilter:
     def stock_filter008(self):
         pass
 
+    def stock_filter009(self):
+        pass
+
+    def stock_filter010(self):
+        pass
+
+    def stock_filter011(self):
+        pass
+
+    def stock_filter012(self):
+        pass
+
 #获取StockFilter全部筛选函数
 stock_func_list = list(filter(lambda x: x.startswith('stock_filter') and callable(getattr(StockFilter,x)), dir(StockFilter)))
 
