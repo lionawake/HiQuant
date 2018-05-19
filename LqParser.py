@@ -52,7 +52,15 @@ def get_func_para_list(src):
 
 func_name_dict = {}
 func_para_dict = {}
-py_str = "if $$F:[1-5,8]$(DF, DFL, 2018) and $$F:[9,10]$($$P:6,100-105,30$):"
+py_str = "if $$F:[1-5,8]$(FPDF, FPDFL, FPDF) > 10 and $$F:[9,10]$(FPDF, FPDF, FPDF, FPDFL, FPDFL) <= 3000:\n" \
+         "    if $$F:[2-3]$(FPDF) == True:\n" \
+         "        todo\n" \
+         "    else:\n" \
+         "        todo\n" \
+         "else:\n" \
+         "    todo\n" \
+         "todo\n"
+
 #py_str = "if $$F:[1-5,8]$($$P:1-5,18,100-101, a-c, xyz, TRUE$, $$P:2018$, $$P:8888$) and $$F:[9,10]$($$P:6,100-105,30$):"
 #py_str = "if $$F:[1-2,3]$($$P:1-3$, $$P:2018$):"
 remain_str = py_str
@@ -106,13 +114,35 @@ print("Parameters:")
 print(func_para_dict)
 print("Destination Python code:")
 
-#re_str = ""
-#for f_key in func_name_dict:
-#    f_list = func_name_dict[f_key]
-#    for f in f_list:
-#        p_n = len(func_para_dict[f_key])
-#        i = 0
-#        for p_list in func_para_dict[f_key]:
-#            p_sz = len(p_list)
-#            for p in p_list:
-#                print(p)
+replace_str = py_str
+replace_dict = {}
+for f_key in func_name_dict:
+    f_list = func_name_dict[f_key]
+    for f in f_list:
+        replace_str = replace_str.replace(f_key, f)
+        break;
+
+print(replace_str)
+
+f_l_n = len(func_name_dict)
+f_n = 1
+for f_key in func_name_dict:
+    f_list = func_name_dict[f_key]
+    f_n *= len(f_list)
+print(f_n)
+print(f_l_n)
+i = 0
+j = 0
+arry_2 = [][]
+while i < f_n:
+    i += 1
+    print(i)
+    j = 0
+    while j < f_l_n:
+        j += 1
+        print(j)
+        arry_2[i][j] = func_name_dict[j][i/sizeof(func_name_dict[j])]
+
+
+
+
