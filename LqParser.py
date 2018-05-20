@@ -49,11 +49,14 @@ def get_func_para_list(src):
                 res.append(x.strip())
     return res
 
-
+py_str_file = "D:\PycharmProjects\Hi\Policy.log"
+fd = fd = open(py_str_file, "w+")
 func_name_dict = {}
 func_para_dict = {}
-py_str = "if $$F:[1-5,8]$(FPDF, FPDFL, FPDF) > 10 and $$F:[9,10]$(FPDF, FPDF, FPDF, FPDFL, FPDFL) <= 3000:\n" \
-         "    if $$F:[2-3]$(FPDF) == True:\n" \
+py_str = "#FPDF:  function parameters default value\n" \
+         "#FPDFL: function parameters default value list\n" \
+         "if $$F:[1-3,8]$(FPDF, FPDFL, FPDF) > 10 and $$F:[9,10]$(FPDF, FPDF, FPDF, FPDFL, FPDFL) <= 3000:\n" \
+         "    if $$F:[3-6,12]$(FPDF) == True:\n" \
          "        todo\n" \
          "    else:\n" \
          "        todo\n" \
@@ -64,8 +67,8 @@ py_str = "if $$F:[1-5,8]$(FPDF, FPDFL, FPDF) > 10 and $$F:[9,10]$(FPDF, FPDF, FP
 #py_str = "if $$F:[1-5,8]$($$P:1-5,18,100-101, a-c, xyz, TRUE$, $$P:2018$, $$P:8888$) and $$F:[9,10]$($$P:6,100-105,30$):"
 #py_str = "if $$F:[1-2,3]$($$P:1-3$, $$P:2018$):"
 remain_str = py_str
-print("Source Python Code:")
-print(py_str)
+fd.write("Source Python Code:\n")
+fd.write(py_str + '\n')
 str_len = len(py_str)
 remain_len = str_len
 pos_s = 0
@@ -89,14 +92,11 @@ while (remain_len > 0):
         pos_f = remain_str.find('$$F:')
         pos_p = remain_str.find('$$P:')
         if pos_p < 0:
-            #print('b1')
             break
         if pos_f > 0 and pos_p > 0 and pos_f <= pos_p:
-            #print('b2')
             break
         cut_res = lqf.str_cut('$$P:', '$', remain_str)
         if cut_res == -1:
-            #print('b3')
             break
         pos_s = cut_res[0]
         pos_e = cut_res[1]
@@ -108,41 +108,30 @@ while (remain_len > 0):
         remain_str = remain_str[pos_e:]
     func_para_dict[func_key] = para_list_list
 
-print("Functions:")
-print(func_name_dict)
-print("Parameters:")
-print(func_para_dict)
-print("Destination Python code:")
+fd.write("Functions:" + '\n')
+fd.write(str(func_name_dict) + '\n\n')
+fd.write("Parameters:" + '\n')
+fd.write(str(func_para_dict) + '\n\n')
+fd.write("Destination Python code:" + '\n')
 
-replace_str = py_str
-replace_dict = {}
+import itertools as its
+
+ll = []
 for f_key in func_name_dict:
     f_list = func_name_dict[f_key]
-    for f in f_list:
-        replace_str = replace_str.replace(f_key, f)
-        break;
+    ll.append(f_list)
 
-print(replace_str)
-
-f_l_n = len(func_name_dict)
-f_n = 1
-for f_key in func_name_dict:
-    f_list = func_name_dict[f_key]
-    f_n *= len(f_list)
-print(f_n)
-print(f_l_n)
 i = 0
-j = 0
-arry_2 = [][]
-while i < f_n:
-    i += 1
-    print(i)
-    j = 0
-    while j < f_l_n:
-        j += 1
-        print(j)
-        arry_2[i][j] = func_name_dict[j][i/sizeof(func_name_dict[j])]
-
-
-
-
+policy_count = 0
+replace_str = py_str
+for l in its.product(*ll):
+    i = 0
+    policy_count += 1
+    replace_str = py_str
+    for f_key in func_name_dict:
+        replace_str = replace_str.replace(f_key, l[i])
+        i += 1
+    fd.write("#===================================================================Policy%03d\n"%policy_count)
+    fd.write(replace_str + '\n')
+fd.close()
+print("OK")
