@@ -58,7 +58,8 @@ func_para_dict = {}
 func_para_key_dict = {}
 py_str = "#FPDF:  function parameters default value\n" \
          "#FPDFL: function parameters default value list\n" \
-         "if $$F:[1-3,8]$(FPDF, FPDFL, FPDF) > $$P:[10-12,15]$ and $$F:[9,10]$(FPDF, FPDF, FPDF, FPDFL, FPDFL) <= 3000:\n" \
+         "if $$F:[1-3,8]$(FPDF, FPDFL, FPDF) > $$P:[10-12,15]$*close() and" \
+         " $$F:[9,10]$(FPDF, FPDF, FPDF, FPDFL, FPDFL) <= 3000:\n" \
          "    if $$F:[3-6,12]$(FPDF) == $$P:[888,999]$:\n" \
          "        todo\n" \
          "    else:\n" \
