@@ -4,6 +4,7 @@
 # written by fuxuanhuang
 #==============================================================================
 import LqFilter as lqf
+import os
 
 def get_func_name_list(src):
     s = src.strip('[')
@@ -49,7 +50,8 @@ def get_func_para_list(src):
                 res.append(x.strip())
     return res
 
-py_str_file = "D:\PycharmProjects\Hi\Policy.log"
+py_str_file = os.getcwd() + "\Policy.log"
+print(py_str_file)
 fd = fd = open(py_str_file, "w+")
 func_name_dict = {}
 func_para_dict = {}

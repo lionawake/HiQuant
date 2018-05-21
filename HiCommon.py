@@ -3,8 +3,10 @@ from hikyuu.interactive.interactive import *
 from datetime import datetime
 import hikyuu.trade_sys._trade_sys
 
-log_file = "D:\Workspace\LQ\hi.log"
-para_file = "D:\Workspace\LQ\hi_para.log"
+log_file = os.getcwd() + "\hi.log"
+para_file = os.getcwd() + "\hi_para.log"
+print(log_file)
+print(para_file)
 #(80000000, blocka, ['-50,-100,-5'], ['001','tactics001'], [2, 'SG_Flex', 2, ['1,5,2', '10,20,3'], 'MM_FixedCount', 1, ['1000,1000,1']])
 
 class HikyuuArgs:
