@@ -55,10 +55,11 @@ print(py_str_file)
 fd = fd = open(py_str_file, "w+")
 func_name_dict = {}
 func_para_dict = {}
+func_para_key_dict = {}
 py_str = "#FPDF:  function parameters default value\n" \
          "#FPDFL: function parameters default value list\n" \
-         "if $$F:[1-3,8]$(FPDF, FPDFL, FPDF) > 10 and $$F:[9,10]$(FPDF, FPDF, FPDF, FPDFL, FPDFL) <= 3000:\n" \
-         "    if $$F:[3-6,12]$(FPDF) == True:\n" \
+         "if $$F:[1-3,8]$(FPDF, FPDFL, FPDF) > $$P:[10-12,15]$ and $$F:[9,10]$(FPDF, FPDF, FPDF, FPDFL, FPDFL) <= 3000:\n" \
+         "    if $$F:[3-6,12]$(FPDF) == $$P:[888,999]$:\n" \
          "        todo\n" \
          "    else:\n" \
          "        todo\n" \
@@ -103,12 +104,13 @@ while (remain_len > 0):
         pos_s = cut_res[0]
         pos_e = cut_res[1]
         para_list = get_func_para_list(remain_str[pos_s:pos_e])
-        para_list_list.append(para_list)
         pos_s -= 4
         pos_e += 1
+        para_key = remain_str[pos_s:pos_e]
+        func_para_dict[para_key] = para_list
+        func_para_key_dict[func_key] = para_key
         remain_len -= pos_e
         remain_str = remain_str[pos_e:]
-    func_para_dict[func_key] = para_list_list
 
 fd.write("Functions:" + '\n')
 fd.write(str(func_name_dict) + '\n\n')
@@ -118,22 +120,37 @@ fd.write("Destination Python code:" + '\n')
 
 import itertools as its
 
-ll = []
+f_ll = []
 for f_key in func_name_dict:
     f_list = func_name_dict[f_key]
-    ll.append(f_list)
+    f_ll.append(f_list)
+
+p_ll = []
+for p_key in func_para_dict:
+    p_list = func_para_dict[p_key]
+    p_ll.append(p_list)
 
 i = 0
+j = 0
 policy_count = 0
 replace_str = py_str
-for l in its.product(*ll):
+for l in its.product(*f_ll):
     i = 0
     policy_count += 1
     replace_str = py_str
     for f_key in func_name_dict:
         replace_str = replace_str.replace(f_key, l[i])
         i += 1
-    fd.write("#===================================================================Policy%03d\n"%policy_count)
-    fd.write(replace_str + '\n')
+    for p in its.product(*p_ll):
+        j = 0
+        replace_str_2 = replace_str
+        for f_key in func_name_dict:
+            if func_para_key_dict.__contains__(f_key) == False:
+                continue
+            p_key = func_para_key_dict[f_key]
+            replace_str_2 = replace_str_2.replace(p_key, str(p[j]))
+            j += 1
+        fd.write("#===================================================================Policy%03d\n"%policy_count)
+        fd.write(replace_str_2 + '\n')
 fd.close()
 print("OK")
