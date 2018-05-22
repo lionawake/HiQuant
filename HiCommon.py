@@ -230,3 +230,6 @@ class HikyuuCommon:
                 self.res_file.write('%s'%s.name+'\n')
                 result[s.name] = self.__common_func(s, query)
         return result
+
+if __name__ == '__main__':
+    print("HiCommon main")

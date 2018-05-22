@@ -65,61 +65,62 @@ def str_cut(start, end, src):
             return [s, e]
     return -1
 
-py_str = ""
-'''
-py_str = "if $$F:2$($$P:A1$) >= 1 and $$F:5$($$P:B1$, $$P:B2$, $$P:B3$) < 100" \
-         " and $$F:8$($$P:C1$, $$P:C2$, $$P:C3$, $$P:C4$, $$P:C5$):\n" \
-         "    if $$F:1$() == 0 or $$F:3$($$P:D0$) == False :\n" \
-         "        pass\n"
-print(py_str)
-'''
-str_len = len(py_str)
-remain_len = str_len
-while (remain_len > 0):
-    cut_res = str_cut('$$F:', '$', py_str)
-    if cut_res == -1:
-        break
-    pos_s = cut_res[0]
-    pos_e = cut_res[1]
-    func_num = int(py_str[pos_s:pos_e])
-    func_name = stock_func_list[func_num]
-    pos_s -= 4
-    pos_e += 1
-    new_str = "StockFilter(s).%s" % func_name
-    py_str = py_str.replace(py_str[pos_s:pos_e], new_str, 1)
-    str_len += (len(new_str) - (pos_e - pos_s))
-    remain_len = str_len - pos_e
-
-    #print(func_name)
-    #print(cut_res)
-    #print(py_str)
-
+if __name__ == '__main__':
+    py_str = ""
+    '''
+    py_str = "if $$F:2$($$P:A1$) >= 1 and $$F:5$($$P:B1$, $$P:B2$, $$P:B3$) < 100" \
+             " and $$F:8$($$P:C1$, $$P:C2$, $$P:C3$, $$P:C4$, $$P:C5$):\n" \
+             "    if $$F:1$() == 0 or $$F:3$($$P:D0$) == False :\n" \
+             "        pass\n"
+    print(py_str)
+    '''
+    str_len = len(py_str)
+    remain_len = str_len
     while (remain_len > 0):
-        pos_f = py_str.find('$$F:')
-        pos_p = py_str.find('$$P:')
-        if pos_p < 0:
-            #print('b1')
-            break
-        if pos_f > 0 and pos_p > 0 and pos_f <= pos_p:
-            #print('b2')
-            break
-        cut_res = str_cut('$$P:', '$', py_str)
+        cut_res = str_cut('$$F:', '$', py_str)
         if cut_res == -1:
-            #print('b3')
             break
         pos_s = cut_res[0]
         pos_e = cut_res[1]
-        new_str = py_str[pos_s:pos_e]
-        #print(new_str)
+        func_num = int(py_str[pos_s:pos_e])
+        func_name = stock_func_list[func_num]
         pos_s -= 4
         pos_e += 1
+        new_str = "StockFilter(s).%s" % func_name
         py_str = py_str.replace(py_str[pos_s:pos_e], new_str, 1)
         str_len += (len(new_str) - (pos_e - pos_s))
         remain_len = str_len - pos_e
+
+        #print(func_name)
+        #print(cut_res)
+        #print(py_str)
+
+        while (remain_len > 0):
+            pos_f = py_str.find('$$F:')
+            pos_p = py_str.find('$$P:')
+            if pos_p < 0:
+                #print('b1')
+                break
+            if pos_f > 0 and pos_p > 0 and pos_f <= pos_p:
+                #print('b2')
+                break
+            cut_res = str_cut('$$P:', '$', py_str)
+            if cut_res == -1:
+                #print('b3')
+                break
+            pos_s = cut_res[0]
+            pos_e = cut_res[1]
+            new_str = py_str[pos_s:pos_e]
+            #print(new_str)
+            pos_s -= 4
+            pos_e += 1
+            py_str = py_str.replace(py_str[pos_s:pos_e], new_str, 1)
+            str_len += (len(new_str) - (pos_e - pos_s))
+            remain_len = str_len - pos_e
+            print(py_str)
         print(py_str)
-    print(py_str)
 
 
-tmp_str2 = "if $$F:[1-3, 6-9]$($$P:$, $$P:$, $$P:$):"
-#res_str2 = str_cut('$$F:', '$', tmp_str2)
-#print(res_str2)
+    tmp_str2 = "if $$F:[1-3, 6-9]$($$P:$, $$P:$, $$P:$):"
+    #res_str2 = str_cut('$$F:', '$', tmp_str2)
+    #print(res_str2)
