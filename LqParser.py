@@ -53,7 +53,7 @@ def get_func_para_list(src):
 if __name__ == '__main__':
     py_str_file = os.getcwd() + "\Policy.log"
     print(py_str_file)
-    fd = fd = open(py_str_file, "w+")
+    fd = open(py_str_file, "w+")
     func_name_dict = {}
     func_para_dict = {}
     func_para_key_dict = {}
