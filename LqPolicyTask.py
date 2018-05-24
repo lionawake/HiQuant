@@ -8,6 +8,7 @@ import queue
 import time
 from datetime import datetime
 import os
+import sys
 import LqCommon as lqc
 
 taskThreadNum = 4
@@ -15,25 +16,17 @@ taskQueueSize = 1000000
 threadList = []
 taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
-
-policyTemplate = "# -*- coding: utf8 -*-\n" \
-                 "from LqCommon import StockFilter\n" \
-                 "#from hikyuu.interactive.interactive import *\n" \
-                 "#FPDF:  function parameters default value\n" \
-                 "#FPDFL: function parameters default value list\n" \
-                 "sf = StockFilter('') \n" \
-                 "if sf.$$F:[1-3,8]$() > $$P:[10-12,15]$ and" \
-                 " sf.$$F:[9,10]$() <= 3000:\n" \
-                 "    if sf.$$F:[3-6,12]$() == $$P:[888,999]$:\n" \
-                 "        pass\n" \
-                 "    else:\n" \
-                 "        pass\n" \
-                 "else:\n" \
-                 "    pass\n" \
-                 "pass\n"
+policyFile = 'Template.py'
 
 if __name__ == '__main__':
     startTime = datetime.now()
+    # 读取策略模板文件内容
+    if not os.path.exists(policyFile):
+        lqc.ERR('Template file does not exist.')
+        sys.exit(-1)
+    tfd = open(policyFile, 'r')
+    policyTemplate = tfd.read()
+    tfd.close()
     # 创建策略文件目录
     if not os.path.exists('./tmp'):
         os.mkdir('./tmp')

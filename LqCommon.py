@@ -165,13 +165,14 @@ class TaskThread(threading.Thread):
         self.lock = queLock
 
     def run(self):
+        id = 0
         while True:
             self.lock.acquire()
             if not self.taskQue.empty():
                 task = self.taskQue.get_nowait()
+                id = self.taskQue.qsize()
                 self.lock.release()
-                policy_task_proc(task)
-                #print('.', end='')
+                policy_task_proc(task, id)
             else:
                 self.lock.release()
                 self.finish = True
@@ -231,12 +232,12 @@ def get_func_para_list(src):
                 res.append(x.strip())
     return res
 
-def policy_task_proc(task):
+def policy_task_proc(task, id):
     taskName = task[0]
     taskCode = task[1]
-    x = random.randint(0, 999)
-    curTime = int(round(time.time() * 1000))
-    policy_desc = taskName + "_%d_" % curTime + "%03d"%x
+    #x = random.randint(0, 999)
+    #curTime = int(round(time.time() * 1000))
+    policy_desc = taskName + "_%06d"%id
     py_file = "./tmp/%s.py" % policy_desc
     # 生成py代码文件
     py_fd = open(py_file, "w+")
@@ -273,10 +274,12 @@ def INF(str):
     pass
 
 # 是否保留新生成的策略模板代码文件
-gTaskFileReserve = False
+gTaskFileReserve = True
+#gTaskFileReserve = False
 # 获取StockFilter全部筛选函数
 gStockFuncList = list(filter(lambda x: x.startswith('stock_filter') and callable(getattr(StockFilter, x)), dir(StockFilter)))
 gFuncNameDict = {}
 gRightValuieDict = {}
 gRightValueKeyDict = {}
-gPyExe = os.getcwd() + "\\venv\Scripts\python.exe"
+#gPyExe = os.getcwd() + "\..\\venv\Scripts\python.exe"
+gPyExe = "python"
