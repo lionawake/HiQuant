@@ -10,6 +10,20 @@ import time
 import random
 import itertools as its
 
+'''
+#FPDF:  function parameters default value
+#FPDFL: function parameters default value list
+sf = StockFilter('')
+if sf.$$F:[1-3,8]$() > $$P:[10-12,15]$ and sf.$$F:[9,10]$() <= 3000:
+    if sf.$$F:[3-6,12]$() == $$P:[888,999]$:
+        pass
+    else:
+        pass
+else:
+    pass
+pass
+'''
+
 class StockFilter:
     '筛选公共类'
     def __init__(self, stock):
@@ -240,7 +254,7 @@ def policy_task_proc(task, id):
     policy_desc = taskName + "_%d"%curTime + "_%06d"%id
     py_file = "./tmp/%s.py" % policy_desc
     # 生成py代码文件
-    py_fd = open(py_file, "w+")
+    py_fd = open(py_file, "w+", encoding='UTF-8')
     py_fd.write(taskCode)
     py_fd.close()
     # 执行通过替换指标函数后的py代码文件

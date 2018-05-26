@@ -21,16 +21,16 @@ class SqlDB():
             charset='utf8'
         )
 
-    def query(self, sqlString):
+    def query(self, sqlstr):
         cursor = self.conn.cursor()
-        cursor.execute(sqlString)
+        cursor.execute(sqlstr)
         returnData = cursor.fetchall()
         cursor.close()
         return returnData
 
-    def update(self, sqlString):
+    def update(self, sqlstr):
         cursor = self.conn.cursor()
-        cursor.execute(sqlString)
+        cursor.execute(sqlstr)
         self.conn.commit()
         cursor.close()
 
@@ -39,14 +39,14 @@ class SqlDB():
             (sp_name,author,test_status,task_total,task_finished,code) 
             values (%s,%s,%d,%ld,%ld,%s);"""
         cursor = self.conn.cursor()
-        cursor.execute(sqlString,name, author, status, task_total, task_finished, code)
+        cursor.execute(sqlstr,name, author, status, task_total, task_finished, code)
         self.conn.commit()
         cursor.close()
 
     def save_strategy(self, sp_id, code, path):
         sqlstr = "insert into lq_strategy(sp_id,code,data_path) values (%ld,%s,%s);"
         cursor = self.conn.cursor()
-        cursor.execute(sqlString, sp_id, code, path)
+        cursor.execute(sqlstr, sp_id, code, path)
         self.conn.commit()
         cursor.close()
 
@@ -74,30 +74,32 @@ class SqlDB():
                     hold_period_ratio
                     ) 
                     values
-                    (%ld,%ld,%s,%s,%f,%f,%f,%f,
-                    %d,%f,%f,%f,%f,%f,%f,%f,
-                    %f,%d,%f,%f,%f,%f,%f);"""
+                    """
         cursor = self.conn.cursor()
-        cursor.execute(sqlString, sp_id, s_id, stock, path,
-                       perf["已平仓净利润总额"],
-                       perf["赢利交易赢利总额"],
-                       perf["亏损交易亏损总额"],
-                       perf["赢利交易赢利总额"]/perf["亏损交易亏损总额"],
-                       perf["已平仓交易总数"],
-                       perf["赢利交易比例%"],
-                       perf["赢利交易平均赢利"],
-                       perf["亏损交易平均亏损"],
-                       perf["赢利交易平均赢利"]/perf["亏损交易平均亏损"],
-                       perf["最大单笔赢利"],
-                       perf["最大单笔亏损"],
-                       perf["最大单笔赢利"]/perf["赢利交易赢利总额"],
-                       perf["最大单笔亏损"]/perf["亏损交易亏损总额"],
-                       perf["赢利交易平均持仓时间"],
-                       perf["单笔交易最大占用现金比例"],
-                       perf["已平仓帐户收益率"],
-                       perf["帐户年复合收益率"],
-                       perf["R乘数期望值"],
-                       100-perf["空仓时间/总时间%"])
+        d1 = perf["已平仓净利润总额".encode('gbk')]
+        d2 = perf["赢利交易赢利总额".encode('gbk')]
+        d3 = perf["亏损交易亏损总额".encode('gbk')]
+        d4 = perf["已平仓交易总数".encode('gbk')]
+        d5 = perf["赢利交易比例%".encode('gbk')]
+        d6 = perf["赢利交易平均赢利".encode('gbk')]
+        d7 = perf["亏损交易平均亏损".encode('gbk')]
+        d8 = perf["最大单笔赢利".encode('gbk')]
+        d9 = perf["最大单笔亏损".encode('gbk')]
+        d10 = perf["赢利交易平均持仓时间".encode('gbk')]
+        d11 = perf["单笔交易最大占用现金比例%".encode('gbk')]
+        d12 = perf["已平仓帐户收益率%".encode('gbk')]
+        d13 = perf["帐户年复合收益率%".encode('gbk')]
+        d14 = perf["R乘数期望值".encode('gbk')]
+        d15 = perf["空仓时间/总时间%".encode('gbk')]
+        s = sqlstr + '(%ld,'%sp_id + '%ld,'%s_id + '\'%s\','%stock + '\'%s\','%path + '%f,'%d1\
+        + '%f,' % d2 + '%f,'%d3 + '0,%f,'%d4 + '%f,'%d5 + '%f,'%d6 + '%f,'%d7 + '0,%f,'%d8\
+        + '%f,'%d9 + '0,0,%f,'%d10 + '%f,'%d11\
+        + '%f,' % d12 + '%f,'%d13 + '%f,'%d14 + '%f);'%d15
+        print(s)
+        cursor.execute(s)
+        #cursor.execute(sqlstr, (sp_id, s_id, stock, path,
+        #               d1,d2,d3,0,int(d4),d5,d6,d7,0,d8,d9,0,
+        #               0,int(d10),d11,d12,d13,d14,d15))
         self.conn.commit()
         cursor.close()
 
@@ -125,7 +127,7 @@ class SqlDB():
                     where 
                     sp_id = %ld and s_id = %ld;"""
         cursor = self.conn.cursor()
-        cursor.execute(sqlString,
+        cursor.execute(sqlstr,
                        perf["已平仓净利润总额"],
                        perf["赢利交易赢利总额"],
                        perf["亏损交易亏损总额"],
@@ -155,7 +157,7 @@ class SqlDB():
                     task_run = %ld,
                     task_over = %ld;"""
         cursor = self.conn.cursor()
-        cursor.execute(sqlString,wait,run,over)
+        cursor.execute(sqlstr,wait,run,over)
         self.conn.commit()
         cursor.close()
 

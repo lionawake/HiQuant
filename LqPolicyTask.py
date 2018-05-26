@@ -24,7 +24,7 @@ if __name__ == '__main__':
     if not os.path.exists(policyFile):
         lqc.ERR('Template file does not exist.')
         sys.exit(-1)
-    tfd = open(policyFile, 'r')
+    tfd = open(policyFile, 'r', encoding='UTF-8')
     policyTemplate = tfd.read()
     tfd.close()
     # 创建策略文件目录
