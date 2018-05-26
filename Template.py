@@ -5,11 +5,12 @@
 #==============================================================================
 import os
 import sys
+from hikyuu.interactive.interactive import *
+
 cwd = os.getcwd()
 sys.path.append(cwd)
+import LqDB as db
 from LqCommon import StockFilter
-#sys.path.append(cwd + "\\..\\venv\\Lib\\site-packages")
-#from hikyuu.interactive.interactive import *
 
 #FPDF:  function parameters default value
 #FPDFL: function parameters default value list
@@ -22,3 +23,5 @@ if sf.$$F:[1-3,8]$() > $$P:[10-12,15]$ and sf.$$F:[9,10]$() <= 3000:
 else:
     pass
 pass
+
+# Database

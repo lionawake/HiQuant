@@ -236,8 +236,8 @@ def policy_task_proc(task, id):
     taskName = task[0]
     taskCode = task[1]
     #x = random.randint(0, 999)
-    #curTime = int(round(time.time() * 1000))
-    policy_desc = taskName + "_%06d"%id
+    curTime = int(round(time.time() * 1000))
+    policy_desc = taskName + "_%d"%curTime + "_%06d"%id
     py_file = "./tmp/%s.py" % policy_desc
     # 生成py代码文件
     py_fd = open(py_file, "w+")

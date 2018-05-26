@@ -44,12 +44,12 @@ if __name__ == '__main__':
         i += 1
 
     # 等待任务队列执行完毕
-    print('[', end='')
+    print('[', end='', flush=True)
     while not taskQueue.empty():
-        print('>', end='')
+        print('>', end='', flush=True)
         time.sleep(1)
         pass
-    print(']')
+    print(']', flush=True)
     # 线程退出
     for t in threadList:
         if t.finish == True:
