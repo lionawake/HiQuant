@@ -222,28 +222,39 @@ def get_func_name_list(src):
     return res
 
 def get_func_para_list(src):
-    s = src.strip('[')
-    s = s.strip(']')
     res = []
-    l = s.split(',')
-    for x in l:
-        t = x.split('-')
-        if len(t) == 1:
-            if t[0].isdigit():
-                n = int(t[0])
-                res.append(n)
-            else:
-                res.append(x.strip())
-        else:
-            if t[0].isdigit() and t[1].isdigit():
-                min = int(t[0])
-                max = int(t[1]) + 1
-                r = range(min, max)
-                for y in r:
-                    n = int(y)
+    if src[0] == '[':
+        s = src.strip('[')
+        s = s.strip(']')
+        l = s.split(',')
+        for x in l:
+            t = x.split('-')
+            if len(t) == 1:
+                if t[0].isdigit():
+                    n = int(t[0])
                     res.append(n)
+                else:
+                    res.append(x.strip())
             else:
-                res.append(x.strip())
+                if t[0].isdigit() and t[1].isdigit():
+                    min = int(t[0])
+                    max = int(t[1]) + 1
+                    r = range(min, max)
+                    for y in r:
+                        n = int(y)
+                        res.append(n)
+                else:
+                    res.append(x.strip())
+    else:
+        l = src.split(',')
+        min = float(l[0])
+        max = float(l[1])
+        step = float(l[2])
+        while (min <= max):
+            res.append(round(min,3))
+            min = min + step
+            pass
+        pass
     return res
 
 def policy_task_proc(task, id):
