@@ -15,15 +15,8 @@ from LqCommon import StockFilter
 #FPDF:  function parameters default value
 #FPDFL: function parameters default value list
 sf = StockFilter('')
-if sf.$$F:[1-2,8]$() > $$P:[10-11,15]$ and sf.$$F:[9,10]$() <= $$P:0.1, 0.5, 0.2$:
-    tuple1 = sf.$$F:[3-5]$()
-    for x in tuple1:
-        if x == $$P:8, 10, 2$:
-            pass
-    if tuple1[0] == $$P:8, 10, 2$:
-        pass
-    else:
-        pass
+if sf.$$F:[0]$() > $$P:[10-11,15]$:
+    pass
 else:
     pass
 pass
