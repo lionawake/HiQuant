@@ -115,7 +115,7 @@ class PolicyTask:
                 pos_s -= 4
                 pos_e += 1
                 para_key = remain_str[pos_s:pos_e]
-                gRightValuieDict[para_key] = para_list
+                gRightValueDict[para_key] = para_list
                 gRightValueKeyDict[func_key] = para_key
                 remain_len -= pos_e
                 remain_str = remain_str[pos_e:]
@@ -129,8 +129,8 @@ class PolicyTask:
             pass
 
         p_ll = []
-        for p_key in gRightValuieDict:
-            p_list = gRightValuieDict[p_key]
+        for p_key in gRightValueDict:
+            p_list = gRightValueDict[p_key]
             p_ll.append(p_list)
             pass
 
@@ -304,7 +304,7 @@ gTaskFileReserve = True
 # 获取StockFilter全部筛选函数
 gStockFuncList = list(filter(lambda x: x.startswith('stock_filter') and callable(getattr(StockFilter, x)), dir(StockFilter)))
 gFuncNameDict = {}
-gRightValuieDict = {}
+gRightValueDict = {}
 gRightValueKeyDict = {}
 #gPyExe = os.getcwd() + "\..\\venv\Scripts\python.exe"
 gPyExe = "python"
