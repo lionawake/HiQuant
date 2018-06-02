@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 #==============================================================================
 # written by fuxuanhuang
+#function doc: id, parameter num, return num
 #==============================================================================
 '''/**
  * 佩里.J 考夫曼（Perry J.Kaufman）自适应移动平均，参见《精明交易者》（2006年 广东经济出版社）
@@ -11,7 +12,8 @@
  * @ingroup Indicator 具有2个结果集，result(0)为AMA，result(1)为ER
  */'''
 def AMA(n = 10, fast_n = 2, slow_n = 30):
-    pass
+    '''00001,3,2'''
+    return 1,2
 
 '''/**
  * 平均真实波幅(Average True Range)
@@ -19,7 +21,8 @@ def AMA(n = 10, fast_n = 2, slow_n = 30):
  * @ingroup Indicator
  */'''
 def ATR(n = 14):
-    pass
+    '''00002,1,1'''
+    return 1
 
 '''/**
  * 创建一个指定长度的常数指标
@@ -29,14 +32,16 @@ def ATR(n = 14):
  * @ingroup Indicator
  */'''
 def CVAL(value=0.0, len=0, discard=0):
-    pass
+    '''00003,3,1'''
+    return 1
 
 '''/**
  * 差分指标，即data[i] - data[i-1]
  * @ingroup Indicator
  */'''
 def DIFF():
-    pass
+    '''00004,0,1'''
+    return 1
 
 '''/**
  * 指数移动平均线(Exponential Moving Average)
@@ -44,18 +49,21 @@ def DIFF():
  * @ingroup Indicator
  */'''
 def EMA(n = 22):
-    pass
+    '''00005,1,1'''
+    return 1
 
 '''/**
  * N日内最高价
  * @param n N日时间窗口
  */'''
 def HHV(n = 20):
-    pass
+    '''00006,1,1'''
+    return 1
 
 '''/**
  * N日内最低价
  * @param n N日时间窗口
  */'''
 def LLV(n = 20):
-    pass
+    '''00007,1,2'''
+    return 1,2

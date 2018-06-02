@@ -8,68 +8,11 @@ import threading
 import queue
 import time
 import random
+import re
 import itertools as its
+import LqIndicator
 
-'''
-#FPDF:  function parameters default value
-#FPDFL: function parameters default value list
-sf = StockFilter('')
-if sf.$$F:[1-3,8]$() > $$P:[10-12,15]$ and sf.$$F:[9,10]$() <= 3000:
-    if sf.$$F:[3-6,12]$() == $$P:[888,999]$:
-        pass
-    else:
-        pass
-else:
-    pass
-pass
-'''
-
-class StockFilter:
-    '筛选公共类'
-    def __init__(self, stock):
-        #print(self.__doc__)
-        pass
-    def __del__(self):
-        pass
-
-    def stock_filter000(self):
-        return 1000
-
-    def stock_filter001(self):
-        return 1000
-
-    def stock_filter002(self):
-        return 100
-
-    def stock_filter003(self):
-        return 1
-
-    def stock_filter004(self):
-        return 1
-
-    def stock_filter005(self):
-        return 1
-
-    def stock_filter006(self):
-        return 1
-
-    def stock_filter007(self):
-        return 1
-
-    def stock_filter008(self):
-        return 1
-
-    def stock_filter009(self):
-        return 1
-
-    def stock_filter010(self):
-        return 1
-
-    def stock_filter011(self):
-        return 1
-
-    def stock_filter012(self):
-        return 1
+gTaskList = []
 
 class PolicyTask:
     def __init__(self, name, policyTemplate, que, sz):
@@ -77,6 +20,18 @@ class PolicyTask:
         self.template = policyTemplate
         self.que = que
         self.sz = sz
+
+    def put_queue(self):
+        c = 0
+        for t in gTaskList:
+            c += 1
+            s = t[1]
+            self.que.put(t)
+            if c >= self.sz:
+                ALM("Tasks overrun: %d" % c)
+                return True
+            pass
+        INF("Task queue size: %d" % self.que.qsize())
 
     def generate(self):
         remain_str = self.template
@@ -133,17 +88,17 @@ class PolicyTask:
             p_list = gRightValueDict[p_key]
             p_ll.append(p_list)
             pass
-
+        print(f_ll)
+        print(p_ll)
         i = 0
         j = 0
         policy_count = 0
         replace_str = self.template
-        for l in its.product(*f_ll):
+        for f in its.product(*f_ll):
             i = 0
-            policy_count += 1
             replace_str = self.template
             for f_key in gFuncNameDict:
-                replace_str = replace_str.replace(f_key, l[i])
+                replace_str = replace_str.replace(f_key, f[i])
                 i += 1
                 pass
             for p in its.product(*p_ll):
@@ -156,14 +111,51 @@ class PolicyTask:
                     replace_str_2 = replace_str_2.replace(p_key, str(p[j]))
                     j += 1
                     pass
+                policy_count += 1
                 task = [self.policyName, replace_str_2]
-                self.que.put(task)
-                if policy_count >= self.sz:
-                    ALM("Tasks overrun: %d"%policy_count)
-                    return True
-                pass
+                gTaskList.append(task)
+                '''has_tuple = False
+                ##################################################
+                for f_doc_key in gFuncDocDict:
+                    if replace_str_2.find(f_doc_key) < 0:
+                        continue
+                    doc_list = gFuncDocDict[f_doc_key]
+                    ret_num = int(doc_list[2])
+                    if ret_num > 1:
+                        has_tuple = True
+                        n = 0
+                        while (ret_num > 0):
+                            pat = f_doc_key + '\((.*?)\)'
+                            global gFuncTupleStr
+                            gFuncTupleStr = '[%d]'%n
+                            replace_str_3 = re.sub(pat, re_replace, replace_str_2)
+                            ret_num -= 1
+                            n += 1
+                            task = [self.policyName, replace_str_3]
+                            self.que.put(task)
+                            if policy_count >= self.sz:
+                                ALM("Tasks overrun: %d" % policy_count)
+                                return True
+                            pass
+                    else:
+                        task = [self.policyName, replace_str_2]
+                        self.que.put(task)
+                        if policy_count >= self.sz:
+                            ALM("Tasks overrun: %d" % policy_count)
+                            return True
+                        pass
+                ##################################################
+                if has_tuple == False:
+                    task = [self.policyName, replace_str_2]
+                    self.que.put(task)
+                    if policy_count >= self.sz:
+                        ALM("Tasks overrun: %d"%policy_count)
+                        return True
+                    pass
+                '''
             pass
         INF("Task queue size: %d"%self.que.qsize())
+        self.put_queue()
         return True
 
     def __del__(self):
@@ -186,12 +178,15 @@ class TaskThread(threading.Thread):
                 task = self.taskQue.get_nowait()
                 id = self.taskQue.qsize()
                 self.lock.release()
-                policy_task_proc(task, id)
+                #policy_task_proc(task, id)
             else:
                 self.lock.release()
                 self.finish = True
                 break
             pass
+
+def re_replace(matched):
+    return matched.group(0) + gFuncTupleStr
 
 def str_cut(start, end, src):
     s = src.find(start)
@@ -211,14 +206,14 @@ def get_func_name_list(src):
         t = x.split('-')
         if len(t) == 1:
             n = int(t[0])
-            res.append(gStockFuncList[n])
+            res.append(gFuncList[n])
         else:
             min = int(t[0])
             max = int(t[1]) + 1
             r = range(min, max)
             for y in r:
                 n = int(y)
-                res.append(gStockFuncList[n])
+                res.append(gFuncList[n])
     return res
 
 def get_func_para_list(src):
@@ -274,6 +269,14 @@ def policy_task_proc(task, id):
         os.remove(py_file)
     pass
 
+def get_func_doc_dict():
+    for x in dir(LqIndicator):
+        if callable(getattr(LqIndicator, x)) == True:
+            gFuncDocDict[x] = getattr(LqIndicator, x).__doc__.split(',')
+    pass
+    print(gFuncList)
+    print(gFuncDocDict)
+
 def LOG(level, str):
     if level == 0:
         h = '[ERR]'
@@ -302,9 +305,13 @@ def INF(str):
 gTaskFileReserve = True
 #gTaskFileReserve = False
 # 获取StockFilter全部筛选函数
-gStockFuncList = list(filter(lambda x: x.startswith('stock_filter') and callable(getattr(StockFilter, x)), dir(StockFilter)))
+gFuncList = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
+gFuncDocDict = {}
 gFuncNameDict = {}
 gRightValueDict = {}
 gRightValueKeyDict = {}
 #gPyExe = os.getcwd() + "\..\\venv\Scripts\python.exe"
 gPyExe = "python"
+gFuncTupleStr = ''
+get_func_doc_dict()
+print(gFuncNameDict)

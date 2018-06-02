@@ -22,31 +22,18 @@ class test:
     def test_func1(self):
         return 6,7,8
 
-def func1(x=10, y=20, z=['a','b','c']):
-    return 1,2,3
+import re
+def r_replace(s):
+    tmp = s.group(0)
+    return tmp + '[]'
 
-a = func1()
-b = (1,1,5)
-if a < b:
-    print('a<b')
+rep = 'xxxxAMA(1,2,3).xxxxx > xxxxxAMA(a,b)xxx'
+print(rep)
+s1 = 'AMA(*)'
+s2 = 'AMA(*)[0]'
+rep = rep.replace(s1, s2)
+print(rep)
+rep = re.sub('AMA\((.*?)\)', r_replace, rep)
+print(rep)
 
-print(a)
-b = func1()[0]
-print(b)
 
-c = test()
-d = c.test_func1()[0]
-print(d)
-
-print(test().test_func1().__doc__)
-print(func1.__defaults__)
-print(func1.__code__.co_argcount)
-print(func1.__code__)
-
-import LqIndicator
-
-gFuncList = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
-print(gFuncList)
-gFuncRetList = []
-for f in gFuncList:
-    pass

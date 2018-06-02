@@ -10,14 +10,17 @@ import sys
 cwd = os.getcwd()
 sys.path.append(cwd)
 import LqDB as lqdb
-from LqCommon import StockFilter
+import LqIndicator as lqidc
 
 #FPDF:  function parameters default value
 #FPDFL: function parameters default value list
-sf = StockFilter('')
-if sf.$$F:[0]$() > $$P:[10-11,15]$:
+if lqidc.$$F:[0]$(1,2,3) > $$P:[10-11,15]$ and lqidc.$$F:[2,3]$() <= $$P:0.1, 0.5, 0.2$:
+    print('if case')
     pass
 else:
+    if lqidc.$$F:[6]$(5,6,7) > $$P:[100]$:
+        print('else if case')
+    print('else case')
     pass
 pass
 
