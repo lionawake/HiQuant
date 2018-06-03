@@ -10,7 +10,7 @@ import time
 import random
 import re
 import itertools as its
-import LqIndicator
+import factors
 
 class PolicyTask:
     def __init__(self, name, policyTemplate, que, sz):
@@ -244,11 +244,12 @@ def policy_task_proc(task, id):
     pass
 
 def get_func_doc_dict():
-    for x in dir(LqIndicator):
-        if callable(getattr(LqIndicator, x)) == True:
+    for x in dir(factors):
+        if callable(getattr(factors, x)) == True:
             tuple_list = []
             ret_num = 0
-            gFuncDocDict[x] = getattr(LqIndicator, x).__doc__.split(',')
+            print(getattr(factors, x).__doc__)
+            gFuncDocDict[x] = getattr(factors, x).__doc__.split(',')
             ret_num = int(gFuncDocDict[x][2])
             if ret_num > 1:
                 n = 0
@@ -289,7 +290,7 @@ gTaskFileReserve = True
 #gTaskFileReserve = False
 # 获取StockFilter全部筛选函数
 gTaskList = []
-gFuncList = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
+gFuncList = list(filter(lambda x: callable(getattr(factors, x)), dir(factors)))
 gFuncDocDict = {}
 gFuncTupleDict = {}
 gFuncNameDict = {}
