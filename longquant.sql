@@ -1,3 +1,4 @@
+use hikyuu;
 
 -- 策略因子表（存储用于构建策略的指标因子）
 DROP TABLE IF EXISTS lq_strategy_factor;

@@ -12,8 +12,6 @@ import re
 import itertools as its
 import LqIndicator
 
-gTaskList = []
-
 class PolicyTask:
     def __init__(self, name, policyTemplate, que, sz):
         self.policyName = name
@@ -22,15 +20,32 @@ class PolicyTask:
         self.sz = sz
 
     def put_queue(self):
+        t_ll = []
+        for f_key in gFuncTupleDict:
+            f_list = gFuncTupleDict[f_key]
+            t_ll.append(f_list)
+            pass
         c = 0
         for t in gTaskList:
-            c += 1
             s = t[1]
-            self.que.put(t)
-            if c >= self.sz:
-                ALM("Tasks overrun: %d" % c)
-                return True
-            pass
+            for f in its.product(*t_ll):
+                f_len = len(f)
+                i = 0
+                c += 1
+                replace_str_3 = s
+                while (i < f_len):
+                    l = f[i].split(',')
+                    pat = l[0] + '\((.*?)\)'
+                    global gFuncTupleStr
+                    gFuncTupleStr = l[1]
+                    replace_str_3 = re.sub(pat, re_replace, replace_str_3)
+                    i += 1
+                task = [t[0], replace_str_3]
+                self.que.put(task)
+                if c >= self.sz:
+                    ALM("Tasks overrun: %d" % c)
+                    return True
+                pass
         INF("Task queue size: %d" % self.que.qsize())
 
     def generate(self):
@@ -88,8 +103,6 @@ class PolicyTask:
             p_list = gRightValueDict[p_key]
             p_ll.append(p_list)
             pass
-        print(f_ll)
-        print(p_ll)
         i = 0
         j = 0
         policy_count = 0
@@ -114,47 +127,8 @@ class PolicyTask:
                 policy_count += 1
                 task = [self.policyName, replace_str_2]
                 gTaskList.append(task)
-                '''has_tuple = False
-                ##################################################
-                for f_doc_key in gFuncDocDict:
-                    if replace_str_2.find(f_doc_key) < 0:
-                        continue
-                    doc_list = gFuncDocDict[f_doc_key]
-                    ret_num = int(doc_list[2])
-                    if ret_num > 1:
-                        has_tuple = True
-                        n = 0
-                        while (ret_num > 0):
-                            pat = f_doc_key + '\((.*?)\)'
-                            global gFuncTupleStr
-                            gFuncTupleStr = '[%d]'%n
-                            replace_str_3 = re.sub(pat, re_replace, replace_str_2)
-                            ret_num -= 1
-                            n += 1
-                            task = [self.policyName, replace_str_3]
-                            self.que.put(task)
-                            if policy_count >= self.sz:
-                                ALM("Tasks overrun: %d" % policy_count)
-                                return True
-                            pass
-                    else:
-                        task = [self.policyName, replace_str_2]
-                        self.que.put(task)
-                        if policy_count >= self.sz:
-                            ALM("Tasks overrun: %d" % policy_count)
-                            return True
-                        pass
-                ##################################################
-                if has_tuple == False:
-                    task = [self.policyName, replace_str_2]
-                    self.que.put(task)
-                    if policy_count >= self.sz:
-                        ALM("Tasks overrun: %d"%policy_count)
-                        return True
-                    pass
-                '''
             pass
-        INF("Task queue size: %d"%self.que.qsize())
+        #INF("Task queue size: %d"%self.que.qsize())
         self.put_queue()
         return True
 
@@ -178,7 +152,7 @@ class TaskThread(threading.Thread):
                 task = self.taskQue.get_nowait()
                 id = self.taskQue.qsize()
                 self.lock.release()
-                #policy_task_proc(task, id)
+                policy_task_proc(task, id)
             else:
                 self.lock.release()
                 self.finish = True
@@ -272,10 +246,19 @@ def policy_task_proc(task, id):
 def get_func_doc_dict():
     for x in dir(LqIndicator):
         if callable(getattr(LqIndicator, x)) == True:
+            tuple_list = []
+            ret_num = 0
             gFuncDocDict[x] = getattr(LqIndicator, x).__doc__.split(',')
-    pass
-    print(gFuncList)
-    print(gFuncDocDict)
+            ret_num = int(gFuncDocDict[x][2])
+            if ret_num > 1:
+                n = 0
+                while (ret_num > 0):
+                    s = '%s,'%x + '[%d]' % n
+                    ret_num -= 1
+                    n += 1
+                    tuple_list.append(s)
+                gFuncTupleDict[x] = tuple_list
+        pass
 
 def LOG(level, str):
     if level == 0:
@@ -305,8 +288,10 @@ def INF(str):
 gTaskFileReserve = True
 #gTaskFileReserve = False
 # 获取StockFilter全部筛选函数
+gTaskList = []
 gFuncList = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
 gFuncDocDict = {}
+gFuncTupleDict = {}
 gFuncNameDict = {}
 gRightValueDict = {}
 gRightValueKeyDict = {}
@@ -314,4 +299,3 @@ gRightValueKeyDict = {}
 gPyExe = "python"
 gFuncTupleStr = ''
 get_func_doc_dict()
-print(gFuncNameDict)
