@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-#from hikyuu.indicator import *
+from hikyuu.indicator import *
 import talib
 
 def lqAMA(data, n=10, fast_n=2, slow_n=30):
