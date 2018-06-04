@@ -20,26 +20,39 @@ class PolicyTask:
         self.sz = sz
 
     def put_queue(self):
-        t_ll = []
-        for f_key in gFuncTupleDict:
-            f_list = gFuncTupleDict[f_key]
-            t_ll.append(f_list)
-            pass
         c = 0
         for t in gTaskList:
             s = t[1]
-            for f in its.product(*t_ll):
+            tuple_ll = []
+            for f_key in gFuncTupleDict:
+                if s.find(f_key) != -1:
+                    tuple_ll.append(gFuncTupleDict[f_key])
+                pass
+            if len(tuple_ll) == 0:
+                c += 1
+                self.que.put(t)
+                if c >= self.sz:
+                    ALM("Tasks overrun: %d" % c)
+                    return True
+                continue
+            for f in its.product(*tuple_ll):
                 f_len = len(f)
                 i = 0
                 c += 1
+                has_replace = False
                 replace_str_3 = s
                 while (i < f_len):
                     l = f[i].split(',')
+                    if replace_str_3.find(l[0]) == -1:
+                        continue
                     pat = l[0] + '\((.*?)\)'
                     global gFuncTupleStr
                     gFuncTupleStr = l[1]
                     replace_str_3 = re.sub(pat, re_replace, replace_str_3)
+                    has_replace = True
                     i += 1
+                if has_replace == False:
+                    continue
                 task = [t[0], replace_str_3]
                 self.que.put(task)
                 if c >= self.sz:
@@ -248,8 +261,9 @@ def get_func_doc_dict():
         if callable(getattr(factors, x)) == True:
             tuple_list = []
             ret_num = 0
-            print(getattr(factors, x).__doc__)
             gFuncDocDict[x] = getattr(factors, x).__doc__.split(',')
+            func_id = int(gFuncDocDict[x][0])
+            para_num = int(gFuncDocDict[x][1])
             ret_num = int(gFuncDocDict[x][2])
             if ret_num > 1:
                 n = 0

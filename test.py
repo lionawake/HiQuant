@@ -36,4 +36,7 @@ print(rep)
 rep = re.sub('AMA\((.*?)\)', r_replace, rep)
 print(rep)
 
+import factors
 
+l = list(filter(lambda x: callable(getattr(factors, x)), dir(factors)))
+print(l)

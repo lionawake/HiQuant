@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 #from hikyuu.indicator import *
+import talib
 
 def lqAMA(data, n=10, fast_n=2, slow_n=30):
     '''00001,4,2'''

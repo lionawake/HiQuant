@@ -5,12 +5,12 @@
 #==============================================================================
 import os
 import sys
-#from hikyuu.interactive.interactive import *
-
+from hikyuu.interactive.interactive import *
+from hikyuu.indicator import *
 cwd = os.getcwd()
 sys.path.append(cwd)
 import LqDB as lqdb
-import LqIndicator as lqidc
+import factors as lqidc
 
 #FPDF:  function parameters default value
 #FPDFL: function parameters default value list
