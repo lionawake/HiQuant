@@ -36,7 +36,25 @@ print(rep)
 rep = re.sub('AMA\((.*?)\)', r_replace, rep)
 print(rep)
 
-import factors
+import LqIndicator
 
-l = list(filter(lambda x: callable(getattr(factors, x)), dir(factors)))
-print(l)
+gFuncList = []
+def get_func_list():
+    f_l = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
+    print(f_l)
+    f_num = len(f_l)
+    i = 0
+    while (i <= f_num):
+        for f in f_l:
+            l = getattr(LqIndicator, f).__doc__.split(',')
+            f_id = int(l[0])
+            if f_id == i:
+                gFuncList.append(f)
+                break
+        pass
+        if f_id != i:
+            gFuncList.append('NULL')
+        i += 1
+    pass
+get_func_list()
+print(gFuncList)

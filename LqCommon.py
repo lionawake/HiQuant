@@ -275,6 +275,23 @@ def get_func_doc_dict():
                 gFuncTupleDict[x] = tuple_list
         pass
 
+def get_func_list():
+    f_l = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
+    f_num = len(f_l)
+    i = 0
+    while (i <= f_num):
+        for f in f_l:
+            l = getattr(LqIndicator, f).__doc__.split(',')
+            f_id = int(l[0])
+            if f_id == i:
+                gFuncList.append(f)
+                break
+        pass
+        if f_id != i:
+            gFuncList.append('NULL')
+        i += 1
+    pass
+
 def LOG(level, str):
     if level == 0:
         h = '[ERR]'
@@ -304,7 +321,7 @@ gTaskFileReserve = True
 #gTaskFileReserve = False
 # 获取StockFilter全部筛选函数
 gTaskList = []
-gFuncList = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
+gFuncList = []
 gFuncDocDict = {}
 gFuncTupleDict = {}
 gFuncNameDict = {}
@@ -313,4 +330,7 @@ gRightValueKeyDict = {}
 #gPyExe = os.getcwd() + "\..\\venv\Scripts\python.exe"
 gPyExe = "python"
 gFuncTupleStr = ''
+#按序号生成指标函数列表
+get_func_list()
+#生成多返回值指标函数字典
 get_func_doc_dict()
