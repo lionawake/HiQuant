@@ -39,7 +39,7 @@ data = CLOSE(my_sys.getTO())
 
 #FPDF:  function parameters default value
 #FPDFL: function parameters default value list
-if lqidc.$$F:[1]$(data,1,2,3) > $$P:[10-11,15]$ and lqidc.$$F:[2,3]$(data) <= $$P:0.1, 0.5, 0.2$:
+if lqidc.$$F:[1]$(data,1,2,$$P:[111,222]$) > $$P:[10-11,15]$ and lqidc.$$F:[2,3]$(data) <= $$P:0.1, 0.5, 0.2$:
     #print('if case')
     pass
 else:

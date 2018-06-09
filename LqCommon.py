@@ -81,7 +81,7 @@ class PolicyTask:
             remain_len -= pos_e
             remain_str = remain_str[pos_e:]
 
-            para_list_list = []
+            para_key_list = []
             while (remain_len > 0):
                 pos_f = remain_str.find('$$F:')
                 pos_p = remain_str.find('$$P:')
@@ -99,10 +99,12 @@ class PolicyTask:
                 pos_e += 1
                 para_key = remain_str[pos_s:pos_e]
                 gRightValueDict[para_key] = para_list
-                gRightValueKeyDict[func_key] = para_key
+                #gRightValueKeyDict[func_key] = para_key
+                para_key_list.append(para_key)
                 remain_len -= pos_e
                 remain_str = remain_str[pos_e:]
                 pass
+            gRightValueKeyDict[func_key] = para_key_list
             pass
 
         f_ll = []
@@ -112,8 +114,8 @@ class PolicyTask:
             pass
 
         p_ll = []
-        for p_key in gRightValueDict:
-            p_list = gRightValueDict[p_key]
+        for p_key_list in gRightValueDict:
+            p_list = gRightValueDict[p_key_list]
             p_ll.append(p_list)
             pass
         i = 0
@@ -133,9 +135,10 @@ class PolicyTask:
                 for f_key in gFuncNameDict:
                     if gRightValueKeyDict.__contains__(f_key) == False:
                         continue
-                    p_key = gRightValueKeyDict[f_key]
-                    replace_str_2 = replace_str_2.replace(p_key, str(p[j]))
-                    j += 1
+                    p_key_list = gRightValueKeyDict[f_key]
+                    for p_key in p_key_list:
+                        replace_str_2 = replace_str_2.replace(p_key, str(p[j]))
+                        j += 1
                     pass
                 policy_count += 1
                 task = [self.policyName, replace_str_2]
