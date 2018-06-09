@@ -62,6 +62,7 @@ class PolicyTask:
         INF("Task queue size: %d" % self.que.qsize())
 
     def generate(self):
+        para_count = 0
         remain_str = self.template
         str_len = len(self.template)
         remain_len = str_len
@@ -98,7 +99,9 @@ class PolicyTask:
                 pos_s -= 4
                 pos_e += 1
                 para_key = remain_str[pos_s:pos_e]
-                gRightValueDict[para_key] = para_list
+                f_p_key = para_key + func_key + '%06d'%para_count
+                para_count += 1
+                gFuncParaRightValueDict[f_p_key] = para_list
                 #gRightValueKeyDict[func_key] = para_key
                 para_key_list.append(para_key)
                 remain_len -= pos_e
@@ -114,8 +117,8 @@ class PolicyTask:
             pass
 
         p_ll = []
-        for p_key_list in gRightValueDict:
-            p_list = gRightValueDict[p_key_list]
+        for p_key_list in gFuncParaRightValueDict:
+            p_list = gFuncParaRightValueDict[p_key_list]
             p_ll.append(p_list)
             pass
         i = 0
@@ -328,7 +331,7 @@ gFuncList = []
 gFuncDocDict = {}
 gFuncTupleDict = {}
 gFuncNameDict = {}
-gRightValueDict = {}
+gFuncParaRightValueDict = {}
 gRightValueKeyDict = {}
 #gPyExe = os.getcwd() + "\..\\venv\Scripts\python.exe"
 gPyExe = "python"

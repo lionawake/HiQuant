@@ -43,7 +43,7 @@ if lqidc.$$F:[1]$(data,1,2,$$P:[111,222]$) > $$P:[10-11,15]$ and lqidc.$$F:[2,3]
     #print('if case')
     pass
 else:
-    if lqidc.$$F:[6]$(data,888) > $$P:[100]$:
+    if lqidc.$$F:[6]$(data,$$P:[111]$) > $$P:[111]$:
         #print('else if case')
         pass
     #print('else case')
