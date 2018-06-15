@@ -823,6 +823,3 @@ def fa_cashflow_ttm(stock):
 def fa_opertax_ttm(stock):
     """00320,1,1"""
     return findat.at[stock, 'fa_opertax_ttm']
-
-
-print(fa_bps('000001.SZ'))

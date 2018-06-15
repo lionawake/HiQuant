@@ -5,12 +5,15 @@
 #==============================================================================
 import os
 import sys
+import pickle
 from hikyuu.interactive.interactive import *
 from hikyuu.indicator import *
 cwd = os.getcwd()
 sys.path.append(cwd)
 import LqDB as lqdb
+import LqFinance as lqfin
 import factors as lqidc
+
 
 #账户参数
 init_cash = 100000 #账户初始资金
@@ -50,7 +53,14 @@ else:
     pass
 pass
 
+if lqfin.$$F:[160]$(stk) > 100:
+    pass
+
+print(lqfin.$$F:[161]$(stk))
+
 # Database
 #per = Performance()
 #db = lqdb.SqlDB('127.0.0.1', 3306, 'hikyuu', 'hikyuu', 'hikyuu')
 #db.save_strategy_test(1, 1, 'sz000001', cwd, per)
+#db.save_strategy_pattern()
+#db.save_strategy()
