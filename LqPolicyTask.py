@@ -34,6 +34,7 @@ if __name__ == '__main__':
     ret = lqc.PolicyTask("LQPolicy", policyTemplate, taskQueue, taskQueueSize).generate()
     if ret != True:
         lqc.ERR('Policy task generate failed')
+    lqc.gDBProc.save_strategy_pattern("abc", "xxx", 0, taskQueue.qsize(), 0, policyTemplate)
 
     # 创建多线程列表
     i = 0

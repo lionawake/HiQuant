@@ -11,6 +11,7 @@ import random
 import re
 import itertools as its
 import LqIndicator
+import LqDB as lqdb
 
 class PolicyTask:
     def __init__(self, name, policyTemplate, que, sz):
@@ -256,6 +257,7 @@ def policy_task_proc(task, id):
     py_fd = open(py_file, "w+", encoding='UTF-8')
     py_fd.write(taskCode)
     py_fd.close()
+    gDBProc.save_strategy(id, taskCode, py_file)
     # 执行通过替换指标函数后的py代码文件
     os.system(gPyExe + " " + py_file)
     if gTaskFileReserve == False:
@@ -336,6 +338,7 @@ gRightValueKeyDict = {}
 #gPyExe = os.getcwd() + "\..\\venv\Scripts\python.exe"
 gPyExe = "python"
 gFuncTupleStr = ''
+gDBProc = lqdb.SqlDB('127.0.0.1', 3306, 'hikyuu', 'hikyuu', 'hikyuu')
 #按序号生成指标函数列表
 get_func_list()
 #生成多返回值指标函数字典

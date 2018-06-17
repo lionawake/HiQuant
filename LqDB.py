@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import threading
 import pymysql as MySQLdb
 
 
@@ -11,7 +11,7 @@ class SqlDB():
         self.DB_USER = DB_USER
         self.DB_PWD = DB_PWD
         self.DB_NAME = DB_NAME
-
+        self.lock = threading.Lock()
         self.conn = MySQLdb.Connect(
             host=self.DB_HOST,
             port=self.DB_PORT,
@@ -35,20 +35,24 @@ class SqlDB():
         cursor.close()
 
     def save_strategy_pattern(self, name, author, status, task_total, task_finished, code):
-        sqlstr = "insert into lq_strategy_pattern"+
-            "(sp_name,author,test_status,task_total,task_finished,code) "+
-            "values (%s,%s,%d,%ld,%ld,%s);" % (name, author, status, task_total, task_finished, code)
+        sqlstr = "insert into lq_strategy_pattern"+\
+            "(sp_name,author,test_status,task_total,task_finished,code) "+\
+            "values (\"%s\",\"%s\",%d,%ld,%ld,\"%s\");" % (name, author, status, task_total, task_finished, code)
+        self.lock.acquire()
         cursor = self.conn.cursor()
         cursor.execute(sqlstr)
         self.conn.commit()
         cursor.close()
+        self.lock.release()
 
     def save_strategy(self, sp_id, code, path):
-        sqlstr = "insert into lq_strategy(sp_id,code,data_path) values (%ld,%s,%s);" % （sp_id, code, path）
+        sqlstr = "insert into lq_strategy(sp_id,code,data_path) values (%ld,\"%s\",\"%s\");" % (sp_id, code, path)
+        self.lock.acquire()
         cursor = self.conn.cursor()
         cursor.execute(sqlstr)
         self.conn.commit()
         cursor.close()
+        self.lock.release()
 
     def save_strategy_test(self, sp_id, s_id, stock, path, perf):
         sqlstr = """insert into lq_strategy_test 
@@ -61,6 +65,7 @@ class SqlDB():
                     ) 
                     values
                     """
+        self.lock.acquire()
         cursor = self.conn.cursor()
         d1 = perf["已平仓净利润总额".encode('gbk')]
         d2 = perf["赢利交易赢利总额".encode('gbk')]
@@ -85,6 +90,7 @@ class SqlDB():
         cursor.execute(s)
         self.conn.commit()
         cursor.close()
+        self.lock.release()
 
     def update_strategy_perf(self, sp_id, s_id, perf):
         sqlsids = "select distinct(s_id) from lq_strategy_test;"
