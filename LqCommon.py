@@ -343,3 +343,4 @@ gDBProc = lqdb.SqlDB('127.0.0.1', 3306, 'hikyuu', 'hikyuu', 'hikyuu')
 get_func_list()
 #生成多返回值指标函数字典
 get_func_doc_dict()
+print(gFuncList)

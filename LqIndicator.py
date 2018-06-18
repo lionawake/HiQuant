@@ -1479,3 +1479,608 @@ def fa_cashflow_ttm(stock):
 def fa_opertax_ttm(stock):
     """00320,1,1"""
     return findat.at[stock, 'fa_opertax_ttm']
+
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_001(code,end_date)
+
+def lq_alpha_002(code,end_date=None):
+    """00322,2,1"""
+    return alpha_002(code,end_date)
+
+def lq_alpha_003(code,end_date=None):
+    """00323,2,1"""
+    return alpha_003(code,end_date)
+
+def lq_alpha_004(code,end_date=None):
+    """00324,2,1"""
+    return alpha_004(code,end_date)
+
+def lq_alpha_005(code,end_date=None):
+    """00325,2,1"""
+    return alpha_005(code,end_date)
+
+def lq_alpha_006(code,end_date=None):
+    """00326,2,1"""
+    return alpha_006(code,end_date)
+
+def lq_alpha_007(code,end_date=None):
+    """00327,2,1"""
+    return alpha_007(code,end_date)
+
+def lq_alpha_008(code,end_date=None):
+    """00328,2,1"""
+    return alpha_008(code,end_date)
+
+def lq_alpha_009(code,end_date=None):
+    """00329,2,1"""
+    return alpha_009(code,end_date)
+
+def lq_alpha_010(code,end_date=None):
+    """00330,2,1"""
+    return alpha_010(code,end_date)
+
+def lq_alpha_011(code,end_date=None):
+    """00331,2,1"""
+    return alpha_011(code,end_date)
+
+def lq_alpha_012(code,end_date=None):
+    """00332,2,1"""
+    return alpha_012(code,end_date)
+
+def lq_alpha_013(code,end_date=None):
+    """00333,2,1"""
+    return alpha_013(code,end_date)
+
+def lq_alpha_014(code,end_date=None):
+    """00334,2,1"""
+    return alpha_014(code,end_date)
+
+def lq_alpha_015(code,end_date=None):
+    """00335,2,1"""
+    return alpha_015(code,end_date)
+
+def lq_alpha_016(code,end_date=None):
+    """00336,2,1"""
+    return alpha_016(code,end_date)
+
+def lq_alpha_017(code,end_date=None):
+    """00337,2,1"""
+    return alpha_017(code,end_date)
+
+def lq_alpha_018(code,end_date=None):
+    """00338,2,1"""
+    return alpha_018(code,end_date)
+
+def lq_alpha_019(code,end_date=None):
+    """00339,2,1"""
+    return alpha_019(code,end_date)
+
+def lq_alpha_020(code,end_date=None):
+    """00340,2,1"""
+    return alpha_020(code,end_date)
+
+def lq_alpha_021(code,end_date=None):
+    """00341,2,1"""
+    return alpha_021(code,end_date)
+
+def lq_alpha_022(code,end_date=None):
+    """00342,2,1"""
+    return alpha_022(code,end_date)
+
+def lq_alpha_023(code,end_date=None):
+    """00343,2,1"""
+    return alpha_023(code,end_date)
+
+def lq_alpha_024(code,end_date=None):
+    """00344,2,1"""
+    return alpha_024(code,end_date)
+
+def lq_alpha_025(code,end_date=None):
+    """00345,2,1"""
+    return alpha_025(code,end_date)
+
+def lq_alpha_026(code,end_date=None):
+    """00346,2,1"""
+    return alpha_026(code,end_date)
+
+def lq_alpha_027(code,end_date=None):
+    """00347,2,1"""
+    return alpha_027(code,end_date)
+
+def lq_alpha_028(code,end_date=None):
+    """00348,2,1"""
+    return alpha_028(code,end_date)
+
+def lq_alpha_029(code,end_date=None):
+    """00349,2,1"""
+    return alpha_029(code,end_date)
+
+def lq_alpha_030(code,end_date=None):
+    """00350,2,1"""
+    return alpha_030(code,end_date)
+
+def lq_alpha_031(code,end_date=None):
+    """00351,2,1"""
+    return alpha_031(code,end_date)
+
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_032(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_033(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_034(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_035(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_036(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_037(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_038(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_039(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_040(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_041(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_042(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_043(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_044(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_045(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_046(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_047(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_048(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_049(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_050(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_051(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_052(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_053(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_054(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_055(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_056(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_057(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_058(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_059(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_060(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_061(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_062(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_063(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_064(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_065(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_066(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_067(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_068(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_069(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_070(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_071(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_072(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_073(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_074(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_075(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_076(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_077(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_078(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_079(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_080(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_081(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_082(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_083(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_084(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_085(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_086(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_087(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_088(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_089(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_090(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_091(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_092(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_093(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_094(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_095(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_096(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_097(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_098(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_099(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_100(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_101(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_102(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_103(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_104(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_105(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_106(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_107(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_108(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_109(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_110(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_111(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_112(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_113(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_114(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_115(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_116(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_117(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_118(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_119(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_120(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_121(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_122(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_123(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_124(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_125(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_126(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_127(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_128(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_129(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_130(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_131(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_132(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_133(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_134(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_135(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_136(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_137(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_138(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_139(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_140(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_141(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_142(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_143(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_144(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_145(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_146(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_147(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_148(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_149(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_150(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_151(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_152(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_153(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_154(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_155(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_156(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_157(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_158(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_159(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_160(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_161(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_162(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_163(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_164(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_165(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_166(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_167(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_168(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_169(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_170(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_171(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_172(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_173(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_174(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_175(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_176(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_177(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_178(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_179(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_180(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_181(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_182(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_183(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_184(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_185(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_186(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_187(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_188(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_189(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_190(code,end_date)
+def lq_alpha_001(code,end_date=None):
+    """00321,2,1"""
+    return alpha_191(code,end_date)
