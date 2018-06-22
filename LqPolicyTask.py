@@ -18,6 +18,18 @@ taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
 policyFile = 'Template.py'
 
+def show_process_bar(end=False):
+    queSzCur = taskQueue.qsize()
+    percent = (queSz - queSzCur) * 100 / queSz
+    nArrow = int(percent)
+    nLine = 100 - nArrow
+    showPercent = "\r" + "[" + ">" * nArrow + "-" * nLine + "] |%.1f" % percent + "%|"
+    sys.stdout.write(showPercent)
+    sys.stdout.flush()
+    if end:
+        print('\r\n')
+    pass
+
 if __name__ == '__main__':
     startTime = datetime.now()
     # 读取策略模板文件内容
@@ -34,7 +46,8 @@ if __name__ == '__main__':
     ret = lqc.PolicyTask("LQPolicy", policyTemplate, taskQueue, taskQueueSize).generate()
     if ret != True:
         lqc.ERR('Policy task generate failed')
-    lqc.gDBProc.save_strategy_pattern("abc", "xxx", 0, taskQueue.qsize(), 0, policyTemplate)
+    queSz = taskQueue.qsize()
+    lqc.gDBProc.save_strategy_pattern("abc", "xxx", 0, queSz, 0, policyTemplate)
 
     # 创建多线程列表
     i = 0
@@ -45,12 +58,12 @@ if __name__ == '__main__':
         i += 1
 
     # 等待任务队列执行完毕
-    print('[', end='', flush=True)
     while not taskQueue.empty():
-        print('>', end='', flush=True)
+        show_process_bar()
         time.sleep(1)
         pass
-    print(']', flush=True)
+    show_process_bar(end=True)
+
     # 线程退出
     for t in threadList:
         if t.finish == True:

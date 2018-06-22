@@ -56,5 +56,23 @@ def get_func_list():
             gFuncList.append('NULL')
         i += 1
     pass
-get_func_list()
-print(gFuncList)
+#get_func_list()
+#print(gFuncList)
+
+def func_p2(a=1, b=2):
+    print("func_p2")
+    print("a=%d"%a)
+    print("b=%d" % b)
+    return 100
+
+def func_p5(a=10, b=20, c=30, d=40, e=50):
+    print("func_p5")
+    print("a=%d" % a)
+    print("b=%d" % b)
+    print("c=%d" % c)
+    print("d=%d" % d)
+    print("e=%d" % e)
+    return 200
+
+func_p2(111)
+func_p5(1,2,3)
