@@ -38,6 +38,15 @@ print(rep)
 
 import LqIndicator
 
+import LqFinance as lqfin
+import factors as lqidc
+from hikyuu.interactive.interactive import *
+from hikyuu.indicator import *
+
+my_sys = SYS_Simple()
+data = CLOSE(my_sys.getTO())
+lqidc.lqEMA(data,1)
+
 gFuncList = []
 def get_func_list():
     f_l = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
@@ -73,6 +82,3 @@ def func_p5(a=10, b=20, c=30, d=40, e=50):
     print("d=%d" % d)
     print("e=%d" % e)
     return 200
-
-func_p2(111)
-func_p5(1,2,3)

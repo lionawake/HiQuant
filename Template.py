@@ -43,21 +43,21 @@ data = CLOSE(my_sys.getTO())
 for stk in stock_list:
     #FPDF:  function parameters default value
     #FPDFL: function parameters default value list
-    if lqidc.$$F:[1]$(data,1,2,$$P:[111]$) > $$P:[10-11]$ and lqidc.$$F:[2,3]$(data) <= $$P:0.1, 0.5, 0.3$:
+    if lqidc.$$F:[1]$(data,1,$$P:[111]$) > $$P:[10-11]$ and lqidc.$$F:[2,3]$(data) <= $$P:0.1, 0.5, 0.3$:
         #print('if case')
         pass
     else:
-        if lqidc.$$F:[6]$(data,$$P:[111]$) > $$P:[111]$:
+        if lqidc.$$F:[6]$(data,1,$$P:[111]$) > $$P:[111]$:
             #print('else if case')
             pass
         #print('else case')
         pass
     pass
 
-    if lqfin.$$F:[160]$(stk) > 100:
+    if lqfin.$$F:[160]$(stk,1) > 100:
         pass
 
-    print(lqfin.$$F:[161]$(stk))
+    print(lqfin.$$F:[161]$(stk,2,3))
 
     # Database
     per = Performance()

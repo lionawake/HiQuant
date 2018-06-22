@@ -130,7 +130,9 @@ class PolicyTask:
             i = 0
             replace_str = self.template
             for f_key in gFuncNameDict:
-                replace_str = replace_str.replace(f_key, f[i])
+                f_name = f[i]
+                replace_str = replace_str.replace(f_key, f_name)
+                para_num = int(gFuncDocDict[f_name][1])
                 i += 1
                 pass
             for p in its.product(*p_ll):
@@ -270,8 +272,8 @@ def get_func_doc_dict():
             tuple_list = []
             ret_num = 0
             gFuncDocDict[x] = getattr(LqIndicator, x).__doc__.split(',')
-            func_id = int(gFuncDocDict[x][0])
-            para_num = int(gFuncDocDict[x][1])
+            #func_id = int(gFuncDocDict[x][0])
+            #para_num = int(gFuncDocDict[x][1])
             ret_num = int(gFuncDocDict[x][2])
             if ret_num > 1:
                 n = 0
