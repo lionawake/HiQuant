@@ -27,6 +27,7 @@ def r_replace(s):
     tmp = s.group(0)
     return tmp + '[]'
 
+'''
 rep = 'xxxxAMA(1,2,3).xxxxx > xxxxxAMA(a,b)xxx'
 print(rep)
 s1 = 'AMA(*)'
@@ -36,8 +37,6 @@ print(rep)
 rep = re.sub('AMA\((.*?)\)', r_replace, rep)
 print(rep)
 
-import LqIndicator
-
 import LqFinance as lqfin
 import factors as lqidc
 from hikyuu.interactive.interactive import *
@@ -45,7 +44,10 @@ from hikyuu.indicator import *
 
 my_sys = SYS_Simple()
 data = CLOSE(my_sys.getTO())
-lqidc.lqEMA(data,1)
+lqidc.lqEMA(data,1,2)
+'''
+
+import LqIndicator
 
 gFuncList = []
 def get_func_list():
@@ -82,3 +84,30 @@ def func_p5(a=10, b=20, c=30, d=40, e=50):
     print("d=%d" % d)
     print("e=%d" % e)
     return 200
+
+def my_replace(s):
+    s0 = s.group(0)
+    s1 = s.group(1)
+    s2 = s.group(2)
+    s3 = s.group(3)
+    l = s2.split(',')
+    dst = ""
+    i = 0
+    paraNum = 3
+    if len(l) <= paraNum:
+        return s0
+    for c in l:
+        if i >= paraNum:
+            break
+        dst += c
+        i += 1
+        if i != paraNum:
+            dst += ','
+
+    return s1 + dst + s3
+
+s1 = "if ABC(1,2,3,4,5,6) and CDE(x,y,z):"
+
+print(s1)
+s2 = re.sub('(ABC\()(.*?)(\))', my_replace, s1)
+print(s2)
