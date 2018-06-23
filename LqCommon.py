@@ -44,12 +44,15 @@ class PolicyTask:
                 replace_str_3 = s
                 while (i < f_len):
                     l = f[i].split(',')
-                    if replace_str_3.find(l[0]) == -1:
+                    func_name = l[0]
+                    if replace_str_3.find(func_name) == -1:
                         continue
-                    pat = l[0] + '\((.*?)\)'
+                    pat = func_name + '\((.*?)\)'
                     global gFuncTupleStr
                     gFuncTupleStr = l[1]
                     replace_str_3 = re.sub(pat, re_replace, replace_str_3)
+                    #pat2 = '(' + func_name + ')(\()(.*?)(\))'
+                    #replace_str_3 = re.sub(pat2, re_replace2, replace_str_3)
                     has_replace = True
                     i += 1
                 if has_replace == False:
@@ -132,7 +135,7 @@ class PolicyTask:
             for f_key in gFuncNameDict:
                 f_name = f[i]
                 replace_str = replace_str.replace(f_key, f_name)
-                para_num = int(gFuncDocDict[f_name][1])
+                #para_num = int(gFuncDocDict[f_name][1])
                 i += 1
                 pass
             for p in its.product(*p_ll):
@@ -147,6 +150,9 @@ class PolicyTask:
                         j += 1
                     pass
                 policy_count += 1
+                for func_name in f:
+                    pat = '(' + func_name + ')(\()(.*?)(\))'
+                    replace_str_2 = re.sub(pat, re_replace2, replace_str_2)
                 task = [self.policyName, replace_str_2]
                 gTaskList.append(task)
             pass
@@ -183,6 +189,29 @@ class TaskThread(threading.Thread):
 
 def re_replace(matched):
     return matched.group(0) + gFuncTupleStr
+
+def re_replace2(s):
+    s0 = s.group(0)
+    s1 = s.group(1)
+    s2 = s.group(2)
+    s3 = s.group(3)
+    s4 = s.group(4)
+    l = s3.split(',')
+    dst = ""
+    i = 0
+    #paraNum = 3
+    paraNum = int(gFuncDocDict[s1][1])
+    if len(l) <= paraNum:
+        return s0
+    for c in l:
+        if i >= paraNum:
+            break
+        dst += c
+        i += 1
+        if i != paraNum:
+            dst += ','
+
+    return s1 + s2 + dst + s4
 
 def str_cut(start, end, src):
     s = src.find(start)
