@@ -16,7 +16,7 @@ taskQueueSize = 1000000
 threadList = []
 taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
-policyFile = 'Template.py'
+policyFile = 'Template2.py'
 
 def show_process_bar(end=False):
     queSzCur = taskQueue.qsize()

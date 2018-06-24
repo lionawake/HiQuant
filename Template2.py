@@ -10,7 +10,6 @@ from hikyuu.interactive.interactive import *
 cwd = os.getcwd()
 sys.path.append(cwd)
 import LqDB as lqdb
-from LqCommon import StockFilter
 
 def getNextWeekDate(week):
     from datetime import timedelta

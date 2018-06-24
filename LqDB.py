@@ -35,6 +35,8 @@ class SqlDB():
         cursor.close()
 
     def save_strategy_pattern(self, name, author, status, task_total, task_finished, code):
+        code = code.replace("'", "\\\'")
+        code = code.replace('"', '\\\"')
         sqlstr = "insert into lq_strategy_pattern"+\
             "(sp_name,author,test_status,task_total,task_finished,code) "+\
             "values (\"%s\",\"%s\",%d,%ld,%ld,\"%s\");" % (name, author, status, task_total, task_finished, code)
@@ -46,6 +48,8 @@ class SqlDB():
         self.lock.release()
 
     def save_strategy(self, sp_id, code, path):
+        code = code.replace("'", "\\\'")
+        code = code.replace('"', '\\\"')
         sqlstr = "insert into lq_strategy(sp_id,code,data_path) values (%ld,\"%s\",\"%s\");" % (sp_id, code, path)
         self.lock.acquire()
         cursor = self.conn.cursor()
