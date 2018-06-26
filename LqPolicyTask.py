@@ -16,7 +16,8 @@ taskQueueSize = 1000000
 threadList = []
 taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
-policyFile = 'Template2.py'
+policyFileDefault = 'Template2.py'
+policyFile = ''
 
 def show_process_bar(end=False):
     queSzCur = taskQueue.qsize()
@@ -31,6 +32,10 @@ def show_process_bar(end=False):
     pass
 
 if __name__ == '__main__':
+    if len(sys.argv) >= 2:
+        policyFile = sys.argv[1]
+    if policyFile == '':
+        policyFile = policyFileDefault
     startTime = datetime.now()
     # 读取策略模板文件内容
     if not os.path.exists(policyFile):
