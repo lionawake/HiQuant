@@ -164,13 +164,14 @@ class PolicyTask:
         pass
 
 class TaskThread(threading.Thread):
-    def __init__(self, tid, tname, que, queLock):
+    def __init__(self, tid, tname, que, queLock, sp_id):
         threading.Thread.__init__(self)
         self.id = tid
         self.name = tname
         self.taskQue = que
         self.finish = False
         self.lock = queLock
+        self.sp_id = sp_id
 
     def run(self):
         id = 0
@@ -180,7 +181,7 @@ class TaskThread(threading.Thread):
                 task = self.taskQue.get_nowait()
                 id = self.taskQue.qsize()
                 self.lock.release()
-                policy_task_proc(task, id)
+                policy_task_proc(task, id, self.sp_id)
             else:
                 self.lock.release()
                 self.finish = True
@@ -277,9 +278,10 @@ def get_func_para_list(src):
         pass
     return res
 
-def policy_task_proc(task, id):
+def policy_task_proc(task, id, sp_id):
     taskName = task[0]
     taskCode = task[1]
+    print("======%d"%sp_id)
     #x = random.randint(0, 999)
     curTime = int(round(time.time() * 1000))
     policy_desc = taskName + "_%d"%curTime + "_%06d"%id
@@ -288,9 +290,9 @@ def policy_task_proc(task, id):
     py_fd = open(py_file, "w+", encoding='UTF-8')
     py_fd.write(taskCode)
     py_fd.close()
-    gDBProc.save_strategy(id, taskCode, py_file)
+    gDBProc.save_strategy(sp_id, id, taskCode, py_file)
     # 执行通过替换指标函数后的py代码文件
-    os.system(gPyExe + " " + py_file)
+    os.system(gPyExe + " " + py_file + " " + "%d"%sp_id + " " + "%d"%id)
     if gTaskFileReserve == False:
         os.remove(py_file)
     pass
@@ -369,9 +371,9 @@ gRightValueKeyDict = {}
 #gPyExe = os.getcwd() + "\..\\venv\Scripts\python.exe"
 gPyExe = "python"
 gFuncTupleStr = ''
-gDBProc = lqdb.SqlDB('127.0.0.1', 3306, 'hikyuu', 'hikyuu', 'hikyuu')
+gDBProc = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
 #按序号生成指标函数列表
 get_func_list()
 #生成多返回值指标函数字典
 get_func_doc_dict()
-print(gFuncList)
+#print(gFuncList)

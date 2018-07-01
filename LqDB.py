@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import threading
 import pymysql as MySQLdb
-
+import datetime
 
 class SqlDB():
     def __init__(self, DB_HOST, DB_PORT, DB_USER, DB_PWD, DB_NAME):
@@ -35,11 +35,12 @@ class SqlDB():
         cursor.close()
 
     def save_strategy_pattern(self, name, author, status, task_total, task_finished, code):
+        time_stamp = datetime.datetime.now()
         code = code.replace("'", "\\\'")
         code = code.replace('"', '\\\"')
         sqlstr = "insert into lq_strategy_pattern"+\
-            "(sp_name,author,test_status,task_total,task_finished,code) "+\
-            "values (\"%s\",\"%s\",%d,%ld,%ld,\"%s\");" % (name, author, status, task_total, task_finished, code)
+            "(sp_name,author,create_time,test_status,task_total,task_finished,code) "+\
+            "values (\"%s\",\"%s\",\"%s\",%d,%ld,%ld,\"%s\");" % (name, author, time_stamp, status, task_total, task_finished, code)
         self.lock.acquire()
         cursor = self.conn.cursor()
         cursor.execute(sqlstr)
@@ -47,10 +48,10 @@ class SqlDB():
         cursor.close()
         self.lock.release()
 
-    def save_strategy(self, sp_id, code, path):
+    def save_strategy(self, sp_id, s_id, code, path):
         code = code.replace("'", "\\\'")
         code = code.replace('"', '\\\"')
-        sqlstr = "insert into lq_strategy(sp_id,code,data_path) values (%ld,\"%s\",\"%s\");" % (sp_id, code, path)
+        sqlstr = "insert into lq_strategy(sp_id,s_id,code,data_path) values (%ld,%ld,'%s','%s');" % (sp_id, s_id, code, path)
         self.lock.acquire()
         cursor = self.conn.cursor()
         cursor.execute(sqlstr)
@@ -59,8 +60,9 @@ class SqlDB():
         self.lock.release()
 
     def save_strategy_test(self, sp_id, s_id, stock, path, perf):
+        time_stamp = datetime.datetime.now()
         sqlstr = """insert into lq_strategy_test 
-                    (sp_id, s_id, stock, data_path,
+                    (sp_id, s_id, stock, data_path,test_time,
                     net_profit, total_profit, total_loss,
                     trade_lot, profit_ratio, average_profit,
                     average_loss, max_profit, max_loss,
@@ -86,7 +88,7 @@ class SqlDB():
         d13 = perf["帐户年复合收益率%".encode('gbk')]
         d14 = perf["R乘数期望值".encode('gbk')]
         d15 = perf["空仓时间/总时间%".encode('gbk')]
-        s = sqlstr + '(%ld,'%sp_id + '%ld,'%s_id + '\'%s\','%stock + '\'%s\','%path + '%f,'%d1\
+        s = sqlstr + '(%ld,'%sp_id + '%ld,'%s_id + '\'%s\','%stock + '\'%s\','%path + '\'%s\','%time_stamp + '%f,'%d1\
         + '%f,' % d2 + '%f,'%d3 + '%f,'%d4 + '%f,'%d5 + '%f,'%d6 + '%f,'%d7 + '%f,'%d8\
         + '%f,'%d9 + '%f,'%d10 + '%f,'%d11\
         + '%f,' % d12 + '%f,'%d13 + '%f,'%d14 + '%f);'%d15
@@ -96,7 +98,7 @@ class SqlDB():
         cursor.close()
         self.lock.release()
 
-    def update_strategy_perf(self, sp_id, s_id, perf):
+    def update_strategy_perf(self, sp_id, s_id, profit_day, profit_month):
         sqlsids = "select distinct(s_id) from lq_strategy_test;"
         cursor = self.conn.cursor()
         cursor.execute(sqlsids)
@@ -118,9 +120,9 @@ class SqlDB():
                     avg(yield_rate) as avg_yield_rate,
                     avg(annual_return) as avg_ann_ret,
                     avg(r_square_yield_curve) as avg_r_square,
-                    avg(hold_period_ratio) as avg_hold_ratio 
+                    max(max_retrace_ratio) as avg_hold_ratio 
                     from lq_strategy_test
-                    where s_id = %ld;""" % sid
+                    where sp_id = %ld and s_id = %ld;""" % (sp_id, sid)
             cursor = self.conn.cursor()
             cursor.execute(sqlperf)
             results = cursor.fetchall()
@@ -132,11 +134,14 @@ class SqlDB():
                     average_loss = %f, max_profit = %f, max_loss = %f,
                     average_hold_period = %d, max_fund_use = %f,
                     yield_rate = %f, annual_return = %f,
-                    r_square_yield_curve = %f, hold_period_ratio = %f 
-                    where s_id = %ld;""" % (perfs[0],perfs[1],perfs[2],
-                       perfs[3],perfs[4],perfs[5],perfs[6],perfs[7],
-                       perfs[8],perfs[9],perfs[10],perfs[11],perfs[12],
-                       perfs[13],perfs[14],perfs[15],s_id)
+                    r_square_yield_curve = %f, max_retrace_ratio = %f,
+                    profit_daily = '%s', profit_monthly = '%s' 
+                    where sp_id = %ld and s_id = %ld;""" % (perfs[0], perfs[1], perfs[2],
+                                                            perfs[3], perfs[4], perfs[5], perfs[6], perfs[7],
+                                                            perfs[8], perfs[9], perfs[10], perfs[11], perfs[12],
+                                                            perfs[13], perfs[14], perfs[15], str(profit_day()),
+                                                            str(profit_month()),
+                                                            sp_id, s_id)
             cursor = self.conn.cursor()
             cursor.execute(sqlupd)
             self.conn.commit()
@@ -153,5 +158,5 @@ class SqlDB():
         cursor.close()
 
 if __name__ == "__main__":
-    db = SqlDB('127.0.0.1', 3306, 'hikyuu', 'hikyuu', 'hikyuu')
+    db = SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
     print(db.query("show tables;"))

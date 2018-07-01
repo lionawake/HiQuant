@@ -1,16 +1,91 @@
 from hikyuu.interactive.interactive import *
-from datetime import datetime
+from datetime import datetime,timedelta
 import pandas as pd
 import numpy as np
 import talib as tb
 
+cwd = os.getcwd()
+sys.path.append(cwd)
+import LqDB as lqdb
+import LqFinance as lqfin
+import factors as lqidc
+
+print(sm)
+sp_id = 0
+s_id = 0
+if len(sys.argv) >= 2:
+    sp_id = int(sys.argv[1])
+if len(sys.argv) >= 3:
+    s_id = int(sys.argv[2])
+
+def dump_profit_day(stocks,days):
+    """
+    导出一个策略的每天净利润数据，需在策略回测完成后调用，策略的资产组合可包含多个股票
+    :param stocks: 策略的股票组合
+    :param days:   回测的天数
+    usage::
+    >>> sp = ['sz000002','sz000004','sz000008','sz000010']
+    >>> dump_profit_day(sp,500)
+    """
+    k = sm[stocks[0]].getKData(Query(-days))
+    x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+    z = PRICELIST(x)
+    z -= z
+    for s in stocks:
+        k = sm[s].getKData(Query(-days))
+        x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+        z += PRICELIST(x)
+    d = k.getDatetimeList()
+    p = []
+    for i in range(len(z)):
+        t = []
+        t.append(d[i].number)
+        t.append(z[i])
+        p.append(t)
+    return p
+
+
+def dump_profit_month(stocks,days):
+    """
+    导出一个策略的每月净利润数据，需在策略回测完成后调用，策略的资产组合可包含多个股票
+    :param stocks: 策略的股票组合
+    :param days:   回测的天数
+    usage::
+    >>> sp = ['sz000002','sz000004','sz000008','sz000010']
+    >>> dump_profit_month(sp,500)
+    """
+    k = sm[stocks[0]].getKData(Query(-days))
+    x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+    z = PRICELIST(x)
+    z -= z
+    for s in stocks:
+        k = sm[s].getKData(Query(-days))
+        x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+        z += PRICELIST(x)
+    # cal monthly data from daily data
+    k = sm[stocks[0]].getKData(Query(-days))
+    d = k.getDatetimeList()
+    m = 0
+    p = []
+    for i in range(len(d)):
+        if (d[i].month != m):
+            m = d[i].month
+            t = []
+            t.append(d[i].number)
+            t.append(z[i])
+            p.append(t)
+    return p
+
+#sp = ['sz000002','sz000004','sz000008','sz000010']
+#plot_profit_day(sp,500)
+
 def dofilter(start_date, end_date, stk, max_num):
     # 按市值升序排列选出最大数量的股票
     print('dofilter')
-    print(blocka)
+    #print(blocka)
     sMarket = []
     for s in blocka:
-        print(s)
+        #print(s)
         stk = s.getWeight()
         stk_len = len(stk)
         if stk_len <= 0:
@@ -89,7 +164,7 @@ def DEMO_SG(self):
     day_n: 日均线窗口
     """
     k = self.getTO()
-    print(k)
+    #print(k)
     if (len(k) == 0):
         return
 
@@ -99,7 +174,9 @@ def DEMO_SG(self):
     # 计算日线级别的卖出信号
     # -----------------------------
     day_c = CLOSE(k)
-    day_ma = MA(day_c, self.getParam("day_n"))
+    #day_ma = MA(day_c, self.getParam("day_n"))
+    tmp = self.getParam("day_n")
+    day_ma = lqidc.$$F:[1,6,12]$(day_c, tmp)
     day_x = day_c < day_ma  # 收盘价小于均线
     for i in range(day_x.discard, len(day_x)):
         if day_x[i] >= 1.0:
@@ -164,3 +241,11 @@ my_sys.mm = DEMO_MM()
 q = QueryByDate(start_date, end_date, kType=Query.DAY)
 for s in stk:
     my_sys.run(s, q)
+    per = Performance()
+    #print(per.report(my_tm, Datetime.now()))
+    db = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
+    db.save_strategy_test(sp_id, s_id, 'sz000001', cwd, per)
+
+day = dump_profit_day(stk, 10)
+month = dump_profit_month(stk, 10)
+db.update_strategy_perf(sp_id, s_id, day, month)

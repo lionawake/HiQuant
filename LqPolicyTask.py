@@ -16,8 +16,11 @@ taskQueueSize = 1000000
 threadList = []
 taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
-policyFileDefault = 'Template2.py'
+policyFileDefault = 'gy_demo1.py'
 policyFile = ''
+sp_name = 'LQ_Policy'
+author = 'LongQuant'
+sp_id = 111
 
 def show_process_bar(end=False):
     queSzCur = taskQueue.qsize()
@@ -36,6 +39,13 @@ if __name__ == '__main__':
         policyFile = sys.argv[1]
     if policyFile == '':
         policyFile = policyFileDefault
+    if len(sys.argv) >= 3:
+        sp_id = int(sys.argv[2])
+        print(sp_id)
+    if len(sys.argv) >= 4:
+        sp_name = sys.argv[3]
+    if len(sys.argv) >= 5:
+        author = sys.argv[4]
     startTime = datetime.now()
     # 读取策略模板文件内容
     if not os.path.exists(policyFile):
@@ -52,12 +62,12 @@ if __name__ == '__main__':
     if ret != True:
         lqc.ERR('Policy task generate failed')
     queSz = taskQueue.qsize()
-    lqc.gDBProc.save_strategy_pattern("abc", "xxx", 0, queSz, 0, policyTemplate)
+    #lqc.gDBProc.save_strategy_pattern(sp_name, author, 1, queSz, 1, policyTemplate)
 
     # 创建多线程列表
     i = 0
     while (i < taskThreadNum):
-        thd = lqc.TaskThread(i, "TaskThread_%02d"%i, taskQueue, taskQueueLock)
+        thd = lqc.TaskThread(i, "TaskThread_%02d"%i, taskQueue, taskQueueLock, sp_id)
         thd.start()
         threadList.append(thd)
         i += 1
