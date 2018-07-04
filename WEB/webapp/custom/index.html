@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>LongQuant</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/index.css">
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+body{
+    overflow: hidden;
+}
+nav.navbar.bootsnav .navbar-header {
+     padding-top: 0px; 
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    background-color: #E67E22;
+    border-color: #E67E22;
+}
+form{
+    color: #fff;
+}
+form label{
+    font-weight: 100 !important;
+}
+.attr-nav .data{
+    padding-right: 10px;
+    font-weight: 700;
+}
+.green{
+    color: #2ECC71;
+}
+.blue{
+    color: #3498DB;
+}
+.oranger{
+    color: #E67E22;
+}
+</style>
+<body>
+    <nav class="navbar navbar-default bootsnav">
+        <div class="containerT">
+            <div class="attr-nav">
+                <ul>
+                    <li>
+                        <a>
+                            <i class="fa fa-circle blue"></i> 等待中任务 <span class="data waiting blue">0</span> 
+                            <i class="fa fa-circle oranger"></i> 进行中任务 <span class="data running oranger">0</span> 
+                            <i class="fa fa-circle green"></i> 已完成任务 <span class="data fin green">0</span>
+                        </a>
+                    </li>
+                    <li><span class="lable_account" style="padding: 13px 15px;color: #fff !important;display:inline-block;"></span></li>
+                    <li><a draggable="false" href="javascript:;" class="btn_changePwd" id="btn_changePwd"><i class="fa fa-lock"></i> 修改密码</a></li>
+                    <li><a draggable="false" href="javascript:;" class="btn_logout" id="btn_logout"><i class="fa fa-map-signs"></i> 退出</a></li>
+                </ul>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#brand">
+                    LongQuant | 龙宽量化研究系统
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <ul class="nav navbar-nav navbar-center">
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content-wrap">
+
+        <aside class="sidebar">
+            <ul class="menus">
+                <li ref="index_pt.html">策略模板</li>
+                <li ref="index_test.html" style="display:none;">回测任务</li>
+                <li ref="index_trade.html">策略交易</li>
+                <li ref="index_factor.html">因子管理</li>
+                <li ref="index_inter.html">接口管理</li>
+                <li>系统管理</li>
+            </ul>
+        </aside>
+        <div class="main-content">
+            <iframe src="" allowtransparency="true" style="background-color=transparent" frameborder="0" scrolling="yes" id="iframe_main" width="100%" height="100%" style="overflow-y: auto;"></iframe>
+        </div>
+
+    </div>
+
+    <div class="copyright">
+        <p>
+            Copyright © 2018 LongQuant
+        </p>
+    </div>
+    <div class="mask hidden">
+        数据加载中...
+    </div>
+
+    <!-- Dialog for change password -->
+    <div id="usr-changepwd-panel" class="usr-changepwd-panel" style="display:none;width:500px;">
+        <div class="dialog-title">
+            修改密码
+        </div>
+        <form action="" class="form-horizontal" id="form-settings-pwd">
+         <div class="form-body">
+            <div class="form-group">
+               <label  class="col-md-3 control-label">原密码</label>
+               <div class="col-md-8">
+                  <div class="input-group">
+                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                     <input type="password" class="form-control user_password" placeholder="">
+                  </div>
+               </div>
+            </div>
+            <div class="form-group">
+               <label  class="col-md-3 control-label">新密码</label>
+               <div class="col-md-8">
+                  <div class="input-group">
+                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                     <input type="password" class="form-control user_password_new" placeholder="">
+                  </div>
+               </div>
+            </div>
+            <div class="form-group">
+               <label  class="col-md-3 control-label">确认新密码</label>
+               <div class="col-md-8">
+                  <div class="input-group">
+                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                     <input type="password" class="form-control index_changePwd_confirmPwd" placeholder="">
+                  </div>
+               </div>
+            </div>
+            <input type="hidden" value="" id="password_new" name="password_new" />
+            <input type="hidden" value="" id="password" name="password" />
+            <div class="err cperr00">重置密码失败，请稍后重试.</div>
+            <div class="err cperr01">两次密码输入不一致，请重新输入.</div>
+            <div class="err cperr02">原密码不正确，请重试.</div>
+            <div class="err cperr03">密码输入不完整.</div>
+         </div>
+         <div class="form-actions fluid">
+            <div class="col-md-offset-3 col-md-9" style="text-align: right;padding-right: 46px;">
+               <button type="button" class="btn btn-default settings-changePwd">确认</button>
+               <button type="button" class="btn btn-default settings-changePwd-cancel">取消</button>
+            </div>
+         </div>
+        </form>
+    </div>
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+    <script type="text/javascript" src="../assets/js/custom/index.js"></script>  
+</body>
+</html>

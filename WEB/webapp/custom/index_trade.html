@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>LongQuant</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/datatables/jquery.dataTables.min.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/index.css">
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+html{
+    overflow-y: auto !important;
+}
+body{
+    overflow-y: auto;
+    background: transparent;
+}
+table.dataTable thead th {
+    background-color: #2C3E50;
+    height: 40px;
+}
+table.dataTable tbody tr:nth-child(odd) {
+    background: #333;
+    color: #fff;
+}
+table.dataTable tbody tr {
+    background-color: #333;
+    color: #fff;
+}
+table.dataTable tbody tr td{
+    border-bottom: 1px solid #34495E;
+}
+table.dataTable tbody tr:hover{
+    background-color: #34495E;
+}
+table.dataTable tbody tr td.green{
+    color: #1ABC9C;
+}
+table.dataTable tbody tr td.red{
+    color: #E74C3C;
+}
+.bar .bar_item{
+    cursor: pointer;
+}
+.bar .bar_item:hover{
+    color: #7F8C8D;
+}
+</style>
+<body>
+    <div class="page_title" style="margin-bottom: 0;">策略交易</div>
+    <div class="panel panel_tbl" style="padding: 0;border:0px;">
+        <table id="tbl_simple" class="tbl_policys" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th class="simple" ref="wid">编号</th>
+                    <th class="simple" ref="orderTitle">策略</th>
+                    <th class="simple" ref="orderUid">创建时间</th>
+                    <th class="simple" ref="orderVersion">投入资金(万元)</th>
+                    <th class="simple" ref="orderVersion">当前盈亏</th>
+                    <th class="simple" ref="orderVersion">操作</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+    <script type="text/javascript" src="../assets/js/custom/index_trade.js"></script>  
+
+    <script type="text/template" id="list_policys">
+        <tr data-role="<%=id%>">
+            <!-- <td></td> -->
+            <td class="simple id"><%=id%></td>
+            <td title="<%=name%>"  class="simple"><%=name%></td>
+            <td class="simple "><%=creatTime%></td>
+            <td class="simple "><%=money/10000%></td>
+            <%if(profit >= 0){%>
+            <td class="simple green"><%=profit%>%</td>
+            <%}else{%>
+            <td class="simple red"><%=profit%>%</td>
+            <%}%>
+            <td class="simple bar">
+                <span class="bar_item btn btn-default">启用</span>
+                <span class="bar_item btn btn-default">停用</span>
+                <span class="bar_item btn btn-danger">删除</span>
+                <span class="bar_item btn btn-default">追加投入</span>
+            </td>
+        </tr>
+    </script>
+</body>
+</html>

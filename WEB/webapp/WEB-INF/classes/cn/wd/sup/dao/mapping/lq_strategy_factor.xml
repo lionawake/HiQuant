@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lq">
+
+	<typeAlias alias="lqStrategyFactor" type="cn.wd.sup.dao.dto.custom.LqStrategyFactor" />
+	<resultMap id="lqStrategyFactor" class="lqStrategyFactor">
+		<result property="factor_id" column="factor_id" />
+		<result property="factor_desc" column="factor_desc" />
+		<result property="code" column="code" />
+		<result property="type" column="type" />
+		<result property="func_name" column="func_name" />
+		<result property="param_num" column="param_num" />
+		<result property="param1_name" column="param1_name" />
+		<result property="param1_start" column="param1_start" />
+		<result property="param1_end" column="param1_end" />
+		<result property="param1_step" column="param1_step" />
+		<result property="param1_default" column="param1_default" />
+		<result property="param2_name" column="param2_name" />
+		<result property="param2_start" column="param2_start" />
+		<result property="param2_end" column="param2_end" />
+		<result property="param2_step" column="param2_step" />
+		<result property="param2_default" column="param2_default" />
+		<result property="param3_name" column="param3_name" />
+		<result property="param3_start" column="param3_start" />
+		<result property="param3_end" column="param3_end" />
+		<result property="param3_step" column="param3_step" />
+		<result property="param3_default" column="param3_default" />
+		<result property="param4_name" column="param4_name" />
+		<result property="param4_start" column="param4_start" />
+		<result property="param4_end" column="param4_end" />
+		<result property="param4_step" column="param4_step" />
+		<result property="param4_default" column="param4_default" />
+		<result property="param5_name" column="param5_name" />
+		<result property="param5_start" column="param5_start" />
+		<result property="param5_end" column="param5_end" />
+		<result property="param5_step" column="param5_step" />
+		<result property="param5_default" column="param5_default" />
+		<result property="param6_name" column="param6_name" />
+		<result property="param6_start" column="param6_start" />
+		<result property="param6_end" column="param6_end" />
+		<result property="param6_step" column="param6_step" />
+		<result property="param6_default" column="param6_default" />
+		<result property="param7_name" column="param7_name" />
+		<result property="param7_start" column="param7_start" />
+		<result property="param7_end" column="param7_end" />
+		<result property="param7_step" column="param7_step" />
+		<result property="param7_default" column="param7_default" />
+		<result property="param8_name" column="param8_name" />
+		<result property="param8_start" column="param8_start" />
+		<result property="param8_end" column="param8_end" />
+		<result property="param8_step" column="param8_step" />
+		<result property="param8_default" column="param8_default" />
+		<result property="author" column="author" />
+		<result property="create_time" column="create_time" />
+	</resultMap>
+
+	<insert id="lqSFt.insert" parameterClass="lqStrategyFactor">
+			INSERT INTO lq_strategy_factor(
+					factor_desc,
+					code,
+					type,
+					func_name,
+					param_num,
+					param1_name,
+					param1_start,
+					param1_end,
+					param1_step,
+					param1_default,
+					param2_name,
+					param2_start,
+					param2_end,
+					param2_step,
+					param2_default,
+					param3_name,
+					param3_start,
+					param3_end,
+					param3_step,
+					param3_default,
+					param4_name,
+					param4_start,
+					param4_end,
+					param4_step,
+					param4_default,
+					param5_name,
+					param5_start,
+					param5_end,
+					param5_step,
+					param5_default,
+					param6_name,
+					param6_start,
+					param6_end,
+					param6_step,
+					param6_default,
+					param7_name,
+					param7_start,
+					param7_end,
+					param7_step,
+					param7_default,
+					param8_name,
+					param8_start,
+					param8_end,
+					param8_step,
+					param8_default,
+					author,
+					create_time
+				)values(
+					#factor_desc#,
+					#code#,
+					#type#,
+					#func_name#,
+					#param_num#,
+					#param1_name#,
+					#param1_start#,
+					#param1_end#,
+					#param1_step#,
+					#param1_default#,
+					#param2_name#,
+					#param2_start#,
+					#param2_end#,
+					#param2_step#,
+					#param2_default#,
+					#param3_name#,
+					#param3_start#,
+					#param3_end#,
+					#param3_step#,
+					#param3_default#,
+					#param4_name#,
+					#param4_start#,
+					#param4_end#,
+					#param4_step#,
+					#param4_default#,
+					#param5_name#,
+					#param5_start#,
+					#param5_end#,
+					#param5_step#,
+					#param5_default#,
+					#param6_name#,
+					#param6_start#,
+					#param6_end#,
+					#param6_step#,
+					#param6_default#,
+					#param7_name#,
+					#param7_start#,
+					#param7_end#,
+					#param7_step#,
+					#param7_default#,
+					#param8_name#,
+					#param8_start#,
+					#param8_end#,
+					#param8_step#,
+					#param8_default#,
+					#author#,
+					sysdate()
+				)
+			<selectKey resultClass="long" keyProperty="factor_id">
+				SELECT LAST_INSERT_ID() AS factor_id
+			</selectKey>
+	</insert>
+	
+	<select id="lqSFt.find" resultMap="lqStrategyFactor" parameterClass="lqStrategyFactor">
+		SELECT 
+			*
+		FROM  lq_strategy_factor
+		<dynamic prepend="WHERE"> 
+		 	
+		</dynamic>
+		order by factor_id desc
+	</select>
+	
+	<select id="lqSFt.countByWhere" resultClass="java.lang.Integer" parameterClass="lqStrategyFactor">
+		SELECT 
+			count(*)
+		FROM  lq_strategy_factor
+		<dynamic prepend="WHERE"> 
+		 	
+		</dynamic>
+	</select>
+	
+	<update id="lqSFt.update" parameterClass="lqStrategyFactor">
+		UPDATE
+			lq_strategy_factor
+		<dynamic prepend="SET">
+			<isNotNull prepend="," property="factor_desc">
+				factor_desc = #factor_desc#
+			</isNotNull>
+			<isNotNull prepend="," property="type">
+				type = #type#
+			</isNotNull>
+			<isNotNull prepend="," property="func_name">
+				func_name = #func_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param_num">
+				param_num = #param_num#
+			</isNotNull>
+			<isNotNull prepend="," property="param1_name">
+				param1_name = #param1_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param1_start">
+				param1_start = #param1_start#
+			</isNotNull>
+			<isNotNull prepend="," property="param1_end">
+				param1_end = #param1_end#
+			</isNotNull>
+			<isNotNull prepend="," property="param1_step">
+				param1_step = #param1_step#
+			</isNotNull>
+			<isNotNull prepend="," property="param1_default">
+				param1_default = #param1_default#
+			</isNotNull>
+			<isNotNull prepend="," property="param2_name">
+				param2_name = #param2_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param2_start">
+				param2_start = #param2_start#
+			</isNotNull>
+			<isNotNull prepend="," property="param2_end">
+				param2_end = #param2_end#
+			</isNotNull>
+			<isNotNull prepend="," property="param2_step">
+				param2_step = #param2_step#
+			</isNotNull>
+			<isNotNull prepend="," property="param2_default">
+				param2_default = #param2_default#
+			</isNotNull>
+			<isNotNull prepend="," property="param3_name">
+				param3_name = #param3_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param3_start">
+				param3_start = #param3_start#
+			</isNotNull>
+			<isNotNull prepend="," property="param3_end">
+				param3_end = #param3_end#
+			</isNotNull>
+			<isNotNull prepend="," property="param3_step">
+				param3_step = #param3_step#
+			</isNotNull>
+			<isNotNull prepend="," property="param3_default">
+				param3_default = #param3_default#
+			</isNotNull>
+			<isNotNull prepend="," property="param4_name">
+				param4_name = #param4_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param4_start">
+				param4_start = #param4_start#
+			</isNotNull>
+			<isNotNull prepend="," property="param4_end">
+				param4_end = #param4_end#
+			</isNotNull>
+			<isNotNull prepend="," property="param4_step">
+				param4_step = #param4_step#
+			</isNotNull>
+			<isNotNull prepend="," property="param4_default">
+				param4_default = #param4_default#
+			</isNotNull>
+			<isNotNull prepend="," property="param5_name">
+				param5_name = #param5_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param5_start">
+				param5_start = #param5_start#
+			</isNotNull>
+			<isNotNull prepend="," property="param5_end">
+				param5_end = #param5_end#
+			</isNotNull>
+			<isNotNull prepend="," property="param5_step">
+				param5_step = #param5_step#
+			</isNotNull>
+			<isNotNull prepend="," property="param5_default">
+				param5_default = #param5_default#
+			</isNotNull>
+			<isNotNull prepend="," property="param6_name">
+				param6_name = #param6_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param6_start">
+				param6_start = #param6_start#
+			</isNotNull>
+			<isNotNull prepend="," property="param6_end">
+				param6_end = #param6_end#
+			</isNotNull>
+			<isNotNull prepend="," property="param6_step">
+				param6_step = #param6_step#
+			</isNotNull>
+			<isNotNull prepend="," property="param6_default">
+				param6_default = #param6_default#
+			</isNotNull>
+			<isNotNull prepend="," property="param7_name">
+				param7_name = #param7_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param7_start">
+				param7_start = #param7_start#
+			</isNotNull>
+			<isNotNull prepend="," property="param7_end">
+				param7_end = #param7_end#
+			</isNotNull>
+			<isNotNull prepend="," property="param7_step">
+				param7_step = #param7_step#
+			</isNotNull>
+			<isNotNull prepend="," property="param7_default">
+				param7_default = #param7_default#
+			</isNotNull>
+			<isNotNull prepend="," property="param8_name">
+				param8_name = #param8_name#
+			</isNotNull>
+			<isNotNull prepend="," property="param8_start">
+				param8_start = #param8_start#
+			</isNotNull>
+			<isNotNull prepend="," property="param8_end">
+				param8_end = #param8_end#
+			</isNotNull>
+			<isNotNull prepend="," property="param8_step">
+				param8_step = #param8_step#
+			</isNotNull>
+			<isNotNull prepend="," property="param8_default">
+				param8_default = #param8_default#
+			</isNotNull>
+			<isNotNull prepend="," property="author">
+				author = #author#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="WHERE"> 
+			<isNotNull prepend="AND" property="factor_id"> 
+				factor_id = #factor_id#
+			</isNotNull> 
+		</dynamic>
+	</update>
+	
+	<delete id="lqSFt.deleteByIds" parameterClass="java.util.List">
+	   DELETE FROM lq_strategy_factor
+	   WHERE factor_id in
+	   <iterate open="(" close=")" conjunction=",">    
+            #list[].factor_id#    
+       </iterate>
+	</delete>
+	
+</sqlMap>

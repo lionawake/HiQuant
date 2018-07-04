@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	
+	<!-- 
+		=========================== 
+		DAO层定义 
+	    =========================== 
+	-->	
+	<!-- ========================= SYS定义 ========================= -->	
+    <bean id="daoAccount" class="cn.wd.sup.dao.act.impl.DaoJsonSysAccount">
+        <property name="forld" value="db"/>
+        <property name="dbName" value="account.cdb" />
+    </bean> 
+    
+    <bean id="lqSDao" class="cn.wd.sup.dao.custom.lqS.impl.LqSDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+        <property name="modelName" value="lqS" />
+    </bean> 
+
+	<bean id="lqSPtDao" class="cn.wd.sup.dao.custom.lqSPt.impl.LqSPtDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+        <property name="modelName" value="lqSPt" />
+    </bean> 
+    
+    <bean id="lqSFtDao" class="cn.wd.sup.dao.custom.lqSFt.impl.LqSFtDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+        <property name="modelName" value="lqSFt" />
+    </bean> 
+    
+    <bean id="lqDsDao" class="cn.wd.sup.dao.custom.lqDs.impl.LqDsDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+        <property name="modelName" value="lqDs" />
+    </bean> 
+    
+    <bean id="lqSiDao" class="cn.wd.sup.dao.custom.lqSi.impl.LqSiDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+        <property name="modelName" value="lqSi" />
+    </bean> 
+    
+    <bean id="lqStDao" class="cn.wd.sup.dao.custom.lqSt.impl.LqStDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+        <property name="modelName" value="lqSt" />
+    </bean> 
+</beans>

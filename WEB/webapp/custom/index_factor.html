@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>LongQuant</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/datatables/jquery.dataTables.min.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/css/codemirror.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/theme/blackboard.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/index.css">
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+html{
+    overflow-y: auto !important;
+}
+body{
+    overflow-y: auto;
+    background: transparent;
+}
+table.dataTable thead th {
+    background-color: #2C3E50;
+}
+.param{
+    width:12.5%;
+    float: left;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.param_index{
+    text-align: center;
+}
+.param input{
+    margin:5px 0px;
+}
+.ftCheckResult.right:after{
+    content: "编译通过";
+    color: #2dd47b;
+}
+.ftCheckResult.wrong:after{
+    content: "编译未通过";
+    color: red;
+}
+.ftCheckResult:after{
+    content: "未检查";
+    color: red;
+}
+.ptStatus:after{
+    content:"新建";
+    color:#2dd47b;
+}
+.ptStatus.ed:after{
+    content:"编辑中";
+    color:#f0ad4e;
+}
+.cz{
+    margin-right: 5px;
+}
+</style>
+<body>
+    <div class="lable_account hidden"></div>
+    <div class="page_title">因子管理</div>
+    <div class="caption">
+        <i class="fa fa-edit"></i> 因子编辑
+    </div>
+    <div class="panel panel_modify row">
+        <div class="row clearfix">
+            <div class="col-md-3">
+                因子描述
+                <textarea class="form-control factor_desc"></textarea>
+            </div>
+            <div class="col-md-3">
+                方法名称
+                <input type="text" class="form-control func_name" name="func_name" />
+            </div>
+            <div class="col-md-3">
+                类型
+                <select class="form-control type">
+                    <option value="1">选股指标</option>
+                    <option value="2">交易指标</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                参数个数
+                <input type="text" class="form-control param_num" name="param_num" />
+            </div>
+        </div>
+        
+        <div class="row clearfix" style="margin-top:10px;">
+            <div class="param">
+                <div class="param_index">参数1</div>
+                <input type="text" class="form-control param_name" placeholder="参数名称" name="param1_name"/>
+                <input type="text" class="form-control param_default" placeholder="默认值" name="param1_default"/>
+                <input type="text" class="form-control param_start" placeholder="参数起始值" name="param1_start"/>
+                <input type="text" class="form-control param_end" placeholder="参数结束值" name="param1_end"/>
+                <input type="text" class="form-control param_step" placeholder="参数变化步长" name="param1_step"/>               
+            </div>
+            <div class="param">
+                <div class="param_index">参数2</div>
+                <input type="text" class="form-control param_name" placeholder="参数名称" name="param2_name"/>
+                <input type="text" class="form-control param_default" placeholder="默认值" name="param2_default"/>
+                <input type="text" class="form-control param_start" placeholder="参数起始值" name="param2_start"/>
+                <input type="text" class="form-control param_end" placeholder="参数结束值" name="param2_end"/>
+                <input type="text" class="form-control param_step" placeholder="参数变化步长" name="param2_step"/>               
+            </div>
+            <div class="param">
+                <div class="param_index">参数3</div>
+                <input type="text" class="form-control param_name" placeholder="参数名称" name="param3_name"/>
+                <input type="text" class="form-control param_default" placeholder="默认值" name="param3_default"/>
+                <input type="text" class="form-control param_start" placeholder="参数起始值" name="param3_start"/>
+                <input type="text" class="form-control param_end" placeholder="参数结束值" name="param3_end"/>
+                <input type="text" class="form-control param_step" placeholder="参数变化步长" name="param3_step"/>               
+            </div>
+            <div class="param">
+                <div class="param_index">参数4</div>
+                <input type="text" class="form-control param_name" placeholder="参数名称" name="param4_name"/>
+                <input type="text" class="form-control param_default" placeholder="默认值" name="param4_default"/>
+                <input type="text" class="form-control param_start" placeholder="参数起始值" name="param4_start"/>
+                <input type="text" class="form-control param_end" placeholder="参数结束值" name="param4_end"/>
+                <input type="text" class="form-control param_step" placeholder="参数变化步长" name="param4_step"/>               
+            </div>
+            <div class="param">
+                <div class="param_index">参数5</div>
+                <input type="text" class="form-control param_name" placeholder="参数名称" name="param5_name"/>
+                <input type="text" class="form-control param_default" placeholder="默认值" name="param5_default"/>
+                <input type="text" class="form-control param_start" placeholder="参数起始值" name="param5_start"/>
+                <input type="text" class="form-control param_end" placeholder="参数结束值" name="param5_end"/>
+                <input type="text" class="form-control param_step" placeholder="参数变化步长" name="param5_step"/>               
+            </div>
+            <div class="param">
+                <div class="param_index">参数6</div>
+                <input type="text" class="form-control param_name" placeholder="参数名称" name="param6_name"/>
+                <input type="text" class="form-control param_default" placeholder="默认值" name="param6_default"/>
+                <input type="text" class="form-control param_start" placeholder="参数起始值" name="param6_start"/>
+                <input type="text" class="form-control param_end" placeholder="参数结束值" name="param6_end"/>
+                <input type="text" class="form-control param_step" placeholder="参数变化步长" name="param6_step"/>               
+            </div>
+            <div class="param">
+                <div class="param_index">参数7</div>
+                <input type="text" class="form-control param_name" placeholder="参数名称" name="param7_name"/>
+                <input type="text" class="form-control param_default" placeholder="默认值" name="param7_default"/>
+                <input type="text" class="form-control param_start" placeholder="参数起始值" name="param7_start"/>
+                <input type="text" class="form-control param_end" placeholder="参数结束值" name="param7_end"/>
+                <input type="text" class="form-control param_step" placeholder="参数变化步长" name="param7_step"/>               
+            </div>
+            <div class="param">
+                <div class="param_index">参数8</div>
+                <input type="text" class="form-control param_name" placeholder="参数名称" name="param8_name"/>
+                <input type="text" class="form-control param_default" placeholder="默认值" name="param8_default"/>
+                <input type="text" class="form-control param_start" placeholder="参数起始值" name="param8_start"/>
+                <input type="text" class="form-control param_end" placeholder="参数结束值" name="param8_end"/>
+                <input type="text" class="form-control param_step" placeholder="参数变化步长" name="param8_step"/>               
+            </div>
+        </div>
+
+
+        <div class="col-md-12" style="margin-top: 10px;">
+            代码
+            <textarea id="pContent">
+function findSequence(goal) {
+  function find(start, history) {
+    if (start == goal)
+      return history;
+    else if (start > goal)
+      return null;
+    else
+      return find(start + 5, "(" + history + " + 5)") ||
+             find(start * 3, "(" + history + " * 3)");
+  }
+  return find(1, "1");
+}
+            </textarea>
+        </div>
+        <div class="col-md-12 tr" style="margin-top: 10px;">
+            <span class="ptStatus">状态: </span>&nbsp;&nbsp;&nbsp;
+            <span class="ftCheckResult">结果: </span>&nbsp;&nbsp;&nbsp;
+            <span class="btn btn-default ftCheck"><i class="fa fa-cog"></i> 因子测试</span>
+            <span class="btn btn-default ftSave"><i class="fa fa-save"></i> 保存因子</span>
+        </div>
+    </div>
+    <div class="caption">
+        <i class="fa fa-list-ol"></i> 因子列表
+    </div>
+    <div class="panel panel_tbl">
+      
+        <div class="tbl_bar">
+            <div class="" style="float:right;">
+                <label>
+                    模糊查询：
+                    <input type="text" class="dsearch" placeholder="" aria-controls="tbl_simple"></label>
+            </div>
+            <!-- <span class="btn btn-info"><i class="fa fa-lock"></i>  上传</span> -->
+            <span class="btn btn-info btn_wo_delete" style="float:left; margin-right: 10px;"><i class="fa fa-remove"></i> 删除选中的行</span>
+            <span class="toolbar_mark"  style="float:left; margin: 0 10px;"></span>
+            <div style="clear:both;"></div>
+        </div>
+        <table id="tbl_simple" class="tbl_policys" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <!-- <th style=" width:1px; padding:0"></th> -->
+                    <th style="width:30px; padding:10px 0 10px 10px">
+                        <input type="checkbox" id="checkAll"></th>
+                    <th class="simple">因子编号</th>
+                    <th class="simple">因子描述</th>
+                    <th class="simple">方法名称</th>
+                    <th class="simple">类型</th>
+                    <th class="simple">参数个数</th>
+                    <th class="simple">创建时间</th>
+                    <th class="simple">作者</th>
+                    <th class="simple">操作</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/codemirror/js/codemirror.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/codemirror/js/python.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+    <script>
+        $(document).ready(function(){
+            var allow = false;
+            var table = null;
+            var pEditor;
+
+            var $start = "<span class='btn btn-success btn-xs cz start'>开始</span>",
+                $stop = "<span class='btn btn-default btn-xs cz stop'>停止</span>",
+                $edit = "<span class='btn btn-default btn-xs cz edit'>编辑</span>",
+                $del = "<span class='btn btn-danger btn-xs cz delete'>删除</span>",
+                $report = "<span class='btn btn-default btn-xs cz report'>报告</span>";
+                                    
+
+            function formatTable(){
+                table = $('#tbl_simple').DataTable( );
+                // if( table != null){
+                    // $('.addselect').remove();
+                    table.destroy(false);
+                // }
+                // table = $('#tbl_simple').DataTable({
+                var option = {
+                    "dom": '<"top"f >rt<"bottom"ilp><"clear">',//dom定位
+                    "dom": 'tiprl',//自定义显示项
+                    // "scrollY": "220px",//dt高度
+                    "lengthMenu": [
+                       [10, 20, 50, -1],
+                       [10, 20, 50, "全部"]
+                    ],//每页显示条数设置
+                    "lengthChange": false,//是否允许用户自定义显示数量
+                    "bPaginate": true, //翻页功能
+                    "bFilter": false, //列筛序功能
+                    "searching": true,//本地搜索
+                    "ordering": false, //排序功能
+                    "Info": true,//页脚信息
+                    "autoWidth": true,//自动宽度
+                    "oLanguage": {//国际语言转化
+                       "oAria": {
+                           "sSortAscending": " - click/return to sort ascending",
+                           "sSortDescending": " - click/return to sort descending"
+                       },
+                       "sLengthMenu": "显示 _MENU_ 记录",
+                       "sZeroRecords": "对不起，查询不到任何相关数据",
+                       "sEmptyTable": "未有相关数据",
+                       "sLoadingRecords": "正在加载数据-请等待...",
+                       "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录。",
+                       "sInfoEmpty": "当前显示0到0条，共0条记录",
+                       "sInfoFiltered": "",
+                       // "sProcessing": "<img src='../resources/user_share/row_details/select2-spinner.gif'/> 正在加载数据...",
+                       "sSearch": "因子名查询：",
+                       "sUrl": "",
+                       //多语言配置文件，可将oLanguage的设置放在一个txt文件中，例：Javascript/datatable/dtCH.txt
+                       "oPaginate": {
+                           "sFirst": "首页",
+                           "sPrevious": " 上一页 ",
+                           "sNext": " 下一页 ",
+                           "sLast": " 尾页 "
+                       }
+                    },
+
+                    // "columnDefs": [{
+                    //        orderable: false,
+                    //        targets: 0 
+                    //      }
+                    // ],//第一列禁止排序
+
+                    // "order": [
+                    //    [0, null]
+                    // ],//第一列排序图标改为默认
+                    serverSide:true,
+                    ajax:function(data,callback,settings){
+                        var param = {};
+                        var json = {};
+                        json["spName"] = data.search.value;
+                        param.json = JSON.stringify(json);
+                        param.pageSize = data.length;
+                        param.pageStart = data.start;
+                        $.ajax({
+                            type: "GET",
+                            url:"../lq/sft/find",
+                            cache: false, //禁用缓存
+                            data: param, //传入组装的参数
+                            dataType: "json",
+                            success:function(res){
+                                if(res.success==true){
+                                    _.each(res.data.data,function(d){
+                                        d.first = '<input type="checkbox" name="checkList"></td>';
+                                        d.create_time = new Date(d.create_time).Format("yyyy-MM-dd hh:mm:ss");
+                                        d.type = d.type==1?"选股指标":"交易指标";
+                                        d.cz = "<span class='btn btn-default btn-xs cz edit'>编辑</span><span class='btn btn-danger btn-xs cz delete'>删除</span>";
+                                    })
+                                    var returnData = {};
+                                    returnData.draw = data.draw;
+                                    returnData.recordsTotal = data.length;
+                                    if(res.data.num!=undefined){
+                                        returnData.recordsFiltered = res.data.num;
+                                    }else{
+                                      returnData.recordsFiltered = 0;
+                                    }
+                                    returnData.data = res.data.data;
+                                    callback(returnData);
+                                }else{
+                                    var returnData = {};
+                                    returnData.recordsFiltered = 0;
+                                    returnData.data = [];
+                                    callback(returnData);
+                                }
+                            },
+                        })
+                    },
+                    createdRow: function( row, data, dataIndex ) {
+                        $(row).attr("factor_id",data.factor_id);
+                        $(row).attr("data",JSON.stringify(data));
+                    },
+                    columns: [{
+                          "data": "first",
+                          "sClass":"first"
+                      },{
+                          "data": "factor_id",
+                          "sClass":"factor_id"
+                      },{
+                          "data": "factor_desc",
+                          "sClass":"factor_desc"
+                      },{
+                          "data":"func_name",
+                          "sClass":"func_name"
+                      },{
+                          "data":"type",
+                          "sClass":"type"
+                      },{
+                          "data":"param_num",
+                          "sClass":"param_num"
+                      },{
+                          "data":"create_time",
+                          "sClass":"create_time"
+                      },{
+                          "data":"author",
+                          "sClass":"author"
+                      },{
+                          "data":"cz",
+                          "sClass":"cz"
+                      }],
+                    // initComplete: function () {//列筛选
+                    //     var api = this.api();
+                    //     api.columns().indexes().flatten().each(function (i) {
+                    //         if (i != 0) {//删除第一列与第二列的筛选框
+                    //             var column = api.column(i);
+                    //             var $span = $('<span class="addselect"><span class="filter_icon">▾</span></span>').appendTo($(column.header()))
+                    //             var select = $('<select ref="'+$(column.header()).attr('ref')+'" tag=""><option value="">全部</option></select>')
+                    //                    .appendTo($(column.header()))
+                    //                    .on('click', function (evt) {
+                    //                         evt.stopPropagation();
+                    //                         var val = $.fn.dataTable.util.escapeRegex(
+                    //                             $(this).val()
+                    //                         );
+                    //                         //为了获取当前的选择值补充
+                    //                         if( val == undefined || val.length == 0){
+                    //                             val="";
+                    //                         }
+                    //                         $(this).attr('tag', val);
+                    //                         //END 
+                                            
+                    //                         column.search(val ? '^' + val + '$' : '', true, false).draw();
+                    //                    });
+                    //             column.data().unique().sort().each(function (d, j) {
+                    //                function delHtmlTag(str) {
+                    //                    return str.replace(/<[^>]+>/g, "");//去掉html标签
+                    //                }
+
+                    //                d = delHtmlTag(d)
+                    //                select.append('<option value="' + d + '">' + d + '</option>')
+                    //                $span.append(select)
+                    //             });
+
+                    //         }
+                    //     });
+                    // }
+                };
+                table = $('#tbl_simple').DataTable( option);
+                //列显示/隐藏
+                $('body').find('.toggle-vis').each( function(){
+                    if( $(this).is(':checked')){
+                        var hcolumn = table.column($(this).attr('data-column'));
+                        hcolumn.visible(false);
+                    }
+                });
+                // 自定义搜索
+                $('.dsearch').on('keyup click', function () {
+                   var tsval = $(".dsearch").val();
+                   table.search(tsval, false, false).draw();
+                });
+
+
+                // });
+
+                //添加索引列
+                // table.on('order.dt search.dt',
+                //        function () {
+                //            table.column(0, {
+                //                search: 'applied',
+                //                order: 'applied'
+                //            }).nodes().each(function (cell, i) {
+                //                cell.innerHTML = i + 1;
+                //            });
+                //        }).draw();
+
+                
+
+                //checkbox全选
+                $("#checkAll").on("click", function () {
+                   if ($(this).prop("checked") === true) {
+                       $("input[name='checkList']").prop("checked", $(this).prop("checked"));
+                       $('#tbl_simple tbody tr').addClass('selected');
+                   } else {
+                       $("input[name='checkList']").prop("checked", false);
+                       $('#tbl_simple tbody tr').removeClass('selected');
+                   }
+                });
+
+                //显示隐藏列
+                $('.toggle-vis').on('change', function (e) {
+                   e.preventDefault();
+                   // console.log($(this).attr('data-column'));
+                   var column = table.column($(this).attr('data-column'));
+                   column.visible(!column.visible());
+                });
+
+                //删除选中行
+                $('#tbl_simple tbody').on('click', 'tr input[name="checkList"]', function () {
+                   var $tr = $(this).parents('tr');
+                   $tr.toggleClass('selected');
+                   var $tmp = $('[name=checkList]:checkbox');
+                   $('#checkAll').prop('checked', $tmp.length == $tmp.filter(':checked').length);
+
+                });
+
+                $('.showcol').click(function () {
+                   $('.showul').toggle();
+                })
+            }
+
+            var Loader = function(){
+
+                function load_policys(){
+                    formatTable();
+                }
+
+                return {
+                    init: function(){
+                      load_policys();
+                    }
+                }
+            }();
+
+
+            var Event = function(){
+                //编译检查
+                function ftCheck(){
+                    $(".ftCheck").click(function(){
+                        //TODO 调用编译检查脚本
+                        var data = {};
+                        data["code"] = $("#pContent").text();
+                        FrameUtils.loading("编译检查中...");
+                        ZX.postDataByAjax(
+                            "../script/codeCheck",
+                            JSON.stringify(data),
+                            function(res){
+                                FrameUtils.unloading();
+                                if(res==null){
+                                    $(".ftCheckResult").removeClass("right").removeClass("wrong").addClass("wrong");
+                                    event_dialog.alert("编译检查失败!");
+                                }else{
+                                    $(".ftCheckResult").removeClass("right").removeClass("wrong").addClass("right");
+                                    event_dialog.alert("编译检查通过!");
+                                }
+                            },
+                            function(){
+                                FrameUtils.unloading();
+                                $(".ftCheckResult").removeClass("right").removeClass("wrong").addClass("wrong");
+                                event_dialog.alert("编译检查失败!");
+                            }
+                        )
+                    });
+                }
+                //因子保存
+                function ftSave(){
+                  $(".ftSave").click(function(){
+                      var data = {};
+                      data["factor_desc"] = $(".factor_desc").val().trim();
+                      data["func_name"] = $(".func_name").val().trim();
+                      data["type"] = $(".type").val();
+                      data["param_num"] = $(".param_num").val().trim();
+                      data["code"] = pEditor.getValue();
+                      data["author"] = $(".lable_account").text();
+                      var index = 0;
+                      _.each($(".param"),function(d){
+                            index++;
+                            data["param"+index+"_name"] = $(d).find(".param_name").val().trim();
+                            data["param"+index+"_default"] = $(d).find(".param_default").val().trim();
+                            data["param"+index+"_start"] = $(d).find(".param_start").val().trim();
+                            data["param"+index+"_end"] = $(d).find(".param_end").val().trim();
+                            data["param"+index+"_step"] = $(d).find(".param_step").val().trim();
+                      })
+                      function save(){
+                          FrameUtils.loading("因子保存中...");
+                          ZX.postDataByAjax(
+                              "../lq/sft/save",
+                              JSON.stringify(data),
+                              function(res){
+                                  FrameUtils.unloading();
+                                  if(res==null){
+                                      event_dialog.alert("因子保存失败!");
+                                  }else{
+                                      event_dialog.alert("因子保存成功!");
+                                      table.ajax.reload();
+                                  }
+                              },
+                              function(){
+                                  FrameUtils.unloading();
+                                  event_dialog.alert("因子保存失败!");
+                              }
+                          )
+                      }
+                      function update(factor_id){
+                          data["factor_id"] = factor_id;
+                          FrameUtils.loading("因子修改中...");
+                          ZX.postDataByAjax(
+                              "../lq/sft/update",
+                              JSON.stringify(data),
+                              function(res){
+                                  FrameUtils.unloading();
+                                  if(res==null){
+                                      event_dialog.alert("因子修改失败!");
+                                  }else{
+                                      event_dialog.alert("因子修改成功!");
+                                      table.ajax.reload(function(){
+                                          $("#tbl_simple tr[factor_id="+factor_id+"]").find(".edit").trigger("click");
+                                      });
+                                  }
+                              },
+                              function(){
+                                  FrameUtils.unloading();
+                                  event_dialog.alert("因子修改失败!");
+                              }
+                          )
+                      }
+                      if(data.factor_desc==null||data.factor_desc.trim()==""){
+                            event_dialog.alert("因子描述不能为空!");
+                      }else if(data.func_name==null||data.func_name.trim()==""){
+                            event_dialog.alert("方法名称不能为空!");
+                      }else if(!allow){
+                            event_dialog.alert("请保证参数类型正确!");
+                      }else{
+                          if($(".ftCheckResult").hasClass("right")){
+                              var factor_id = $(this).attr("factor_id");
+                              if(factor_id==null||factor_id==undefined){
+                                  event_dialog.confirm( save, null, '您确定要提交因子吗?', '提交因子');
+                              }else{
+                                  event_dialog.confirm( update, factor_id, '您确定要修改'+factor_id+'号因子吗?', '提交因子');
+                              }
+                          }else{
+                              event_dialog.alert("请先编译检查通过");
+                          }
+                      }
+                  });
+                  $(".param_num,.param_default,.param_start,.param_end,.param_step").change(function(){
+                        var text = $(this).val();
+                        if(isNaN(text)){
+                            allow = false;
+                        }else{
+                            allow = true;
+                        }
+                  });
+                }
+                //删除因子
+                function ptDelete(){
+                    $('.btn_wo_delete').click(function () {
+                        var ids = [];
+                        $('#tbl_simple .selected').each( function(){
+                            ids.push($(this).attr("factor_id"));
+                        });
+                        if( ids.length == 0){
+                            event_dialog.alert('请选择需要删除的因子.');
+                            return false;
+                        }
+                        function deleteWO(ids){
+                            FrameUtils.loading("因子删除中...");
+                            ZX.getDataByAjax(
+                                "../lq/sft/deletes?ids="+ids,
+                                'json',
+                                function(res){
+                                    FrameUtils.unloading();
+                                    if(res==null){
+                                        event_dialog.alert('因子删除失败!');
+                                    }else{
+                                        event_dialog.alert('因子删除成功!');
+                                        table.ajax.reload();
+                                    }
+                                },
+                                function(){
+                                    FrameUtils.unloading();
+                                    event_dialog.alert('因子删除失败!');
+                                }
+                            )
+                            // Event.deleteWorkOrder(ids, function(){
+                            //     event_dialog.alert('因子删除成功.');
+                            //     table.rows('.selected').remove().draw(false);
+                            // });
+                        }
+                        event_dialog.confirm( deleteWO, ids, '您确定要删除因子吗?', '删除因子');
+                    });
+                }
+                //操作栏按钮
+                function ptCz(){
+                    //编辑
+                    $("body").delegate(".edit","click",function(){
+                        var data = JSON.parse($(this).parent().parent().attr("data"));
+                        //取消编辑
+                        if($(this).hasClass("active")){
+                            $(".ftSave").attr("factor_id",undefined);
+                            $(".panel_modify input").val('');
+                            pEditor.setValue("填写因子描述,方法名称\n在这里输入您的代码\n确保编译检查通过后再提交");
+                            $(".ptStatus").removeClass("ed");
+                            $(this).removeClass("active");
+                        //开始编辑
+                        }else{
+                            $(".ftSave").attr("factor_id",data.factor_id);
+                            $(".edit").removeClass("active");
+                            pEditor.setValue(data.code);
+                            $(".ptStatus").addClass("ed");
+                            $(this).addClass("active");
+                            var keys = _.keys(data);
+                            _.each(keys,function(key){
+                                var $dom = $(".panel_modify input[name="+key+"]");
+                                if($dom.length>0){
+                                    $(".panel_modify input[name="+key+"]").val(data[key]);
+                                }
+                                _.each($("select.type option"),function(d){
+                                    if($(d).text()==data.type){
+                                        $("select.type").val($(d).attr("value"));
+                                    }
+                                })
+                            })
+                        }
+                    })
+                    //删除
+                    $("body").delegate(".delete","click",function(){
+                        var factor_id = $(this).parent().parent().attr("factor_id");
+                        function deleteWO(ids){
+                            FrameUtils.loading("因子删除中...");
+                            ZX.getDataByAjax(
+                                "../lq/sft/deletes?ids="+factor_id,
+                                'json',
+                                function(res){
+                                    FrameUtils.unloading();
+                                    if(res==null){
+                                        event_dialog.alert('因子删除失败!');
+                                    }else{
+                                        event_dialog.alert('因子删除成功!');
+                                        table.ajax.reload();
+                                    }
+                                },
+                                function(){
+                                    FrameUtils.unloading();
+                                    event_dialog.alert('因子删除失败!');
+                                }
+                            )
+                        }
+                        event_dialog.confirm( deleteWO, factor_id, '您确定要删除'+factor_id+'号因子吗?', '删除因子');
+                    });
+                }
+                return {
+                    init: function(){
+                        ftCheck();
+                        ftSave();
+                        ptDelete();
+                        ptCz();
+                    }
+                }
+            }();
+
+            var View = function(){
+                function setView(){
+                    $('.main-content, .sidebar').css('height', ($(window).height()-90)+'px');
+                    $('.main-content').css('width', ($(window).width()-265)+'px');
+                    $('.mask').height($(window).height()-180);
+                    $("#iframe_main").iframe_autoresize({
+                        // "height":0,  
+                        "width": 1,
+                        "woffset": 260,
+                        "hoffset": $('.head-bar').height()
+                    });
+                    pEditor = CodeMirror.fromTextArea(document.getElementById("pContent"),{
+                        mode:"text/x-python",
+                        lineNumbers:true,
+                        theme:"blackboard"
+                    });
+                    pEditor.on("change",function(instance, changeObj){
+                        $(".ftCheckResult").removeClass("right").removeClass("wrong");
+                    })
+                }
+
+                return {
+                    init: function(){
+                        // console.log( zxCookie.getCookieValue(zxCookie.ACCT));
+                        setView();
+                        APPUtils.init_base();
+                        $('.lable_account').text( zxCookie.getCookieValue(zxCookie.ACCT).u );
+                        Loader.init();
+                        Event.init();
+                    }
+                }
+            }();
+
+            View.init();
+        });
+    </script>  
+</body>
+</html>

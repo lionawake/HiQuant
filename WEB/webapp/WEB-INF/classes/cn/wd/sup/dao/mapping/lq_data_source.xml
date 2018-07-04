@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lq">
+
+	<typeAlias alias="lqDataSource" type="cn.wd.sup.dao.dto.custom.LqDataSource" />
+	<resultMap id="lqDataSource" class="lqDataSource">
+		<result property="ds_id" column="ds_id" />
+		<result property="data" column="data" />
+		<result property="author" column="author" />
+		<result property="create_time" column="create_time" />
+	</resultMap>
+
+	<insert id="lqDs.insert" parameterClass="lqDataSource">
+		INSERT INTO lq_data_source(
+					data,
+					author,
+					create_time
+				)values(
+					#data#,
+					#author#,
+					sysdate()
+				)
+			<selectKey resultClass="long" keyProperty="ds_id">
+				SELECT LAST_INSERT_ID() AS ds_id
+			</selectKey>
+	</insert>
+	
+	<delete id="lqDs.deleteByIds" parameterClass="java.util.List">
+	   DELETE FROM lq_data_source
+	   WHERE ds_id in
+	   <iterate open="(" close=")" conjunction=",">    
+            #list[].ds_id#    
+       </iterate>
+	</delete>
+	
+	<select id="lqDs.find" resultMap="lqDataSource" parameterClass="lqDataSource">
+		SELECT 
+			*
+		FROM  lq_data_source
+		<dynamic prepend="WHERE"> 
+		 	<isNotNull prepend="AND" property="data"> 
+				data like concat('%', #data#, '%')
+			</isNotNull>
+			<isNotNull prepend="AND" property="ds_id"> 
+				ds_id = #ds_id#
+			</isNotNull>
+			<isNotNull prepend="AND" property="author"> 
+				author = #author#
+			</isNotNull> 
+		</dynamic>
+		order by ds_id desc
+	</select>
+	
+	<select id="lqDs.countByWhere" resultClass="java.lang.Integer" parameterClass="lqDataSource">
+		SELECT 
+			count(*)
+		FROM  lq_data_source
+		<dynamic prepend="WHERE"> 
+			<isNotNull prepend="AND" property="data"> 
+				data like concat('%', #data#, '%')
+			</isNotNull>
+			<isNotNull prepend="AND" property="ds_id"> 
+				ds_id = #ds_id#
+			</isNotNull>
+			<isNotNull prepend="AND" property="author"> 
+				author = #author#
+			</isNotNull> 
+		</dynamic>
+	</select>
+	
+	<select id="lqDs.findAll" resultMap="lqDataSource" parameterClass="lqDataSource">
+		SELECT 
+			*
+		FROM lq_data_source
+	</select>
+	
+</sqlMap>

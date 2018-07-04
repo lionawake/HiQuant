@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="UnitController" class="cn.wd.sup.controller.unit.UnitController">
+    </bean>
+    
+    <bean id="verifyCodeController" class="cn.wd.sup.controller.VerifyCodeController">
+     	<property name="width" value="105"/>
+     	<property name="height" value="40"/>
+     	<property name="codeCount" value="4"/>
+    </bean>
+    <!-- 
+        =========================== 
+        Controller层定义 
+        =========================== 
+    -->
+    <bean id="actController" class="cn.wd.sup.controller.act.ActController">
+        <property name="boAccount" ref="boAccount"/>
+    </bean>
+    
+    <bean id="lqSCtrl" class="cn.wd.sup.controller.custom.LqSCtrl">
+        <property name="lqSBo" ref="lqSBo"/>
+    </bean>
+    
+    <bean id="lqSPtCtrl" class="cn.wd.sup.controller.custom.LqSPtCtrl">
+        <property name="lqSPtBo" ref="lqSPtBo"/>
+        <property name="lqSBo" ref="lqSBo"/>
+        <property name="lqStBo" ref="lqStBo"/>
+    </bean>
+    
+    <bean id="lqSFtCtrl" class="cn.wd.sup.controller.custom.LqSFtCtrl">
+        <property name="lqSFtBo" ref="lqSFtBo"/>
+    </bean>
+    
+    <bean id="lqDsCtrl" class="cn.wd.sup.controller.custom.LqDsCtrl">
+        <property name="lqDsBo" ref="lqDsBo"/>
+    </bean>
+    
+    <bean id="lqSiCtrl" class="cn.wd.sup.controller.custom.LqSiCtrl">
+        <property name="lqSiBo" ref="lqSiBo"/>
+    </bean>
+    
+    <!-- 
+        =========================== 
+        脚本ctrl
+        =========================== 
+    -->
+    <bean id="scriptCtrl" class="cn.wd.sup.controller.script.ScriptCtrl">
+    	<property name="lqSBo" ref="lqSBo"/>
+        <property name="lqSPtBo" ref="lqSPtBo"/>
+        <property name="lqStBo" ref="lqStBo"/>
+    </bean>
+</beans>

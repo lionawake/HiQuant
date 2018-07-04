@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lq">
+
+	<typeAlias alias="lqStrategyTest" type="cn.wd.sup.dao.dto.custom.LqStrategyTest" />
+	<resultMap id="lqStrategyTest" class="lqStrategyTest">
+		<result property="spId" column="sp_id" />
+		<result property="sId" column="s_id" />
+		<result property="tId" column="t_id" />
+		<result property="stock" column="stock" />
+		<result property="dataPath" column="data_path" />
+		<result property="testTime" column="test_time" />
+		<result property="netProfit" column="net_profit" />
+		<result property="totalProfit" column="total_profit" />
+		<result property="totalLoss" column="total_loss" />
+		<result property="totalProfitLoss" column="total_profit_loss" />
+		<result property="tradeLot" column="trade_lot" />
+		<result property="profitRatio" column="profit_ratio" />
+		<result property="averageProfit" column="average_profit" />
+		<result property="averageLoss" column="average_loss" />
+		<result property="averageProfitLoss" column="average_profit_poss" />
+		<result property="maxProfit" column="max_profit" />
+		<result property="maxLoss" column="max_loss" />
+		<result property="maxTotalProfit" column="max_total_profit" />
+		<result property="maxTotalLoss" column="max_total_loss" />
+		<result property="averageHoldPeriod" column="average_hold_period" />
+		<result property="maxFundUse" column="max_fund_use" />
+		<result property="yieldRate" column="yield_rate" />
+		<result property="annualReturn" column="annual_return" />
+		<result property="effectYield" column="effect_yield" />
+		<result property="benefitRiskRatio" column="benefit_risk_ratio" />
+		<result property="adjBenefitRiskRatio" column="adj_benefit_risk_ratio" />
+		<result property="rSquareYieldCurve" column="r_square_yield_curve" />
+		<result property="sharpeRatio" column="sharpe_ratio" />
+		<result property="totalTransTime" column="total_trans_time" />
+		<result property="holdPeriodRatio" column="hold_period_ratio" />
+		<result property="maxRetraceValue" column="max_retrace_value" />
+		<result property="maxRetraceRatio" column="max_retrace_ratio" />
+	</resultMap>
+	
+	<insert id="lqSt.insert" parameterClass="lqStrategyTest">
+		INSERT INTO lq_strategy_test(
+					sp_id,
+					s_id,
+					t_id,
+					stock,
+					data_path,
+					test_time,
+					net_profit,
+					total_profit,
+					total_loss,
+					total_profit_loss,
+					trade_lot,
+					profit_ratio,
+					average_profit,
+					average_loss,
+					average_profit_loss,
+					max_profit,
+					max_loss,
+					max_total_profit,
+					max_total_loss,
+					average_hold_period,
+					max_fund_use,
+					yield_rate,
+					annual_return,
+					effect_yield,
+					benefit_risk_ratio,
+					adj_benefit_risk_ratio,
+					r_square_yield_curve,
+					sharpe_ratio,
+					total_trans_time,
+					hold_period_ratio,
+					max_retrace_value,
+					max_retrace_ratio
+				)values(
+					#spId#,
+					#sId#,
+					#tId#,
+					#stock#,
+					#dataPath#,
+					sysdate(),
+					#netProfit#,
+					#totalProfit#,
+					#totalLoss#,
+					#totalProfitLoss#,
+					#tradeLot#,
+					#profitRatio#,
+					#averageProfit#,
+					#averageLoss#,
+					#averageProfitLoss#,
+					#maxProfit#,
+					#maxLoss#,
+					#maxTotalProfit#,
+					#maxTotalLoss#,
+					#averageHoldPeriod#,
+					#maxFundUse#,
+					#yieldRate#,
+					#annualReturn#,
+					#effectYield#,
+					#benefitRiskRatio#,
+					#adjBenefitRiskRatio#,
+					#rSquareYieldCurve#,
+					#sharpeRatio#,
+					#totalTransTime#,
+					#holdPeriodRatio#,
+					#maxRetraceValue#,
+					#maxRetraceRatio#
+				)
+			<selectKey resultClass="long" keyProperty="tId">
+				SELECT LAST_INSERT_ID() AS tId
+			</selectKey>
+	</insert>
+	
+		<select id="lqSt.find" resultMap="lqStrategyTest" parameterClass="lqStrategyTest">
+		SELECT 
+			sp_id,
+			s_id,
+			t_id,
+			stock,
+			data_path,
+			test_time,
+			net_profit,
+			total_profit,
+			total_loss,
+			total_profit_loss,
+			trade_lot,
+			profit_ratio,
+			average_profit,
+			average_loss,
+			average_profit_loss,
+			max_profit,
+			max_loss,
+			max_total_profit,
+			max_total_loss,
+			average_hold_period,
+			max_fund_use,
+			yield_rate,
+			annual_return,
+			effect_yield,
+			benefit_risk_ratio,
+			adj_benefit_risk_ratio,
+			r_square_yield_curve,
+			sharpe_ratio,
+			total_trans_time,
+			hold_period_ratio,
+			max_retrace_value,
+			max_retrace_ratio
+		FROM  lq_strategy
+		<dynamic prepend="WHERE"> 
+			<isNotNull prepend="AND" property="s_id"> 
+				s_id = #sId#
+			</isNotNull>
+			<isNotNull prepend="AND" property="spId"> 
+				sp_id = #spId#
+			</isNotNull>
+			<isNotNull prepend="AND" property="t_id"> 
+				t_id = #t_id#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="ORDER BY">
+   			<isNotEmpty property="sortStr">
+    			$sortStr$
+   			</isNotEmpty>
+  		</dynamic>
+	</select>
+	
+	<delete id="lqSt.deleteByIds" parameterClass="java.util.List">
+	   DELETE FROM lq_strategy_test
+	   WHERE sp_id in
+	   <iterate open="(" close=")" conjunction=",">    
+            #list[].spId#    
+       </iterate>
+	</delete>
+
+</sqlMap>

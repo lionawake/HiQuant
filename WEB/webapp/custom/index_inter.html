@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>LongQuant</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/index.css">
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+html{
+    overflow-y: auto !important;
+}
+body{
+    overflow-y: auto;
+    background: transparent;
+    padding: 20px;
+}
+.lst_data_items{
+    /*padding: 20px 10px;*/
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    color: #fff;
+    background-color: #34495E;
+}
+.lst_data_items li{
+    padding: 5px 10px;
+}
+.lst_data_items li .bar{
+    display: none;
+    cursor: pointer;
+    color: #C0392B;
+    font-size: 16px;
+}
+.lst_data_items li:hover{
+    background-color: #3498DB;
+}
+.lst_data_items li:hover .bar{
+    display: block;
+}
+.none{
+    padding: 15px 5px 10px 5px;
+}
+</style>
+<body>
+    <div class="lable_account hidden"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="caption">
+                <i class="fa fa-list-ol"></i> 数据来源
+            </div>
+            <div class="panel panel_data row">
+                <div class="form_add_data row">
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" name="ds_save_input" />
+                    </div>
+                    <div class="col-md-3">
+                        <span class="btn btn-default btn_ds_save"><i class="fa fa-save"></i> 保存</span>
+                    </div>
+                </div>
+                <div class="list_data row">
+                    <div class="col-md-12">
+                        <ul class="ds_data_items">
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="caption">
+                <i class="fa fa-list-ol"></i> 交易接口
+            </div>
+            <div class="panel panel_trade row">
+                <div class="form_add_trade">
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" name="si_save_input" />
+                    </div>
+                    <div class="col-md-3">
+                        <span class="btn btn-default btn_si_save"><i class="fa fa-save"></i> 保存</span>
+                    </div>
+                </div>
+                <div class="list_data row">
+                    <div class="col-md-12">
+                        <ul class="si_data_items">
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+
+    <script type="text/template" id="ds_data_items">
+        <li ds_id="<%=ds_id%>">
+            <%=data%>
+            <div class="bar fr">
+                <i class="fa fa-remove ds_remove" title="删除"></i>
+            </div>
+        </li>
+    </script>
+
+    <script type="text/template" id="si_data_items">
+        <li si_id="<%=si_id%>">
+            <%=data%>
+            <div class="bar fr">
+                <i class="fa fa-remove si_remove" title="删除"></i>
+            </div>
+        </li>
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            var Loader = function(){
+                function renderDs(){
+                    ZX.getDataByAjax(
+                        "../lq/ds/findAll",
+                        'json',
+                        function(res){
+                            if(res==null||res.length==0){
+                                $(".ds_data_items").html("<li class='none'>暂无数据.</li>");
+                                $(".ds_data_items").removeClass("lst_data_items");
+                            }else{
+                                ZX.renderList(
+                                    res,
+                                    $(".ds_data_items"),
+                                    $("#ds_data_items"),
+                                    $(".ds_data_items"),
+                                    true,
+                                    function(d){
+                                        $(".ds_data_items").addClass("lst_data_items");
+                                        $(".ds_remove").click(function(){
+                                            var ds_id = $(this).parent().parent().attr("ds_id");
+                                            function del(){
+                                                FrameUtils.loading("数据删除中...");
+                                                ZX.getDataByAjax(
+                                                    "../lq/ds/deletes?ids="+ds_id,
+                                                    "json",
+                                                    function(res){
+                                                        FrameUtils.unloading();
+                                                        if(res==null){
+                                                            event_dialog.alert('数据删除失败!');
+                                                        }else{
+                                                            event_dialog.alert('数据删除成功!');
+                                                            renderDs();
+                                                        }
+                                                    },
+                                                    function(){
+                                                        event_dialog.alert('数据删除成功!');
+                                                        renderDs();
+                                                    }
+                                                );
+                                            }
+                                            event_dialog.confirm( del, null, '您确定要删除该数据来源吗?', '删除数据来源');
+                                        })
+                                    }
+                                );
+                            }
+                        },
+                        function(){
+                            $(".ds_data_items").html("<li class='none'>暂无数据.</li>");
+                            $(".ds_data_items").removeClass("lst_data_items");
+                        }
+                    );
+                }
+                function renderSi(){
+                    ZX.getDataByAjax(
+                        "../lq/si/findAll",
+                        'json',
+                        function(res){
+                            if(res==null||res.length==0){
+                                $(".si_data_items").html("<li class='none'>暂无数据.</li>");
+                                $(".si_data_items").removeClass("lst_data_items");
+                            }else{
+                                ZX.renderList(
+                                    res,
+                                    $(".si_data_items"),
+                                    $("#si_data_items"),
+                                    $(".si_data_items"),
+                                    true,
+                                    function(d){
+                                        $(".si_data_items").addClass("lst_data_items");
+                                        $(".si_remove").click(function(){
+                                            var si_id = $(this).parent().parent().attr("si_id");
+                                            function del(){
+                                                FrameUtils.loading("交易接口删除中...");
+                                                ZX.getDataByAjax(
+                                                    "../lq/si/deletes?ids="+si_id,
+                                                    "json",
+                                                    function(res){
+                                                        FrameUtils.unloading();
+                                                        if(res==null){
+                                                            event_dialog.alert('交易接口删除失败!');
+                                                        }else{
+                                                            event_dialog.alert('交易接口删除成功!');
+                                                            renderSi();
+                                                        }
+                                                    },
+                                                    function(){
+                                                        event_dialog.alert('交易接口删除成功!');
+                                                        renderSi();
+                                                    }
+                                                );
+                                            }
+                                            event_dialog.confirm( del, null, '您确定要删除该交易接口吗?', '删除交易接口');
+                                        })
+                                    }
+                                );
+                            }
+                        },
+                        function(){
+                            $(".si_data_items").html("<li class='none'>暂无数据.</li>");
+                            $(".si_data_items").removeClass("lst_data_items");
+                        }
+                    );
+                }
+                return{
+                    init:function(){
+                        renderDs();
+                        renderSi();
+                    },
+                    renderDs:function(){
+                        renderDs();
+                    },
+                    renderSi:function(){
+                        renderSi();
+                    }
+                }
+            }()
+
+            var Event = function(){
+                function dsSave(){
+                    $(".btn_ds_save").click(function(){
+                        var data = {};
+                        data["data"] = $("input[name=ds_save_input]").val();
+                        data["author"] = $(".lable_account").text();
+                        function save(){
+                            ZX.postDataByAjax(
+                                "../lq/ds/save",
+                                JSON.stringify(data),
+                                function(res){
+                                    if(res==null){
+                                        event_dialog.alert("数据保存失败!");
+                                    }else{
+                                        event_dialog.alert("数据保存成功!");
+                                        Loader.renderDs();
+                                    }
+                                },
+                                function(){
+                                    event_dialog.alert("数据保存失败!");
+                                    Loader.renderDs();
+                                }
+                                
+                            )
+                        }
+                        if(data.data==null||data.data.trim()==""){
+                            event_dialog.alert("数据为空!");
+                        }else{
+                            event_dialog.confirm( save, null, '您确定要提交数据吗?', '提交数据');
+                        }
+                    });
+                }
+                function siSave(){
+                    $(".btn_si_save").click(function(){
+                        var data = {};
+                        data["data"] = $("input[name=si_save_input]").val();
+                        data["author"] = $(".lable_account").text();
+                        function save(){
+                            ZX.postDataByAjax(
+                                "../lq/si/save",
+                                JSON.stringify(data),
+                                function(res){
+                                    if(res==null){
+                                        event_dialog.alert("交易接口保存失败!");
+                                    }else{
+                                        event_dialog.alert("交易接口保存成功!");
+                                        Loader.renderSi();
+                                    }
+                                },
+                                function(){
+                                    event_dialog.alert("交易接口保存失败!");
+                                    Loader.renderSi();
+                                }
+                            )
+                        }
+                        if(data.data==null||data.data.trim()==""){
+                            event_dialog.alert("交易接口为空!");
+                        }else{
+                            event_dialog.confirm( save, null, '您确定要提交交易接口吗?', '提交交易接口');
+                        }
+                    });
+                }
+                return{
+                    init:function(){
+                        dsSave();
+                        siSave()
+                    }
+                }
+            }();
+
+            var View = function(){
+                function setView(){
+
+                }
+                return{
+                    init:function(){
+                        setView();
+                        APPUtils.init_base();
+                        $('.lable_account').text( zxCookie.getCookieValue(zxCookie.ACCT).u );
+                        Loader.init();
+                        Event.init();
+                    }
+                }
+            }();
+
+            View.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+/*--------------------------------------------------------------------
+ *CSS         "base.css"
+ *Version:    1.0.0 - 2017
+ *author:     WD
+ *target:     platform base css
+-----------------------------------------------------------------------*/
+
+
+.header{
+    padding-top: 62px;
+    padding-bottom: 62px;
+    background-repeat: no-repeat;
+    background-position: center 20%;
+    -webkit-background-size: cover;
+    background-size: cover;
+    text-align: center;
+    padding: 42px 0;
+    background: #ffffff;
+    background-image: url('../../img/bg/t0.jpg');
+}
+.containerT {
+    /*padding-right: 15px;*/
+    padding-left: 15px;
+    /*margin-right: auto;*/
+    margin-left: auto;
+    margin-right: 32px;
+    padding-right: 0;
+}
+.main-navigation {
+    text-align: center;
+    background: #ffffff;
+    border-top: 1px solid #7F8C8D;
+    margin-bottom: 35px;
+    border-bottom: 2px solid #e1e1e1;
+}
+.navbar-header {
+    text-align: center;
+}
+.navbar-collapse {
+    padding-right: 15px;
+    padding-left: 15px;
+    overflow-x: visible;
+    -webkit-overflow-scrolling: touch;
+    border-top: 1px solid transparent;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+}
+#navbar-menu{
+    margin-left: 240px;
+}
+a.navbar-brand{
+    margin-left: 40px;
+    padding: 12px 15px;
+    font-size: 18px;
+    color: #BDC3C7 !important;
+}
+a.navbar-brand img{
+    height: 35px;
+    margin-top: -8px;
+}
+.main-navigation .menu li {
+    list-style: none;
+    display: inline-block;
+    position: relative;
+}
+.main-navigation .menu li.nav-current {
+    border-bottom: 2px solid #e67e22;
+    margin-bottom: -2px;
+}
+.main-navigation .menu li a {
+    color: #505050;
+    line-height: 4em;
+    display: block;
+    padding: 0 21px;
+}
+.widget {
+    margin-bottom: 35px;
+}
+.sidebar .widget {
+    /*background: #95A5A6;*/
+    padding: 20px 8px;
+    margin-bottom: 15px;
+}
+.widget .title {
+    margin-top: 0;
+    padding-bottom: 7px;
+    border-bottom: 1px solid #ebebeb;
+    margin-bottom: 21px;
+    position: relative;
+}
+.widget .title:after {
+    content: "";
+    width: 90px;
+    height: 1px;
+    background: #e67e22;
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+}
+
+.main-content, .sidebar{
+    padding: 0 5px;
+}
+.post {
+    padding: 35px;
+    margin-bottom: 35px;
+    position: relative;
+    overflow: hidden;
+}
+.post .post-head {
+    text-align: center;
+}
+.post .post-head .post-title {
+    margin: 0;
+    font-size: 2.5em;
+    line-height: 1em;
+}
+.post .featured-media {
+    margin-top: 30px;
+    overflow: hidden;
+}
+.post .featured-media img {
+    width: 100%;
+}
+
+
+
+.attr-nav > ul > li > a {
+    padding: 13px 15px;
+    color: #fff !important;
+}
+.attr-nav > ul > li > a:hover {
+    color: #95A5A6 !important;
+}
+
+.sidebar{
+    float: left;
+    width: 260px;
+    background: #34495E;
+    margin: 0;
+    padding: 0;
+}
+.sidebar .top{
+    height: 130px;
+}
+.menus{
+}
+.menus li{
+    padding: 10px;
+    border-bottom: 1px solid #2C3E50;
+    color: #fff;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+.menus li:hover{
+    background-color: #3498DB;
+}
+.menus li.active{
+    background-color: #3498DB;
+    opacity: 0.8;
+}
+.main-content{
+    margin-left: 265px;
+    background: #ECF0F1;
+    padding: 0px;
+    /*margin-bottom: 5px;*/
+}
+.panel{
+    padding: 10px;
+    border-radius: 0;
+    margin-bottom: 10px;
+}
+.toolbar{
+    background-color: transparent;
+    min-height: 40px;
+    padding: 1px 0 0px;
+}
+.toolbar ul li{
+    display: inline-block;
+    /*padding-right: 10px;*/
+}
+.form-control.middle{
+    width: 200px;
+    display: inline-block;
+}
+.form-control.min{
+    width: 100px;
+    display: inline-block;
+}
+
+.file_upload.dz-clickable .dz-message{
+  padding: 70px;
+  font-size: 24px;
+  letter-spacing: 2px;
+  color: #fff;
+  cursor: pointer;
+}
+.file-upload-note{
+  padding: 20px 0 0;
+}
+.file_upload.dz-clickable {
+    background-color: #2C3E50;
+    margin: 0 10px;
+}
+.dz-error-message{
+  margin-top: 92px;
+  width: 200px;
+}
+#file_upload_container .result{
+  margin: 10px 0 0;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 40px;
+  text-align: left;
+  height: 120px;
+  overflow-y: auto;
+}
+.dialog-title{
+    padding: 20px;
+    background-color: #2C3E50;
+    color: #fff;
+    border-bottom: 4px solid #34495E;
+    margin-bottom: 15px;
+    font-size: 24px;
+    letter-spacing: 1px;
+}
+.btn_file_upload_close{
+    margin: 10px 0 0;
+}
+#clock.right{
+    margin-left: 40px;
+}
+
+
+.tbl_bar{
+    height: 35px;
+    margin-bottom: 10px;
+}
+.container-fluid {
+    padding-right: 0 !important; 
+    padding-left: 0 !important; 
+}
+.dataTables_wrapper .dataTables_info {
+    clear: both;
+    float: left;
+    padding-top: 10px !important; 
+}
+.showslider {
+    width: 80%;
+    height: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    position: absolute;
+    top: 9px;
+}
+
+.addselect {
+    border-radius: 2px;
+    display: inline-block;
+    background-color: #95A5A6;
+    height: 12px;
+    width: 16px;
+    text-align: center;
+    color: #fff;
+    font-size: 9px;
+    font-family: Arial;
+    position: relative;
+    margin-left: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    vertical-align: top;
+    top: 5px;
+}
+.addselect .filter_icon{
+    display: block;
+    margin-top: -5px;
+}
+
+.addselect select {
+    width: 44px;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 4px 4px 10px #ccc;
+}
+
+ .dataTable td.simple, .dataTable th.simple{
+    overflow: hidden;
+    /*white-space: nowrap;*/
+    text-overflow: ellipsis;
+    min-width: 60px;
+    max-width: 200px;
+}
+.showslider{
+    display: none;
+}
+.pagination {
+    margin: 0;
+}
+.lable_account{
+    font-weight: 700;
+}
+.item_panel{
+    display: inline-block;
+}
+.item_panel.c{
+    /*border-right: 2px dashed #BDC3C7;*/
+    padding-right: 6px;
+}
+.item_panel.t{
+    background-color: #7F8C8D;
+    padding: 10px 6px;
+    text-align: left;
+    border-top-right-radius: 80px;
+    margin-top: 5px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: transparent !important;
+}
+
+.caption{
+    margin: 0;
+    padding: 5px 10px;
+    font-size: 16px !important;
+    background-color: #34495E;
+    color: #fff;
+}
+.page_title{
+    font-size: 18px;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-bottom: 4px solid #34495E;
+}

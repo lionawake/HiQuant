@@ -1,0 +1,205 @@
+.GaugeMeter {
+    Position: Relative;
+    Text-Align: Center;
+    Overflow: Hidden;
+    Cursor: Default;
+    margin: 0 Auto;
+}
+
+.GaugeMeter SPAN,
+.GaugeMeter B {
+    Margin: 0 23%;
+    Width: 54%;
+    Position: Absolute;
+    Text-Align: Center;
+    Display: Inline-Block;
+    Color: RGBa(0, 0, 0, .8);
+    Font-Weight: 100;
+    Font-Family: "Open Sans", Arial;
+    Overflow: Hidden;
+    White-Space: NoWrap;
+    Text-Overflow: Ellipsis;
+}
+
+.GaugeMeter[data-style="Semi"] B {
+    Margin: 0 10%;
+    Width: 80%;
+}
+
+.GaugeMeter S,
+.GaugeMeter U {
+    Text-Decoration: None;
+    Font-Size: .60em;
+    Font-Weight: 200;
+    Opacity: .6;
+}
+
+.GaugeMeter B {
+    Color: Black;
+    Font-Weight: 200;
+    Opacity: .8;
+}
+
+UL.Cols2 {
+    -webkit-column-count: 3;
+    -webkit-column-gap: 0.5em;
+    -moz-column-count: 3;
+    -moz-column-gap: 0.5em;
+    column-count: 3;
+    column-gap: 0.5em;
+}
+
+PRE.Code {
+    Letter-Spacing: 0;
+    Width: Auto;
+    Width: calc(100vw - 70px);
+    Color: #6AA121;
+    Float: None;
+    Font-Size: 13px;
+    Line-Height: 20px;
+    Margin-Bottom: 50px;
+    Margin-Left: 30px;
+    Border-Left: 4px Solid #2C94E0;
+    Border-Radius: 1px 10px 10px 1px;
+    Padding: 0 10px 0 0;
+    Background-Image: Linear-Gradient(Transparent 50%, RGBa(255, 255, 255, .6) 50%);
+    Background-Size: 40px 40px;
+    Counter-Reset: Line-Numbering;
+    Word-Break: Break-Word;
+}
+
+PRE.Code .Line::before {
+    Content: Counter(Line-Numbering);
+    Counter-Increment: Line-Numbering;
+    Min-Width: 3em;
+    Padding-Right: 1em;
+    Margin-Right: 1em;
+    Display: Inline-Block;
+    Text-Align: Right;
+    Color: RGBa(44, 148, 224, .7);
+    Border-Right: 1px Solid #2C94E0;
+    Background: RGBa(44, 148, 224, .04);
+    -webkit-touch-callout: None;
+    -webkit-user-select: None;
+    -khtml-user-select: None;
+    -moz-user-select: None;
+    -ms-user-select: None;
+    user-select: None;
+}
+@-moz-keyframes BluePrint {
+    0% {
+        Background-Position: 0 0;
+    }
+    100% {
+        Background-Position: 1100% 100%;
+    }
+}
+
+@-webkit-keyframes BluePrint {
+    0% {
+        Background-Position: 0 0;
+    }
+    100% {
+        Background-Position: 1100% 100%;
+    }
+}
+
+@keyframes BluePrint {
+    0% {
+        Background-Position: 0 0;
+    }
+    100% {
+        Background-Position: -100% 100%;
+    }
+}
+
+.Col1 {
+    Width: 180px !important;
+    Padding: 10px !important;
+}
+
+.Col2 {
+    Width: 50px !important;
+    Text-Align: Center;
+    Padding: 10px !important;
+}
+
+.Col3 {
+    Width: 100px !important;
+    Text-Align: Center;
+    Padding: 10px !important;
+    Color: #6AA121;
+    Font: Italic Normal 11px/14px Monospace, Arial;
+}
+
+.Col3 em {
+    Font: Italic Normal 12px/14px "Open Sans", Arial;
+    Color: Silver;
+}
+
+.Col4 {
+    Width: 200px !important;
+    Padding: 10px !important;
+}
+
+.Col4 DIV {
+    Width: 180px !important;
+    Background: #EFEFEF;
+    Margin: 2px 0 10px 0;
+    Padding: 5px 10px;
+    Font: Normal Bold 10px/14px "Open Sans", Arial;
+    Color: White;
+    Text-Shadow: 0 1px 6px rgba(0, 0, 0, .6);
+    Box-Shadow: 0 1px 6px rgba(0, 0, 0, .2);
+}
+
+.Col4 DIV:before {
+    Content: "0%";
+}
+
+.Col4 DIV span:after {
+    Content: "100%";
+    Text-Decoration: None;
+    Float: Right;
+}
+
+TH.Col4 {
+    Text-Align: Center;
+}
+
+.Col5 {
+    Border-Right: None;
+    Min-Width: 90% !important;
+    Padding: 10px !important;
+}
+
+TABLE I {
+    Color: #6AA121;
+    Font: Italic Normal 12px/14px Monospace, Arial;
+}
+
+.TableHead TH {
+    Background: #2C94E0;
+    Font: Normal Bold 12px/18px "Open Sans", Arial;
+    Padding: 8px 10px 5px 10px;
+    Color: White;
+    Vertical-Align: Middle;
+    Border-Right: 1px Solid White;
+}
+
+.TableHead TH:last-child {
+    Border-Right: None;
+}
+
+.Hide {
+    Display: None;
+}
+
+DIV.StickyHeader {
+    Position: Fixed;
+    Top: 0;
+}
+
+DIV.StickyHeader TABLE {
+    Border-Bottom: None;
+}

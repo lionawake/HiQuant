@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lq">
+
+	<typeAlias alias="lqStrategyInterface" type="cn.wd.sup.dao.dto.custom.LqStrategyInterface" />
+	<resultMap id="lqStrategyInterface" class="lqStrategyInterface">
+		<result property="si_id" column="si_id" />
+		<result property="data" column="data" />
+		<result property="author" column="author" />
+		<result property="create_time" column="create_time" />
+	</resultMap>
+
+	<insert id="lqSi.insert" parameterClass="lqStrategyInterface">
+		INSERT INTO lq_strategy_Interface(
+					data,
+					author,
+					create_time
+				)values(
+					#data#,
+					#author#,
+					sysdate()
+				)
+			<selectKey resultClass="long" keyProperty="si_id">
+				SELECT LAST_INSERT_ID() AS si_id
+			</selectKey>
+	</insert>
+	
+	<delete id="lqSi.deleteByIds" parameterClass="java.util.List">
+	   DELETE FROM lq_strategy_Interface
+	   WHERE si_id in
+	   <iterate open="(" close=")" conjunction=",">    
+            #list[].si_id#    
+       </iterate>
+	</delete>
+	
+	<select id="lqSi.find" resultMap="lqStrategyInterface" parameterClass="lqStrategyInterface">
+		SELECT 
+			*
+		FROM  lq_strategy_Interface
+		<dynamic prepend="WHERE"> 
+		 	<isNotNull prepend="AND" property="data"> 
+				data like concat('%', #data#, '%')
+			</isNotNull>
+			<isNotNull prepend="AND" property="si_id"> 
+				si_id = #si_id#
+			</isNotNull>
+			<isNotNull prepend="AND" property="author"> 
+				author = #author#
+			</isNotNull> 
+		</dynamic>
+		order by si_id desc
+	</select>
+	
+	<select id="lqSi.countByWhere" resultClass="java.lang.Integer" parameterClass="lqStrategyInterface">
+		SELECT 
+			count(*)
+		FROM  lq_strategy_Interface
+		<dynamic prepend="WHERE"> 
+			<isNotNull prepend="AND" property="data"> 
+				data like concat('%', #data#, '%')
+			</isNotNull>
+			<isNotNull prepend="AND" property="si_id"> 
+				si_id = #si_id#
+			</isNotNull>
+			<isNotNull prepend="AND" property="author"> 
+				author = #author#
+			</isNotNull> 
+		</dynamic>
+	</select>
+	
+	<select id="lqSi.findAll" resultMap="lqStrategyInterface" parameterClass="lqStrategyInterface">
+		SELECT 
+			*
+		FROM lq_strategy_Interface
+	</select>
+	
+</sqlMap>

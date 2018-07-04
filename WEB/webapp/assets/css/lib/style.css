@@ -1,0 +1,409 @@
+/*--------------------------------------------------------------------
+ *CSS 		  "style.css"
+ *Version:    1.0.0 - 2017
+ *author:     Andrew
+ *target:     spa-XX.html
+-----------------------------------------------------------------------*/
+body {
+    margin: 0 auto;
+}
+
+p {
+    margin: 15px 0px 10px;
+}
+
+a:hover,
+a.active,
+a:focus {
+    text-decoration-line: none;
+}
+
+ul {
+    list-style: outside none none;
+    padding: 0;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.tc {
+    text-align: center;
+}
+.ph0{
+    padding-left: 0;
+    padding-right: 0;
+}
+.pv0{
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.row {
+    margin: 0;
+}
+.color-1 { color: #f0efee !important; }
+.color-2 { color: #f9f9f9 !important; }
+.color-3 { color: #e8e8e8 !important; }/*light grey*/
+.color-4 { color: #2f3238 !important; }/*Dark grey*/
+.color-5 { color: #df6659 !important; }/*pink1*/
+.color-6 { color: #2fa8ec !important; }/*sky blue*/
+.color-7 { color: #d0d6d6 !important; }/*White tea*/
+.color-8 { color: #3d4444 !important; }/*Dark grey2*/
+.color-9 { color: #ef3f52 !important; }/*pink2*/
+.color-10{ color: #64448f !important; }/*Violet*/
+.color-11{ color: #3755ad !important; }/*dark blue*/
+.color-12{ color: #3498DB !important; }/*light blue*/
+.color-20{ color: #494A5F !important; }
+.color-21{ color: #E74C3C !important; }/*red*/
+.color-22{ color: #C0392B !important; }/*dark red*/
+.color-23{ color: #2ECC71 !important; }/*green*/
+.color-24{ color: #27AE60 !important; }/*dark green*/
+.color-25{ color: #494A5F !important; }/*gray*/
+
+.upcaseF{text-transform:capitalize !important;} 
+.upcaseA{text-transform:uppercase !important;} 
+.upcaseN{text-transform:lowercase !important;} 
+
+.caption {
+    margin: 40px 0;
+    font: 300 32px/36px "Raleway" !important;
+}
+.list-simple-ul.timeline{
+    padding-left: 30px;
+    border-left: 1px dotted #ccc;
+}
+.list-simple-ul li{
+    border-bottom: 1px solid #ECF0F1;
+    padding: 10px 0;
+}
+.list-simple-ul.timeline li .timeline_clock{
+    position: absolute;
+    margin-left: -50px;
+    background-color: rgb(255, 255, 255);
+    margin-top: 10px;
+}
+    
+.pattern{
+    height: 30px;
+    width: 200px;
+    margin: 10px auto 0;
+} 
+.pattern img{
+    width: 100%;
+}
+.pattern.p2{
+    background: transparent url("../img/bak/pattern-2.png") no-repeat scroll 100% 100% / 100% 100%;
+}
+.pattern.p3{
+    background: transparent url("../img/bak/pattern-3.png") no-repeat scroll 100% 100% / 100% 100%;
+    width: 300px;
+}
+
+footer.main-footer {
+    border-top: 1px solid #323336;
+    position: relative;
+    background-color: #3E4043;
+    min-height: 350px;
+}
+
+footer .main-footer-container {
+    padding: 0 20px;
+}
+
+footer .main-footer-container .footer-item {
+    border-right: 1px solid #323336;
+    padding: 20px;
+    min-height: 350px;
+}
+
+footer .main-footer-container .footer-item .footer-title {
+    text-align: left;
+    line-height: 1;
+    padding-top: 25px;
+    color: #FFF !important;
+    font-weight: 100;
+    margin: 0px 0px 30px;
+    font: 300 24px/23px "Raleway" !important;
+}
+
+footer .main-footer-container .footer-item .footer-text {
+    color: #898989;
+}
+
+footer.main-footer .footer-links li {
+    position: relative;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    text-overflow: ellipsis;
+    font-size: 1.1em;
+    margin: 0px;
+    padding: 0px;
+    background: transparent none repeat scroll 0% 0%;
+    border-bottom: medium none !important;
+}
+
+footer.main-footer .footer-links li a {
+    color: #898989;
+    transition: all 0.3s ease 0s;
+    box-sizing: border-box;
+    display: block;
+    padding: 10px;
+    min-width: 100%;
+    border: 0px none !important;
+    font-size: 1.0em;
+    color: #898989;
+    padding: 0px 0 10px;
+    line-height: 32px;
+}
+
+footer.main-footer .footer-links li a:hover {
+    color: #fff;
+    text-decoration-line: none;
+}
+
+footer.main-footer .footer-links li a::before {
+    display: block;
+    float: left;
+    text-align: center;
+    border: 2px solid #9C9CB4;
+    border-radius: 50%;
+    width: 31px;
+    margin-right: 20px;
+    font-size: 16px;
+    line-height: 28px;
+}
+
+/*template - 1*/
+footer.main-footer.tp1 {
+    background: #000 none repeat scroll 0% 0%;
+    padding: 0 20px;
+    min-height: 1px;
+}
+
+footer.main-footer.tp1 a {
+    color: #8C8C8C;
+    font-size: 13px;
+    line-height: 19px;
+    text-decoration: none;
+}
+
+footer.main-footer.tp1 .sprites {
+    padding: 25px 0px;
+    border-bottom: 1px solid #8C8C8C;
+}
+
+footer.main-footer.tp1 .sprites a {
+    background: transparent url("../img/footer-sprite.png") no-repeat scroll 0% 0%;
+    display: block;
+    float: left;
+    height: 50px;
+    margin-right: 34px;
+    text-indent: -9999px;
+}
+
+footer.main-footer.tp1 .sprites a.share {
+    background-position: 0px 0px;
+    width: 91px;
+    margin: 0px;
+}
+
+footer.main-footer.tp1 .sprites a.fb {
+    background-position: -91px 0px;
+    width: 42px;
+}
+
+footer.main-footer.tp1 .sprites a.tw {
+    background-position: -167px 0px;
+    width: 42px;
+}
+
+footer.main-footer.tp1 .sprites a.ig {
+    background-position: -402px 0px;
+    width: 42px;
+    margin-right: 250px;
+}
+
+footer.main-footer.tp1 .sprites a.media {
+    background-position: -626px 0px;
+    width: 132px;
+    margin: 0px;
+}
+
+footer.main-footer.tp1 .sprites span.divider {
+    display: block;
+    float: left;
+    width: 1px;
+    height: 50px;
+    margin: 0px 27px;
+    background: #8C8C8C none repeat scroll 0% 0%;
+    text-indent: -9999px;
+}
+
+footer.main-footer.tp1 .sprites a.contact {
+    background-position: -806px 0px;
+    width: 125px;
+    margin: 0px;
+}
+
+footer.main-footer.tp1 .links {
+    padding: 25px 0px;
+}
+.copyrights {
+    position: relative;
+    z-index: 5;
+    background-repeat: repeat-x;
+    background-position: center top;
+    background-attachment: scroll;
+    background-color: #008fd5;
+    background-size: auto auto;
+    padding: 5px 30px;
+    margin: 0px;
+    height: 30px;
+    color: #fff;
+}
+.copyrights.red{
+    background: url('../img/bak/red-bg.jpg');
+}
+
+/**
+ * cards
+ */
+
+.post-slide {
+    margin: 0 15px;
+}
+
+.post-slide .post-img {
+    overflow: hidden;
+}
+
+.post-slide .post-img img {
+    width: 100%;
+    height: auto;
+    transform: scale(1);
+    transition: all 1s ease-in-out 0s;
+}
+
+.post-slide:hover .post-img img {
+    transform: scale(1.08);
+}
+
+.post-slide .post-content {
+    background: #fff;
+    padding: 20px;
+}
+
+.post-slide .post-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 0;
+    text-transform: capitalize;
+}
+
+.post-slide .post-title a {
+    display: inline-block;
+    color: #808080;
+    transition: all 0.3s ease 0s;
+}
+
+.post-slide .post-title a:hover {
+    color: #3d3030;
+    text-decoration: none;
+}
+
+.post-slide .post-description {
+    font-size: 15px;
+    color: #676767;
+    line-height: 24px;
+    margin-bottom: 14px;
+}
+
+.post-slide .post-bar {
+    padding: 0;
+    margin-bottom: 15px;
+    list-style: none;
+}
+
+.post-slide .post-bar li {
+    color: #676767;
+    padding: 2px 0;
+}
+
+.post-slide .post-bar li i {
+    margin-right: 5px;
+}
+
+.post-slide .post-bar li a {
+    display: inline-block;
+    font-size: 12px;
+    color: #808080;
+    transition: all 0.3s ease 0s;
+}
+
+.post-slide .post-bar li a:after {
+    content: ",";
+}
+
+.post-slide .post-bar li a:last-child:after {
+    content: "";
+}
+
+.post-slide .post-bar li a:hover {
+    color: #3d3030;
+    text-decoration: none;
+}
+
+.post-slide .read-more {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background: #F39C12;
+    border-bottom-right-radius: 10px;
+    text-transform: capitalize;
+    transition: all 0.30s linear;
+}
+
+.post-slide .read-more:hover {
+    background: #333;
+    text-decoration: none;
+}
+
+.news-slider-container {
+    background: #F8F4ED none repeat scroll 0% 0% !important;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+
+@media (max-width: 958px) {
+    footer.main-footer {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+    footer .main-footer-container {
+        overflow: hidden;
+    }
+    footer .main-footer-container .footer-item {
+        border-right: 0px !important;
+        border-bottom: 1px solid #323336;
+        padding: 20px;
+        min-height: 320px !important;
+    }
+    footer.main-footer.tp1 .sprites {
+        border-bottom: 0px solid #8C8C8C;
+    }
+    .copyrights {
+        height: 100px;
+    }
+    .copyrights .follow {
+        float: left;
+    }
+}

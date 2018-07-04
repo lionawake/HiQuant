@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<settings 
+		cacheModelsEnabled="true" 
+		enhancementEnabled="true" 
+		lazyLoadingEnabled="true"   
+        useStatementNamespaces="false" 
+		statementCachingEnabled="true" 
+		classInfoCacheEnabled="true"
+	/> 
+    <sqlMap resource="cn/wd/sup/dao/mapping/ibatisProxy.xml"/>
+</sqlMapConfig>

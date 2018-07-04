@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    
+    <!-- 
+        =========================== 
+        BO层定义 
+        =========================== 
+    -->
+    <!-- ========================= system defined ========================= -->
+    <bean id="boAccount" class="cn.wd.sup.bo.impl.BoAccount">
+        <property name="daoAccount" ref="daoAccount"/>
+    </bean>
+    
+    <bean id="lqSBo" class="cn.wd.sup.bo.custom.lqS.impl.LqSBoImpl">
+        <property name="lqSDao" ref="lqSDao"/>
+    </bean>
+    
+    <bean id="lqSPtBo" class="cn.wd.sup.bo.custom.lqSPt.impl.LqSPtBoImpl">
+        <property name="lqSPtDao" ref="lqSPtDao"/>
+    </bean>
+    
+    <bean id="lqSFtBo" class="cn.wd.sup.bo.custom.lqSFt.impl.LqSFtBoImpl">
+        <property name="lqSFtDao" ref="lqSFtDao"/>
+    </bean>
+    
+    <bean id="lqDsBo" class="cn.wd.sup.bo.custom.lqDs.impl.LqDsBoImpl">
+        <property name="lqDsDao" ref="lqDsDao"/>
+    </bean>
+    
+    <bean id="lqSiBo" class="cn.wd.sup.bo.custom.lqSi.impl.LqSiBoImpl">
+        <property name="lqSiDao" ref="lqSiDao"/>
+    </bean>
+    
+    <bean id="lqStBo" class="cn.wd.sup.bo.custom.lqSt.impl.LqStBoImpl">
+        <property name="lqStDao" ref="lqStDao"/>
+    </bean>
+</beans>

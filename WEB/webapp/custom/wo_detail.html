@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>人才信息发布</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/dropzone/dropzone.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/wo_detail.css">
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+</style>
+<body>
+    <section class="container">
+        <div class="title_help">
+            编号：<span class="wid"></span> 时间：<span class="orderTime"></span>
+        </div>
+        <h2 class="tc caption">人才信息发布</h2>
+        <div class="panel_content">
+            <div class="row content">
+                <form  action="" class="form-horizontal form_wo_detail">
+                <input type="hidden" class="wid" name="id" value="">
+                <div class="col-md-12">
+                    <span class="title b letter5">简历编号：</span>
+                    <input type="text" name="talCode" class="form-control dsi require"  style="width: 240px;"/>
+                    <p class="help">请输入简历的编号。</p>
+                </div>
+                <div class="col-md-12"> 
+                    <span class="title b letter5">简历来源：</span>
+                    <select class="form-control talSrc dsi" name="talSrc" style="width: 150px;">
+                        <option value="51 Job">51 Job</option>
+                        <option value="智联招聘">智联招聘</option>
+                        <option value="猎聘网">猎聘网</option>
+                    </select>
+                    <p class="help">请选择简历来源。</p>
+                </div>
+                <div class="col-md-12">
+                    <span class="title b letter5">姓名：</span>
+                    <input type="text" name="talName" class="form-control dsi require talName"  style="width: 240px;"/>
+                    <p class="help">请输入人才的姓名。</p>
+                </div>
+                <div class="col-md-12"> 
+                    <span class="title b letter5">毕业院校：</span>
+                    <select class="form-control talSchool dsi" name="talSchool" style="width: 150px;"></select>
+                    <p class="help">请选择人才的毕业院校。</p>
+                </div>
+                <div class="col-md-12"> 
+                    <span class="title b letter5">最高学历：</span>
+                    <select class="form-control talQual dsi" name="talQual" style="width: 150px;">
+                        <option value="本科">本科</option>
+                        <option value="硕士">硕士</option>
+                        <option value="博士">博士</option>
+                    </select>
+                    <p class="help">请选择人才的最高学历。</p>
+                </div>
+                <div class="col-md-12">
+                    <span class="title b letter5">工作年限：</span>
+                    <input type="text" name="talWorkLives" class="form-control dsi require"  style="width: 200px;"/>
+                    <p class="help">请输入人才的工作年限。</p>
+                </div>
+                <div class="col-md-12">
+                    <span class="title b letter5">出生年：</span>
+                    <select class="form-control talYear dsi" name="talYear" style="width: 120px;"></select>
+                    <p class="help">请选择人才的出生年。</p>
+                    <hr style="margin-bottom: 20px;" />
+                </div>
+
+
+                <div class="col-md-12">
+                    <span class="title b letter5">简历：</span>
+                    <a href="" class="a_resume doc hidden" target="_blank"><img class="img_resume " ref="" src="../assets/img/doc.png" /></a>
+                    <a href="" class="a_resume zip hidden" target="_blank"><img class="img_resume " ref="" src="../assets/img/zip.png" /></a>
+                    <span class="btn btn-default btn_upload_attach">上传简历</span>
+                    <p class="help">请点击上传按钮，上传人才简历。</p>
+                </div>
+                <div class="col-md-12">
+                    <span class="title b letter5">简历符合点：</span>
+                    <div style="padding: 10px 0;">
+                        <input type="hidden" name="talConform" class="form-control dsi talConform"/>
+                        <div class="cks_conform"></div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <span class="title b letter5">欠缺点：</span>
+                    <input type="text" name="talShort" class="form-control dsi talShort"/>
+                    <hr style="margin: 20px 0;" />
+                </div>
+                <div class="col-md-12">
+                    <span class="title b letter5">反馈意见：</span>
+                    <select class="form-control talFeedback dsi" name="talFeedback" style="width: 150px;"></select>
+                    <p class="help">请选择对人才的意见反馈。</p>
+                </div>
+                <input type="text" class="talAttach hidden" name="talAttach" />
+                <input type="text" class="talUid hidden" name="talUid" />
+                </form>
+            </div>
+            <div class="bar_bottom">
+                <span class="btn btn-primary btn-lg btn_commit">确认并保存</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="copyright">
+        <p>
+            Copyright © 2018 WD
+        </p>
+    </div>
+    <div class="swap prev"><i class="fa fa-arrow-circle-o-left"></i></div>
+    <div class="swap next"><i class="fa fa-arrow-circle-o-right"></i></div>
+    <div class="mask hidden">
+        数据加载中...
+    </div>
+
+    <!-- Dialog for upload files -->
+    <div id="file_upload_container" class="animated-1000 fadeInDown" style="display:none;">
+        <div class="dialog-title">上传简历文件</div>
+        <div class="file_upload">
+            <div id="file-upload-panel">
+                <div class="file-upload-click dz-default dz-message">
+                   <i class=" icon-upload"></i> 点击这里上传文件
+                </div>
+            </div>
+        </div>
+        <div class="file-upload-close">
+            <button class="btn btn-default btn_file_upload_close">关 闭</button>
+        </div>
+        <div class="file-upload-note">
+              <span class="label label-danger">NOTE:</span>&nbsp;
+              简历附件支持doc、docx、rar、zip文件.
+        </div>
+        <div class="result hidden">
+            <div class="data"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/dropzone/dropzone.min.js"></script>
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+    <script type="text/javascript" src="../assets/js/custom/wo_detail.js"></script>  
+
+    <script type="text/javascript" src="../json/schools.json.js"></script>  
+    <script type="text/javascript" src="../json/settings.json.js"></script>  
+    
+    <script type="text/javascript">
+    </script>
+</body>
+</html>

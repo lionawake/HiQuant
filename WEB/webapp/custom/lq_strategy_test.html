@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>LongQuant</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/datatables/jquery.dataTables.min.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/css/codemirror.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/theme/blackboard.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/index.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/css/codemirror.css">
+    
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+html{
+    overflow-y: auto !important;
+}
+body{
+    overflow-y: auto;
+    background: transparent;
+}
+table.dataTable thead th {
+    background-color: #2C3E50;
+}
+.spId,.spName{
+
+}
+.cz{
+    margin-right: 5px;
+}
+.simple{
+    background-color: #2980B9;
+    color: #fff;
+}
+select{
+    color: #000;
+}
+.stocks{
+    font-size:15px;
+    float:right;
+    margin-right: 20px;
+}
+.stock_imgs{
+    border: 1px solid #ddd;
+    padding-bottom: 50px;
+}
+#tbl_simple{
+    border:1px solid #ccc;
+}
+.code{
+    margin: 20px;
+    margin-bottom: 80px;
+}
+#profitD,#profitM{
+	height: 300px;
+}
+</style>
+<body>
+    <div class="lable_account hidden"></div>
+    <div class="page_title"><a href="index_pt.html">策略模板</a> > <a class="lq_strategy" href="javascript:void(0)">策略</a> > 回测报告</div>
+    <div class="caption">
+        &nbsp;&nbsp;
+        <i class="fa fa-circle"></i> 策略模板编号: &nbsp;<span class="spId"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <i class="fa fa-circle"></i> 策略模板名称: &nbsp;<span class="spName"></span><br>
+        &nbsp;&nbsp;
+        <i class="fa fa-circle"></i> 策略编号: &nbsp;<span class="sId"></span>
+
+        <div class="stocks hide">
+            股票池&nbsp;: &nbsp;
+            <select>
+                  <option value="坚瑞沃能" selected>坚瑞沃能</option>
+                  <option value="日出东方">日出东方</option>
+                  <option value="一汽夏利">一汽夏利</option>
+                  <option value="盛屯矿业">盛屯矿业</option>
+                  <option value="三鑫医疗">三鑫医疗</option>
+                  <option value="惠伦晶体">惠伦晶体</option>
+                  <option value="上柴股份">上柴股份</option>
+                  <option value="兴业股份">兴业股份</option>
+                  <option value="睿康股份">睿康股份</option>
+                  <option value="中兴通讯">中兴通讯</option>
+                  <option value="中国联通">中国联通</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel_tbl">
+                <table id="tbl_simple" class="tbl_policys table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="simple" ref="" style="padding: 10px 0 10px 10px;">性能指标</th>
+                            <th class="simple" ref="">数值</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbl_tbody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="panel">
+                <div class="" style="background-color:#2980B9;color:#fff;height:40px;line-height:20px;padding: 10px 0 10px 10px;border-radius:3px 3px 0px 0px;">
+                    <i class="fa fa-list-ol"></i> 利润走势图<br>
+                </div>
+                <div class="stock_imgs">
+                    <div id="profitD"></div>
+                    <div id="profitM"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="code">
+        策略代码
+        <textarea id="pContent"></textarea>
+    </div> 
+
+
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/codemirror/js/codemirror.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/codemirror/js/python.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+    <script type="text/javascript" src="../assets/js/echarts.common.min.js"></script>  
+    
+
+    <script type="text/template" id="tbl_tbody">
+        <tr>
+            <td>净利润</td>
+            <td><%=netProfit%></td>
+        </tr>
+        <tr>
+            <td>总盈利</td>
+            <td><%=totalProfit%></td>
+        </tr>
+        <tr>
+            <td>总亏损</td>
+            <td><%=totalLoss%></td>
+        </tr>
+        <tr>
+            <td>交易手数</td>
+            <td><%=tradeLot%></td>
+        </tr>
+        <tr>
+            <td>盈利比率</td>
+            <td><%=profitRatio%></td>
+        </tr>
+        <tr>
+            <td>平均利润</td>
+            <td><%=averageProfit%></td>
+        </tr>
+        <tr>
+            <td>最大盈利</td>
+            <td><%=maxProfit%></td>
+        </tr>
+        <tr>
+            <td>最大亏损</td>
+            <td><%=maxLoss%></td>
+        </tr>
+        <tr>
+            <td>平均持仓周期</td>
+            <td><%=averageHoldPeriod%></td>
+        </tr>
+        <tr>
+            <td>最大使用资金</td>
+            <td><%=maxFundUse%></td>
+        </tr>
+        <tr>
+            <td>收益率</td>
+            <td><%=yieldRate%></td>
+        </tr>
+        <tr>
+            <td>年化收益率</td>
+            <td><%=(annualReturn*100).toFixed(2)%>%</td>
+        </tr>
+        <tr>
+            <td>收益曲线R平方值</td>
+            <td><%=rSquareYieldCurve%></td>
+        </tr>
+        <tr>
+            <td>最大资产回撤值比率（按Bar收盘计算）</td>
+            <td><%=maxRetraceRatio%></td>
+        </tr>
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            var spId = $.url().param("spId");
+            var spName = $.url().param("spName");
+            var sId = $.url().param("sId");
+            $("title").html("回测报告-"+spId+"/"+sId);
+            var pEditor;
+            $(".spId").html(spId);
+            $(".spName").html(spName);
+            $(".sId").html(sId);
+
+            $(".lq_strategy").attr("href","lq_strategy.html?spId="+spId);
+            
+            var table = null;
+
+            var Loader = function(){
+                function loadS(){
+                	var json = {};
+                	json.spId = spId;
+                	json.sId = sId;
+                    ZX.getDataByAjax(
+                        "../lq/s/find?json="+encodeURIComponent(JSON.stringify(json)),
+                        "json",
+                        function(res){
+                            if(res==null || res.data==null || res.data.length==0){
+                                event_dialog.alert('未找到回测报告!');
+                                // window.location.href = "lq_strategy.html?spId="+spId;
+                            }else{
+                            	var data = res.data[0];
+                                $("#pContent").val(data.code);
+                                pEditor = CodeMirror.fromTextArea(document.getElementById("pContent"),{
+                                    mode:"text/x-python",
+                                    lineNumbers:true,
+                                    theme:"blackboard",
+                                    readOnly:false
+                                });
+                                ZX.renderList(
+                                    data,
+                                    $(".tbl_tbody"),
+                                    $("#tbl_tbody"),
+                                    $(".tbl_tbody"),
+                                    true,
+                                    function(d){
+                                    	Render.profitD(data.profit_daily);
+                                    	Render.profitM(data.profit_monthly);
+                                    }
+                                )
+                            }
+                        },
+                        function(){
+                            event_dialog.alert('未找到回测报告!');
+                            // window.location.href = "lq_strategy.html?spId="+spId;
+                        }
+                    )
+                }
+                return {
+                    init: function(){
+                        loadS();
+                    }
+                }
+            }();
+
+            var Render = function(){
+            	//日利润
+            	function profitD(data){
+            		var xData = [];
+            		var sData = [];
+            		_.each(data,function(d){
+            			xData.push(d[0]);
+            			sData.push(d[1]);
+            		})
+            		var myChart = echarts.init(document.getElementById('profitD'));
+            		var option = {
+            			title:{
+            				text:"净利润曲线",
+            				left:50,
+            				top:60
+            			},
+            			grid:{
+            				top:120
+            			},
+					    xAxis: {
+					        type: 'category',
+					        data: xData
+					    },
+					    yAxis: {
+					        type: 'value',
+					    },
+					    series: [{
+					        data: sData,
+					        type: 'line'
+					    }]
+					};
+					myChart.setOption(option);
+            	}
+            	//月利润
+            	function profitM(data){
+            		var xData = [];
+            		var sData = [];
+            		_.each(data,function(d){
+            			xData.push(d[0]);
+            			sData.push(d[1]);
+            		})
+            		var myChart = echarts.init(document.getElementById('profitM'));
+            		var option = {
+            			title:{
+            				text:"月度净利润",
+            				left:50,
+            				top:60
+            			},
+            			grid:{
+            				top:120
+            			},
+					    xAxis: {
+					        type: 'category',
+					        data: xData
+					    },
+					    yAxis: {
+					        type: 'value'
+					    },
+					    series: [{
+					        data: sData,
+					        type: 'line'
+					    }]
+					};
+					myChart.setOption(option);
+            	}
+            	return{
+            		profitD:function(data){
+            			data = JSON.parse(data);
+            			profitD(data);
+            		},
+            		profitM:function(data){
+            			data = JSON.parse(data);
+            			profitM(data);
+            		}
+            	}
+            }();
+
+
+            var Event = function(){
+                
+                return {
+                    init: function(){
+                    }
+                }
+            }();
+
+            var View = function(){
+                function setView(){
+                    $('.main-content, .sidebar').css('height', ($(window).height()-90)+'px');
+                    $('.main-content').css('width', ($(window).width()-265)+'px');
+                    $('.mask').height($(window).height()-180);
+                    $("#iframe_main").iframe_autoresize({
+                        // "height":0,  
+                        "width": 1,
+                        "woffset": 260,
+                        "hoffset": $('.head-bar').height()
+                    });
+                    
+                }
+
+                return {
+                    init: function(){
+                        // console.log( zxCookie.getCookieValue(zxCookie.ACCT));
+                        setView();
+                        APPUtils.init_base();
+                        $('.lable_account').text( zxCookie.getCookieValue(zxCookie.ACCT).u );
+                        Loader.init();
+                        Event.init();
+                    }
+                }
+            }();
+
+            View.init();
+        });
+    </script>  
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+/*--------------------------------------------------------------------
+ *CSS 		  "welcome.css"
+ *Version:    1.0.0 - 2017
+ *author:     WD
+ *target:     welcome.html
+-----------------------------------------------------------------------*/
+
+.bs-slider {
+    max-height: 605px;
+}
+
+.slide-text {
+    top: 15%;
+}
+
+.bs-slider .bs-slider-overlay {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#navbar-menu .slogan_text {
+    font: 300 24px/23px "Microsoft YaHei" !important;
+    margin-top: 15px;
+}
+
+.main-wrapper {
+    min-height: 400px;
+}
+
+
+.text_mission {
+    padding: 10px 20%;
+}
+
+.text_mission h1 {
+    font: 500 1.8em/32px "Microsoft YaHei" !important;
+    color: #4E4B56;
+    font-weight: normal;
+    background-repeat: no-repeat;
+    background-position: center 0px;
+}
+
+.text_mission h2 {
+    font-family: "Microsoft YaHei", arial, sans-serif;
+    color: #8D8A94;
+    font-weight: 100;
+    line-height: 32px;
+    font: 300 1.4em/32px "Microsoft YaHei" !important;
+}
+.update-slider-container{
+    padding: 0;
+    background: #F8F4ED none repeat scroll 0% 0% !important;
+}
+.update-slider-container h2{
+    color: #fff;
+    padding: 40px 0 10px;
+    border-bottom: 2px solid #fff;
+}
+.plane_container, .our_container{
+    min-height: 300px;
+    background-color: #F8F4ED;
+}
+.plane_container{
+    background-color: #F39C12;
+}
+.our_container h2{
+    color: #333;
+    border-bottom: 2px solid #333;
+}
+.update-slider-container .section_logo{
+    /*position: absolute;
+    margin-left: 40%;
+    top: -35px;*/
+    margin-top: -100px;
+}
+.update-slider-container .section_logo i{
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    padding: 20px 25px;
+    font-size: 24px;
+    color: #333;
+}
+.update-slider-container img{
+    width: 100%;
+}
+.update-slider-container ul{
+    margin: 40px 0;
+}
+.update-slider-container li{
+    margin-bottom: 20px;
+}
+@media (max-width: 958px) {
+    .text_mission {
+        padding: 10px;
+    }
+    .plane_container{
+        padding-bottom: 40px;
+        height: auto !important;
+    }
+}

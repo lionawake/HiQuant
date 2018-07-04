@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lq">
+
+	<typeAlias alias="lqTaskStat" type="cn.wd.sup.dao.dto.custom.LqTaskStat" />
+	<resultMap id="lqTaskStat" class="lqTaskStat">
+		<result property="taskWait" column="task_wait" />
+		<result property="taskRun" column="task_run" />
+		<result property="taskOver" column="task_over" />
+	</resultMap>
+
+</sqlMap>

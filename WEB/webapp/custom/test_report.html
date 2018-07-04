@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>LongQuant</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/css/codemirror.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/theme/blackboard.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/index.css">
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+body{
+    overflow: hidden;
+}
+nav.navbar.bootsnav .navbar-header {
+     padding-top: 0px; 
+}
+.main-content {
+    margin-left: 0px;
+}
+.panel_paper{
+    padding: 20px 10px;
+}
+.paper{
+    background-color: #fff;
+    box-shadow: 0px 0px 10px #333;
+    min-height: 400px;
+    padding: 20px 10px;
+}
+.paper table tr:hover td{
+    background-color: #2C3E50;
+    color: #fff;
+}
+.title{
+    padding: 10px 5px;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 10px;
+}
+</style>
+<body>
+    <nav class="navbar navbar-default bootsnav">
+        <div class="containerT">
+            <div class="attr-nav">
+                <ul>
+                    <li><a draggable="false" class="btn_changePwd" id="btn_changePwd">策略编号: <span>p0001</span></a></li>
+                    <li><a draggable="false" class="btn_logout" id="btn_logout">策略: <span>策略-1</span></a></li>
+                </ul>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#brand">
+                    LongQuant | 策略回测报告
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <ul class="nav navbar-nav navbar-center">
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content-wrap row">
+
+        <div class="main-content col-md-8">
+            <div class="panel_paper">
+                <div class="paper">
+                    <div class="title">结果统计</div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>性能指标</th>
+                                <th>全部交易</th>
+                                <th>多头</th>
+                                <th>空头</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>净利润</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>总盈利</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>总亏损</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>总盈利 / 总亏损</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>盈利比率</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>平均利润</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>平均盈利 / 平均亏损 = 盈亏比</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>最大盈利</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>最大亏损</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>最大盈利 / 总盈利</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>最大亏损 / 总亏损</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>平均持仓周期</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>最大使用资金</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>收益率</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>年化收益率</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>有效收益率</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>收益风险比</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>调整收益风险比</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>收益曲线R平方值</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>夏普比率</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>总交易时间</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>持仓时间比率</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>最大资产回撤值（按Bar收盘计算）</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>最大资产回撤值比率（按Bar收盘计算）</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="title">统计图表</div>
+                    <div class="row">
+                        <div class="col-md-1">股票池</div>
+                        <div class="col-md-4">
+                            <select class="form-control"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel_left col-md-4">
+            <textarea id="pContent">
+function findSequence(goal) {
+  function find(start, history) {
+    if (start == goal)
+      return history;
+    else if (start > goal)
+      return null;
+    else
+      return find(start + 5, "(" + history + " + 5)") ||
+             find(start * 3, "(" + history + " * 3)");
+  }
+  return find(1, "1");
+}
+            </textarea>
+        </div>
+
+    </div>
+
+    <div class="copyright">
+        <p>
+            Copyright © 2018 LongQuant
+        </p>
+    </div>
+    <div class="mask hidden">
+        数据加载中...
+    </div>
+
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/codemirror/js/codemirror.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/codemirror/js/python.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.slimscroll.min.js"></script>  
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+    <script type="text/javascript" src="../assets/js/custom/test_report.js"></script>  
+</body>
+</html>

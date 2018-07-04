@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lq">
+
+	<typeAlias alias="lqUser" type="cn.wd.sup.dao.dto.custom.LqUser" />
+	<resultMap id="lqUser" class="lqUser">
+		<result property="userId" column="userId" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="type" column="type" />
+		<result property="lastLogin" column="last_login" />
+	</resultMap>
+
+</sqlMap>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>LongQuant</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/datatables/jquery.dataTables.min.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/css/codemirror.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/theme/blackboard.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/index.css">
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+html{
+    overflow-y: auto !important;
+}
+body{
+    overflow-y: auto;
+    background: transparent;
+}
+table.dataTable thead th {
+    background-color: #2C3E50;
+}
+.ptCheckResult.right:after{
+    content: "编译通过";
+    color: #2dd47b;
+}
+.ptCheckResult.wrong:after{
+    content: "编译未通过";
+    color: red;
+}
+.ptCheckResult:after{
+    content: "未检查";
+    color: red;
+}
+.ptStatus:after{
+    content:"新建";
+    color:#2dd47b;
+}
+.ptStatus.ed:after{
+    content:"编辑中";
+    color:#f0ad4e;
+}
+.cz{
+    margin-right: 5px;
+}
+.inner-therm span{
+    font-size: 10px!important;
+    line-height: 20px;
+}
+table.dataTable thead th {
+    background-color: #2980B9;
+}
+.table_option{
+    float: left;
+    height:32px;
+    line-height:32px;
+}
+table.dataTable thead .sorting_asc.first {
+    background-image: none;
+}
+.sort_item{
+    margin-right: 15px;
+    vertical-align: middle;
+}
+.sort{
+    cursor: pointer;
+}
+.sort:hover{
+    color: #2980B9;
+}
+.sort.active{
+    color: #2980B9;
+}
+</style>
+<body>
+    <div class="lable_account hidden"></div>
+    <div class="page_title">策略模板</div>
+    <div class="caption">
+        <i class="fa fa-edit"></i> 模板创建
+    </div>
+    <div class="panel panel_modify row">
+        <div class="col-md-3">
+            模板名称
+            <input type="text" class="form-control" name="policyName" />
+        </div>
+        <div class="col-md-12" style="margin-top: 10px;">
+            模板内容
+            <textarea id="pContent">
+请先填写模板名称
+并在这里填写您的模板内容
+确认无误后点击保存
+            </textarea>
+        </div>
+        <div class="col-md-12 tr" style="margin-top: 10px;">
+            <!-- <span class="ptStatus">状态: </span>&nbsp;&nbsp;&nbsp;
+            <span class="ptCheckResult">结果: </span>&nbsp;&nbsp;&nbsp;
+            <span class="btn btn-default ptCheck"><i class="fa fa-search"></i> 编译检查</span>&nbsp;&nbsp;&nbsp; -->
+            <span class="btn btn-default ptSave"><i class="fa fa-save"></i> 保存模板</span>
+        </div>
+    </div>
+    <div class="caption">
+        <i class="fa fa-list-ol"></i> 模板列表
+    </div>
+    <div class="panel panel_tbl">
+      
+        <div class="tbl_bar">
+            <div class="" style="float:right;">
+                <label>
+                    模板名查询：
+                    <input type="text" class="dsearch" placeholder="" aria-controls="tbl_simple"></label>
+            </div>
+            <!-- <span class="btn btn-info"><i class="fa fa-lock"></i>  上传</span> -->
+            <span class="btn btn-info btn_wo_delete" style="float:left; margin-right: 10px;"><i class="fa fa-remove"></i> 删除选中的行</span>
+            <div style="float:left; position:relative; z-index:1000;height:100%;">
+                <span class="showcol btn btn-default">列段显示/隐藏 <i class="fa fa-caret-right"></i></span>
+                <ul class="showul tbl_filter_col">
+                    <li>
+                        <input type="checkbox" class="toggle-vis" data-column="1"/>
+                        模板编号
+                    </li>
+                    <li>
+                        <input type="checkbox" class="toggle-vis" data-column="2"/>
+                        模板名称
+                    </li>
+                    <li>
+                        <input type="checkbox" class="toggle-vis" data-column="3"/>
+                        创建时间
+                    </li>
+                    <li>
+                        <input type="checkbox" class="toggle-vis" data-column="4"/>
+                        作者
+                    </li>
+                </ul>
+            </div>
+            <span class="toolbar_mark"  style="float:left; margin: 0 10px;"></span>
+            <div class="table_option">
+                每页显示&nbsp;
+                <select class="table_count">
+                    <option value="5">5</option>
+                    <option selected value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+                &nbsp;条
+            </div>
+            <span class="toolbar_mark"  style="float:left; margin: 0 10px;"></span>
+            <div class="table_option">
+                <span>排序</span>&nbsp;:&nbsp;
+                <span class="sort_item">
+                    <select>
+                        <option value="-1">第一排序</option>
+                        <option selected value="sp_id">编号</option>
+                        <option value="test_status">状态</option>
+                    </select>
+                    &nbsp;&nbsp;<span class="sort" type="asc">正序</span> / <span class="sort active" type="desc">倒序</span>
+                </span>
+                <span class="sort_item">
+                    <select>
+                        <option value="-1">第二排序</option>
+                        <option value="sp_id">编号</option>
+                        <option value="test_status">状态</option>
+                    </select>
+                    &nbsp;&nbsp;<span class="sort" type="asc">正序</span> / <span class="sort active" type="desc">倒序</span>
+                </span>
+            </div>
+            <!-- <div class="table_option">
+                排序&nbsp;:
+                <select class="px_first">
+                    <option value="5">编号<input type="radio">正序 <input type="radio">倒序</option>
+                    <option value="5">回测状态</option>
+                </select>
+            </div> -->
+            <!-- <div class="bar_search" style="float:left; margin-right: 10px;height: 32px;line-height: 32px;">
+                <input type="radio" class="filter_time" value="0" name="filter_time" checked/> 全部
+                <input type="radio" class="filter_time" value="1" name="filter_time" /> 本周
+                <input type="radio" class="filter_time" value="2" name="filter_time" /> 本月
+            </div> -->
+            <div style="clear:both;"></div>
+        </div>
+        <table id="tbl_simple" class="tbl_policys" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <!-- <th style=" width:1px; padding:0"></th> -->
+                    <th style="width:30px; padding:10px 0 10px 10px">
+                        <input type="checkbox" id="checkAll"></th>
+                    <th class="simple" ref="wid">模板编号</th>
+                    <th class="simple" ref="orderTitle">模板名称</th>
+                    <th class="simple" ref="orderUid">创建时间</th>
+                    <th class="simple" ref="orderVersion">作者</th>
+                    <th class="simple" ref="orderUid">状态</th>
+                    <th class="simple" ref="">操作</th>
+                    <th class="simple hidden" ref="">代码</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/codemirror/js/codemirror.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/codemirror/js/python.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+    <script type="text/javascript" src="../assets/js/custom/index_pt.js?v=1234567"></script>  
+    <script type="text/javascript" src="../assets/js/jqmeter.min.js"></script>
+
+    <script type="text/template" id="list_policys">
+        <tr data-role="<%=spId%>">
+            <td>
+                <input type="checkbox" name="checkList"></td>
+            <td class="simple id"><%=spId%></td>
+            <td title="<%=spName%>"  class="simple"><%=spName%></td>
+            <td class="simple orderUid"><%=new Date(createTime).Format("yyyy-MM-dd hh:mm:ss")%></td>
+            <td class="simple orderVersion"><%=author%></td>
+        </tr>
+    </script>
+</body>
+</html>

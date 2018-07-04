@@ -1,0 +1,111 @@
+body{
+    overflow-y: auto;
+    color: #505050;
+    line-height: 1.75em;
+    background: #2C3E50;
+    position: relative;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    color: #303030;
+}
+h4 {
+    font-size: 1.5em;
+}
+ul, li, p, em {
+    list-style-type: none;
+    -webkit-padding-start: 0;
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    margin: 0;
+    padding: 0;
+}
+a {
+    color: #337ab7;
+    text-decoration: none;
+}
+a:active, a:focus, a img {
+    outline: none;
+}
+hr{
+    margin: 5px 0;
+    border: 0px;
+    background: #e67e22;
+    color: #e67e22;
+    height: 1px;
+}
+.b{
+    font-weight: 700;
+}
+.dsi{
+    display: inline-block;
+}
+.btn{
+    letter-spacing: 2px;
+}
+.btn-info {
+    background-color: #D35400;
+    border-color: #E67E22;
+}
+.btn-info:hover {
+    background-color: #C0392B;
+    border-color: #E74C3C;
+}
+nav.navbar.bootsnav {
+    background-color: transparent;
+    border: 0px;
+    height: 30px;
+}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    border: 0;
+}
+nav.navbar.bootsnav ul.nav > li > a {
+    color: #BDC3C7;
+}
+nav.navbar ul.nav > li > a:hover, nav.navbar ul.nav li.active > a {
+    color: #fff;
+}
+
+table.dataTable thead th {
+    background-color: #2980B9;
+    color: #fff;
+    padding: 0 8px;
+    /*border-bottom-color: #34495E;*/
+}
+table.dataTable tbody tr.selected {
+    background-color: #95A5A6 !important;
+}
+input[type=checkbox], input[type=radio] {
+    margin: 7px 0 0;
+}
+
+table.dataTable tbody th, table.dataTable th, table.dataTable tbody td {
+    font-size: 12px;
+    text-align: left;
+}
+table.dataTable tbody tr:nth-child(odd){background:#F4F4F4;}
+.tbl_filter_col{
+    list-style: none;
+    position: absolute;
+    left: 80px;
+    top: 10px;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(204, 204, 204);
+    width: 200px;
+    display: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 4px 4px 10px #ccc;
+}
+.tr{
+    text-align: right;
+}
+.tl{
+    text-align: left;
+}
+.tc{
+    text-align: center;
+}

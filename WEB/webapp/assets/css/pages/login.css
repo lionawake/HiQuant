@@ -1,0 +1,224 @@
+/*--------------------------------------------------------------------
+ *CSS         "base.css"
+ *Version:    1.0.0 - 2017
+ *author:     Andrew
+ *target:     platform base css
+-----------------------------------------------------------------------*/
+
+html, body {
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+body{
+    background: #f6f6f6;
+    font-size: 13px;
+    padding: 0px;
+    margin: 0px;
+    color: #666;
+    font-family: 'Helvetica Neue', "Microsoft Yahei", "微软雅黑", "STXihei", "WenQuanYi Micro Hei", sans-serif;
+}
+body, input, textarea {
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+input, button {
+    font-family: "微软雅黑", "Microsoft Yahei", "STXihei", arial, sans-serif;
+}
+a {
+    text-decoration: none;
+    color: #adf !important;
+    font-weight: 800;
+}
+.background {
+    position: absolute;
+    overflow: hidden;
+    z-index: -10;
+    width: 100%;
+    height: 100%;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+}
+#sparkles{
+    position:fixed;
+    top:0px;
+    bottom:0px;
+    right:0px;
+    left:0px;
+    width: 100%;
+    min-height: 800px;
+    background-color: #333;
+    opacity: 0.3;
+}
+.loginbox {
+    box-shadow: 0px 20px 60px rgba(0,0,0,0.4),0px 0px 150px rgba(0,0,0,0.4);
+    width: 428px;
+    border-radius: 4px;
+    /*background: rgba(255,255,255,0.9);*/
+    /*background: #fff;*/
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    margin-top: -209px;
+    margin-left: -214px;
+}
+.title {
+    width: 100%;
+    background: #000 none;
+    height: 150px;
+    padding-top: 0px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    opacity: 0.6;
+}
+.title .logo {
+    text-align: center;
+    font-size: 40px;
+    width: 100%;
+    padding-top: 30px;
+    color: #fff;
+    -webkit-box-reflect: below -13px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 255, 255, 0.2)));
+    background-image: -webkit-linear-gradient(92deg,#FFFFFF,#14A1FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-animation: hue 6s 100 linear;
+}
+.title .logo img {
+    /*border-radius: 50%;*/
+    width: 80px;
+    position: absolute;
+    left: 20px;
+    margin-top: -25px;
+    /*box-shadow: 0px 0px 10px #333 inset;*/
+    padding: 5px;
+}
+.title .logo span {
+    padding-left: 40px;
+    display: block;
+    margin-top: -4px;
+}
+
+.title .info {
+    text-align: right;
+    font-size: 14px;
+    color: #aaddff;
+    padding-right: 14px;
+    padding-top: 30px;
+}
+.form {
+    padding-top: 13px;
+    padding-bottom: 30px;
+}
+.inputs {
+    padding: 30px 30px 0px 45px;
+    color: #fff;
+}
+.inputs div {
+    margin-bottom: 15px;
+}
+.inputs div span {
+    display: block;
+    float: left;
+    width: 80px;
+    line-height: 30px;
+    height: 30px;
+}
+.inputs div input {
+    height: 33px;
+    width: 240px;
+    color: #333;
+}
+input, input:focus {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid #bbb;
+    padding: 3px 5px;
+}
+.actions {
+    padding-left: 105px;
+}
+.actions #submit {
+    border: none;
+    outline: none;
+    background: #333;
+    color: #fff;
+    padding: 5px 30px;
+    margin-left: 20px;
+    padding: 2px 15px\9;
+    text-align: center;
+}
+.actions .checkbox {
+    display: inline-block;
+    margin: 0px;
+    margin-left: 20px;
+}
+.msg {
+    color: #f96;
+    text-align: center;
+    margin-bottom: -10px;
+    padding-top: 10px;
+}
+.common_footer {
+    color: #eee;
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    width: 100%;
+    background: #444;
+    background: rgba(0,0,0,0.3);
+    padding: 10px;
+}
+
+.input_vc{
+    width: 50% !important;
+    float: left;
+    border-radius: 0px;
+    height: 42px !important;
+}
+.verifyCode{
+    padding: 0px;
+    width: 30% !important;
+    margin-left: 2px;
+}
+.btn_refresh_vc{
+    cursor: pointer;
+    font-size: 18px;
+    width: 10% !important;
+    margin-left: -1px;
+    height: 42px !important;
+    border: 0px none;
+    text-align: center;
+    padding: 6px 8px;
+}
+.login_vc_p{
+    display: none;
+}
+.login_vc_p.active{
+    display: block;
+    height: 40px;
+}
+.btn-tool{
+    margin-top: 10px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #3498DB;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    position: absolute;
+    z-index: 1000;
+    right: 20px;
+}
+.btn-game {
+    margin-top: 10px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #8E44AD;
+    color: #FFF;
+    text-align: center;
+    padding: 20px 0px;                
+}

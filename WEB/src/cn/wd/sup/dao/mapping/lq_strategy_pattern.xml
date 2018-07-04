@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lq">
+
+	<typeAlias alias="lqStrategyPattern" type="cn.wd.sup.dao.dto.custom.LqStrategyPattern" />
+	<resultMap id="lqStrategyPattern" class="lqStrategyPattern">
+		<result property="spId" column="sp_id" />
+		<result property="spName" column="sp_name" />
+		<result property="author" column="author" />
+		<result property="createTime" column="create_Time" />
+		<result property="testStatus" column="test_status" />
+		<result property="taskTotal" column="task_total" />
+		<result property="taskFinished" column="task_finished" />
+		<result property="code" column="code" />
+	</resultMap>
+
+	<insert id="lqSPt.insert" parameterClass="lqStrategyPattern">
+		INSERT INTO lq_strategy_pattern(
+					sp_name,
+					author,
+					create_Time,
+					test_status,
+					task_total,
+					task_finished,
+					code
+				)values(
+					#spName#,
+					#author#,
+					sysdate(),
+					#testStatus#,
+					#taskTotal#,
+					#taskFinished#,
+					#code#
+				)
+			<selectKey resultClass="long" keyProperty="spId">
+				SELECT LAST_INSERT_ID() AS spId
+			</selectKey>
+	</insert>
+	
+	<delete id="lqSPt.deleteByIds" parameterClass="java.util.List">
+	   DELETE FROM lq_strategy_pattern
+	   WHERE sp_id in
+	   <iterate open="(" close=")" conjunction=",">    
+            #list[].spId#    
+       </iterate>
+	</delete>
+	
+	<select id="lqSPt.find" resultMap="lqStrategyPattern" parameterClass="lqStrategyPattern">
+		SELECT 
+			sp_id,
+			sp_name,
+			author,
+			create_Time,
+			test_status,
+			task_total,
+			task_finished,
+			code
+		FROM  lq_strategy_pattern
+		<dynamic prepend="WHERE"> 
+		 	<isNotNull prepend="AND" property="spName"> 
+				sp_name like concat('%', #spName#, '%')
+			</isNotNull>
+			<isNotNull prepend="AND" property="spId"> 
+				sp_id = #spId#
+			</isNotNull>
+			<isNotNull prepend="AND" property="author"> 
+				author = #author#
+			</isNotNull> 
+			<isNotNull prepend="AND" property="testStatus"> 
+				test_status = #testStatus#
+			</isNotNull>  
+		</dynamic>
+		<dynamic prepend="ORDER BY">
+   			<isNotEmpty property="sortStr">
+    			$sortStr$
+   			</isNotEmpty>
+  		</dynamic>
+	</select>
+	
+	<select id="lqSPt.countByWhere" resultClass="java.lang.Integer" parameterClass="lqStrategyPattern">
+		SELECT 
+			count(*)
+		FROM  lq_strategy_pattern
+		<dynamic prepend="WHERE"> 
+			<isNotNull prepend="AND" property="spName"> 
+				sp_name like concat('%', #spName#, '%')
+			</isNotNull>
+			<isNotNull prepend="AND" property="spId"> 
+				sp_id = #spId#
+			</isNotNull>
+			<isNotNull prepend="AND" property="author"> 
+				author = #author#
+			</isNotNull> 
+			<isNotNull prepend="AND" property="testStatus"> 
+				test_status = #testStatus#
+			</isNotNull>  
+		</dynamic>
+	</select>
+	
+	<select id="lqSPt.findStatus" resultClass="java.util.HashMap" >
+		SELECT 
+			count(*) as sum,
+			sum(test_status=0) as status0,
+			sum(test_status=1) as status1,
+			sum(test_status=2) as status2
+		FROM lq_strategy_pattern
+	</select>
+	
+	<select id="lqSPt.findAll" resultMap="lqStrategyPattern" parameterClass="lqStrategyPattern">
+		SELECT 
+			sp_id,
+			sp_name,
+			author,
+			create_Time,
+			test_status,
+			task_total,
+			task_finished,
+			code
+		FROM lq_strategy_pattern
+	</select>
+	
+	<update id="lqSPt.update" parameterClass="lqStrategyPattern">
+		UPDATE
+			lq_strategy_pattern
+		<dynamic prepend="SET">
+			<isNotNull prepend="," property="spName">
+				sp_name=#spName#
+			</isNotNull>
+			<isNotNull prepend="," property="testStatus">
+				test_status=#testStatus#
+			</isNotNull>
+			<isNotNull prepend="," property="taskTotal">
+				task_total=#taskTotal#
+			</isNotNull>
+			<isNotNull prepend="," property="taskFinished">
+				task_finish=#taskFinished#
+			</isNotNull>
+			<isNotNull prepend="," property="code">
+				code=#code#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="WHERE"> 
+			<isNotNull prepend="AND" property="spId"> 
+				sp_id = #spId#
+			</isNotNull> 
+		</dynamic>
+	</update>
+</sqlMap>

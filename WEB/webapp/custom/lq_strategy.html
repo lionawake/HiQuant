@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>LongQuant</title>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="stylesheet" type="text/css" href="../assets/fonts/FontAwesome/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="../assets/css/lib/bootsnav.css">
+    <link rel="stylesheet" media="all" href="../assets/css/lib/style.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/datatables/jquery.dataTables.min.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/css/codemirror.css">
+    <link rel="stylesheet" media="all" href="../assets/js/plugins/codemirror/theme/blackboard.css">
+    <link rel="stylesheet" media="all" href="../assets/css/plus.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom.css">
+    <link rel="stylesheet" media="all" href="../assets/css/custom/index.css">
+
+    <link rel="shortcut icon" href="../assets/img/logo.ico" />
+</head>
+<style>
+html{
+    overflow-y: auto !important;
+}
+body{
+    overflow-y: auto;
+    background: transparent;
+}
+table.dataTable thead th {
+    background-color: #2C3E50;
+}
+.spId,.spName{
+
+}
+.cz{
+    margin-right: 5px;
+}
+table.dataTable thead th {
+    background-color: #2980B9;
+}
+.table_option{
+    float: left;
+    height:32px;
+    line-height:32px;
+}
+table.dataTable thead .sorting_asc.first {
+    background-image: none;
+}
+.sort_item{
+    margin-right: 15px;
+    vertical-align: middle;
+}
+.sort{
+    cursor: pointer;
+}
+.sort:hover{
+    color: #2980B9;
+}
+.sort.active{
+    color: #2980B9;
+}
+.tbl_bar{
+    margin: 10px 0px;
+}
+</style>
+<body>
+    <div class="lable_account hidden"></div>
+    <div class="page_title"><a href="index_pt.html">策略模板</a> > 生成的策略</div>
+    <div class="caption">
+        <i class="fa fa-list-ol"></i> 策略列表<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <i class="fa fa-circle"></i> 策略模板编号: &nbsp;<span class="spId"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <i class="fa fa-circle"></i> 策略模板名称: &nbsp;<span class="spName"></span>
+    </div>
+    <div class="tbl_bar" style="padding-left:30px;">
+        <div class="table_option">
+            每页显示&nbsp;
+            <select class="table_count">
+                <option value="5">5</option>
+                <option selected value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            &nbsp;条
+        </div>
+        <span class="toolbar_mark"  style="float:left; margin: 0 10px;"></span>
+        <div class="table_option">
+            <span>排序</span>&nbsp;:&nbsp;
+            <span class="sort_item">
+                <select>
+                    <option value="-1">第一排序</option>
+                    <option selected value="s_id">编号</option>
+                    <option value="yield_rate">收益率</option>
+                    <option value="profit_ratio">盈利比率</option>
+                    <option value="trade_lot">交易次数</option>
+                </select>
+                &nbsp;&nbsp;<span class="sort active" type="asc">正序</span> / <span class="sort" type="desc">倒序</span>
+            </span>
+            <span class="sort_item">
+                <select>
+                    <option value="-1" selected>第二排序</option>
+                    <option value="s_id">编号</option>
+                    <option value="yield_rate">收益率</option>
+                    <option value="profit_ratio">盈利比率</option>
+                    <option value="trade_lot">交易次数</option>
+                </select>
+                &nbsp;&nbsp;<span class="sort" type="asc">正序</span> / <span class="sort active" type="desc">倒序</span>
+            </span>
+            <span class="sort_item">
+                <select>
+                    <option value="-1" selected>第三排序</option>
+                    <option value="s_id">编号</option>
+                    <option value="yield_rate">收益率</option>
+                    <option value="profit_ratio">盈利比率</option>
+                    <option value="trade_lot">交易次数</option>
+                </select>
+                &nbsp;&nbsp;<span class="sort" type="asc">正序</span> / <span class="sort active" type="desc">倒序</span>
+            </span>
+            <span class="sort_item">
+                <select>
+                    <option value="-1" selected>第四排序</option>
+                    <option value="s_id">编号</option>
+                    <option value="yield_rate">收益率</option>
+                    <option value="profit_ratio">盈利比率</option>
+                    <option value="trade_lot">交易次数</option>
+                </select>
+                &nbsp;&nbsp;<span class="sort" type="asc">正序</span> / <span class="sort active" type="desc">倒序</span>
+            </span>
+        </div>
+    </div>
+    <div class="panel panel_tbl">
+        <div>
+<!--         <div class="tbl_bar">
+            <div class="" style="float:right;">
+                <label>
+                    模板名查询：
+                    <input type="text" class="dsearch" placeholder="" aria-controls="tbl_simple"></label>
+            </div>
+            <span class="btn btn-info btn_wo_delete" style="float:left; margin-right: 10px;"><i class="fa fa-remove"></i> 删除选中的行</span>
+            <div style="float:left; position:relative; z-index:1000;height:100%;">
+                <span class="showcol btn btn-default">列段显示/隐藏 <i class="fa fa-caret-right"></i></span>
+                <ul class="showul tbl_filter_col">
+                    <li>
+                        <input type="checkbox" class="toggle-vis" data-column="1"/>
+                        模板编号
+                    </li>
+                    <li>
+                        <input type="checkbox" class="toggle-vis" data-column="2"/>
+                        模板名称
+                    </li>
+                    <li>
+                        <input type="checkbox" class="toggle-vis" data-column="3"/>
+                        创建时间
+                    </li>
+                    <li>
+                        <input type="checkbox" class="toggle-vis" data-column="4"/>
+                        作者
+                    </li>
+                </ul>
+            </div>
+            <span class="toolbar_mark"  style="float:left; margin: 0 10px;"></span>
+            <div class="bar_search" style="float:left; margin-right: 10px;height: 32px;line-height: 32px;">
+                <input type="radio" class="filter_time" value="0" name="filter_time" checked/> 全部
+                <input type="radio" class="filter_time" value="1" name="filter_time" /> 本周
+                <input type="radio" class="filter_time" value="2" name="filter_time" /> 本月
+            </div>
+            <div style="clear:both;"></div>
+        </div> -->
+        <table id="tbl_simple" class="tbl_policys" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th class="simple" ref="" style="padding: 10px 0 10px 10px;">策略编号</th>
+                    <th class="simple" ref="">收益率</th>
+                    <th class="simple" ref="">盈利比率</th>
+                    <th class="simple" ref="">交易次数</th>
+                    <th class="simple" ref="">操作</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script type="text/javascript" src="../assets/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../assets/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="../assets/js/plugins/jquery.dialog-min.js"></script>
+    <script type="text/javascript" src="../assets/js/app.js"></script>  
+
+    <script>
+        $(document).ready(function(){
+            var spName;
+            var spId = $.url().param("spId");
+            $(".spId").html(spId);
+            var table = null;
+
+            function formatTable(){
+                table = $('#tbl_simple').DataTable( );
+                // if( table != null){
+                    // $('.addselect').remove();
+                    table.destroy(false);
+                // }
+                // table = $('#tbl_simple').DataTable({
+                var option = {
+                    // "dom": '<"top"f >rt<"bottom"ilp><"clear">',//dom定位
+                    // "dom": 'tiprl',//自定义显示项
+                    // "scrollY": "220px",//dt高度
+                    "lengthMenu": [10, 20, 50],//每页显示条数设置
+                    "lengthChange": false,//是否允许用户自定义显示数量
+                    "bPaginate": true, //翻页功能
+                    "bFilter": false, //列筛序功能
+                    "searching": false,//本地搜索
+                    "ordering": false, //排序功能
+                    "Info": true,//页脚信息
+                    "autoWidth": true,//自动宽度
+                    "oLanguage": {//国际语言转化
+                       "oAria": {
+                           "sSortAscending": " - click/return to sort ascending",
+                           "sSortDescending": " - click/return to sort descending"
+                       },
+                       "sLengthMenu": "显示 _MENU_ 记录",
+                       "sZeroRecords": "对不起，查询不到任何相关数据",
+                       "sEmptyTable": "未有相关数据",
+                       "sLoadingRecords": "正在加载数据-请等待...",
+                       "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录。",
+                       "sInfoEmpty": "当前显示0到0条，共0条记录",
+                       "sInfoFiltered": "",
+                       // "sProcessing": "<img src='../resources/user_share/row_details/select2-spinner.gif'/> 正在加载数据...",
+                       "sSearch": "模板名查询：",
+                       "sUrl": "",
+                       //多语言配置文件，可将oLanguage的设置放在一个txt文件中，例：Javascript/datatable/dtCH.txt
+                       "oPaginate": {
+                           "sFirst": "首页",
+                           "sPrevious": " 上一页 ",
+                           "sNext": " 下一页 ",
+                           "sLast": " 尾页 "
+                       }
+                    },
+
+                    // "columnDefs": [{
+                    //        orderable: false,
+                    //        targets: 0 
+                    //      }
+                    // ],//第一列禁止排序
+
+                    // "order": [
+                    //    [0, null]
+                    // ],//第一列排序图标改为默认
+                    serverSide:true,
+                    ajax:function(data,callback,settings){
+                        var param = {};
+                        var json = {};
+                        json["spName"] = data.search.value;
+                        json["spId"] = spId;
+                        param.json = JSON.stringify(json);
+                        param.pageSize = data.length;
+                        param.pageStart = data.start;
+                        var sortStr = "";
+                        _.each($(".sort_item"),function(d){
+                            var value = $(d).find("select").val();
+                            if(value!=-1){
+                              sortStr+= ","+value+" "+$(d).find(".sort.active").attr("type");
+                            }
+                        })
+                        if(sortStr!="") sortStr=sortStr.substring(1);
+                        param.sortStr = sortStr;
+                        $.ajax({
+                            type: "GET",
+                            url:"../lq/s/find",
+                            cache: false, //禁用缓存
+                            data: param, //传入组装的参数
+                            dataType: "json",
+                            success:function(res){
+                                if(res.success==true){
+                                    _.each(res.data.data,function(d){
+                                        var cz = "<span class='btn btn-default btn-xs cz detail'>详情</span>"+
+                                                    "<span class='btn btn-default btn-xs cz save'>保存</span>"+
+                                                    "<span class='btn btn-success btn-xs cz use'>用于交易</span>";
+                                        d.cz = cz;
+                                        d.yieldRate = (d.yieldRate*100).toFixed(2)+"%";
+                                        d.profitRatio = (d.profitRatio*100).toFixed(2)+"%";
+                                    })
+                                    var returnData = {};
+                                    returnData.draw = data.draw;
+                                    returnData.recordsTotal = data.length;
+                                    if(res.data.num!=undefined){
+                                        returnData.recordsFiltered = res.data.num;
+                                    }else{
+                                      returnData.recordsFiltered = 0;
+                                    }
+                                    returnData.data = res.data.data;
+                                    callback(returnData);
+                                }else{
+                                    var returnData = {};
+                                    returnData.recordsFiltered = 0;
+                                    returnData.data = [];
+                                    callback(returnData);
+                                }
+                            },
+                        })
+                    },
+                    createdRow: function( row, data, dataIndex ) {
+                        $(row).attr("sId",data.sId);
+                    },
+                    columns: [{
+                          "data": "sId",
+                          "sClass":"sId"
+                      },{
+                          "data": "yieldRate",
+                          "sClass":"yieldRate"
+                      },{
+                          "data": "profitRatio",
+                          "sClass":"profitRatio"
+                      },{
+                          "data":"tradeLot",
+                          "sClass":"tradeLot"
+                      },{
+                          "data":"cz",
+                          "sClass":"cz"
+                      }],
+                };
+                table = $('#tbl_simple').DataTable( option);
+                //自定义分页
+                $(".table_count").change(function(){
+                    var len = $(this).val();
+                    table.page.len(len).draw(false);
+                });
+            }
+
+            var Loader = function(){
+                function renderSPt(){
+                    ZX.getDataByAjax(
+                        "../lq/spt/findById/"+spId,
+                        "json",
+                        function(res){
+                            if(res==null){
+                                event_dialog.alert('未找到模板信息!');
+                                // window.location.href = "index_pt.html";
+                            }else{
+                                spName = res.spName;
+                                $(".spName").html(spName);
+                                load_policys();
+                            }
+                        },
+                        function(){
+                            event_dialog.alert('未找到模板信息!');
+                            // window.location.href = "index_pt.html";
+                        }
+                    )
+                }
+                function load_policys(){
+                    formatTable();
+                }
+
+                return {
+                    init: function(){
+                        renderSPt();
+                    }
+                }
+            }();
+
+
+            var Event = function(){
+                //操作栏按钮
+                function ptCz(){
+                    //详情
+                    $("body").delegate(".detail","click",function(){
+                        var sId = $(this).parent().parent().attr("sId");
+                        window.parent.open("lq_strategy_test.html?spId="+spId+"&sId="+sId+"&spName="+spName);
+                    })
+                    //保存
+                    $("body").delegate(".save","click",function(){
+                        event_dialog.alert('保存成功');
+                    })
+                    //用于交易
+                    $("body").delegate(".use","click",function(){
+                        event_dialog.alert('进入交易!');
+                    })
+                }
+                //排序
+                function ptSort(){
+                    $(".sort").click(function(){
+                      $(this).parent().find(".sort").removeClass("active");
+                      $(this).addClass("active")
+                      table.draw(false);
+                    });
+                    $(".sort_item select").change(function(){
+                        table.draw(false);
+                    })
+                }
+                return {
+                    init: function(){
+                        ptCz();
+                        ptSort();
+                    }
+                }
+            }();
+
+            var View = function(){
+                function setView(){
+                    $('.main-content, .sidebar').css('height', ($(window).height()-90)+'px');
+                    $('.main-content').css('width', ($(window).width()-265)+'px');
+                    $('.mask').height($(window).height()-180);
+                    $("#iframe_main").iframe_autoresize({
+                        // "height":0,  
+                        "width": 1,
+                        "woffset": 260,
+                        "hoffset": $('.head-bar').height()
+                    });
+                    
+                }
+
+                return {
+                    init: function(){
+                        // console.log( zxCookie.getCookieValue(zxCookie.ACCT));
+                        setView();
+                        APPUtils.init_base();
+                        $('.lable_account').text( zxCookie.getCookieValue(zxCookie.ACCT).u );
+                        Loader.init();
+                        Event.init();
+                    }
+                }
+            }();
+
+            View.init();
+        });
+    </script>  
+
+</body>
+</html>

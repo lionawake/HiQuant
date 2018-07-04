@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lq">
+
+	<typeAlias alias="lqSysload" type="cn.wd.sup.dao.dto.custom.LqSysload" />
+	<resultMap id="lqSysload" class="lqSysload">
+		<result property="sampleTime" column="sample_time" />
+		<result property="cupRadio" column="cup_radio" />
+		<result property="memRatio" column="mem_ratio" />
+		<result property="memCost" column="mem_cost" />
+		<result property="diskRatio" column="disk_ratio" />
+		<result property="diskReadBytes" column="disk_read_bytes" />
+		<result property="diskWriteBytes" column="disk_write_bytes" />
+		<result property="netUpBytes" column="net_up_bytes" />
+		<result property="netDwBytes" column="net_dw_bytes" />
+	</resultMap>
+
+</sqlMap>

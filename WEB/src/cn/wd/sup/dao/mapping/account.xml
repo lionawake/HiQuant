@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="account">
+
+	<typeAlias alias="Account" type="cn.wd.sup.dao.dto.Account" />
+	<resultMap id="AccountResult" class="Account">
+		<result property="id" column="id" />
+		<result property="userName" column="userName" />
+		<result property="pwd" column="pwd" />
+		<result property="name" column="name" />
+		<result property="sex" column="sex" />
+		<result property="regTime" column="regTime" />
+		<result property="phone" column="phone" />
+		<result property="email" column="email" />
+		<result property="zone" column="zone" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<select id="Act.find" parameterClass="Account" resultMap="AccountResult">
+		SELECT 
+		  id,
+		  userName,
+		  pwd,
+		  name,
+		  sex,
+		  regTime,
+		  phone,
+		  email,
+		  zone,
+		  status 
+		FROM
+		  t_sup_act 
+		<dynamic prepend="WHERE"> 
+			<isNotNull prepend="AND" property="id"> 
+				id = #id# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="userName"> 
+				userName = #userName# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="pwd"> 
+				pwd = #pwd# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="name"> 
+				name = #name# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="sex"> 
+				sex = #sex# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="phone"> 
+				phone = #phone# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="email"> 
+				email = #email# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="zone"> 
+				zone = #zone# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="status"> 
+				status = #status# 
+			</isNotNull> 
+		</dynamic>
+			
+	</select>
+	
+	<insert id="Act.insert" parameterClass="Account">
+		<![CDATA[
+		 	INSERT INTO t_sup_act(
+				  userName,
+				  pwd,
+				  name,
+				  sex,
+				  phone,
+				  email,
+				  zone,
+				  status 
+			) VALUES(
+		          #userName#,
+		          #pwd#,
+		          #name#,
+		          #sex#,
+		          #phone#,
+		          #email#,
+		          #zone#,
+		          #status#
+		    ) 
+		]]>
+		
+		<selectKey resultClass="int"  keyProperty="id" >     
+            SELECT last_insert_id() as id    
+        </selectKey>
+	</insert>
+	
+	<update id="Act.update" parameterClass="Account">
+		UPDATE 
+		  t_sup_act
+		<dynamic prepend="SET">
+		  <isNotNull prepend="," property="pwd">
+			pwd = #pwd#
+		  </isNotNull>
+		  <isNotNull prepend="," property="name">
+			name = #name#
+		  </isNotNull>
+		  <isNotNull prepend="," property="sex">
+			sex = #sex#
+		  </isNotNull>
+		  <isNotNull prepend="," property="phone">
+			phone = #phone#
+		  </isNotNull>
+		  <isNotNull prepend="," property="email">
+			email = #email#
+		  </isNotNull>
+		  <isNotNull prepend="," property="zone">
+			zone = #zone#
+		  </isNotNull>
+		  <isNotNull prepend="," property="status">
+			status = #status#
+		  </isNotNull>
+		</dynamic>
+		<dynamic prepend="WHERE"> 
+			<isNotNull prepend="AND" property="id"> 
+				id = #id# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="userName"> 
+				userName = #userName# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="name"> 
+				name = #name# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="sex"> 
+				sex = #sex# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="phone"> 
+				phone = #phone# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="email"> 
+				email = #email# 
+			</isNotNull> 
+			<isNotNull prepend="AND" property="zone"> 
+				zone = #zone# 
+			</isNotNull> 
+		</dynamic>
+	</update>
+</sqlMap>
