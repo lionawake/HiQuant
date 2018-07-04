@@ -13,6 +13,9 @@ import itertools as its
 import LqIndicator
 import LqDB as lqdb
 
+cwd = os.getcwd()
+print("LqCommon:".ljust(15), cwd)
+
 class PolicyTask:
     def __init__(self, name, policyTemplate, que, sz):
         self.policyName = name
@@ -281,7 +284,7 @@ def get_func_para_list(src):
 def policy_task_proc(task, id, sp_id):
     taskName = task[0]
     taskCode = task[1]
-    print("======%d"%sp_id)
+    print("[sp_id]%d"%sp_id)
     #x = random.randint(0, 999)
     curTime = int(round(time.time() * 1000))
     policy_desc = taskName + "_%d"%curTime + "_%06d"%id
@@ -292,9 +295,13 @@ def policy_task_proc(task, id, sp_id):
     py_fd.close()
     gDBProc.save_strategy(sp_id, id, taskCode, py_file)
     # 执行通过替换指标函数后的py代码文件
-    os.system(gPyExe + " " + py_file + " " + "%d"%sp_id + " " + "%d"%id)
-    if gTaskFileReserve == False:
-        os.remove(py_file)
+    try:
+        os.system(gPyExe + " " + py_file + " " + "%d"%sp_id + " " + "%d"%id)
+    except Exception as e:
+        print("policy_task_proc error: ", e)
+    finally:
+        if gTaskFileReserve == False:
+            os.remove(py_file)
     pass
 
 def get_func_doc_dict():
@@ -368,7 +375,6 @@ gFuncTupleDict = {}
 gFuncNameDict = {}
 gFuncParaRightValueDict = {}
 gRightValueKeyDict = {}
-#gPyExe = os.getcwd() + "\..\\venv\Scripts\python.exe"
 gPyExe = "python"
 gFuncTupleStr = ''
 gDBProc = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
@@ -376,4 +382,3 @@ gDBProc = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
 get_func_list()
 #生成多返回值指标函数字典
 get_func_doc_dict()
-#print(gFuncList)

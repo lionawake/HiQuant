@@ -1,8 +1,92 @@
 from hikyuu.interactive.interactive import *
-from datetime import timedelta
-import datetime
-import time
+from datetime import datetime,timedelta
+import pandas as pd
+import numpy as np
 import talib as tb
+
+cwd = os.getcwd()
+print("Demo:".ljust(15), cwd)
+sys.path.append(cwd)
+
+import LqDB as lqdb
+import LqFinance as lqfin
+import factors as lqidc
+
+sp_id = 202
+s_id = 0
+if len(sys.argv) >= 2:
+    sp_id = int(sys.argv[1])
+if len(sys.argv) >= 3:
+    s_id = int(sys.argv[2])
+
+def dump_profit_day(stocks,days):
+    """
+    导出一个策略的每天净利润数据，需在策略回测完成后调用，策略的资产组合可包含多个股票
+    :param stocks: 策略的股票组合
+    :param days:   回测的天数
+    usage::
+    >>> sp = ['sz000002','sz000004','sz000008','sz000010']
+    >>> dump_profit_day(sp,500)
+    """
+    for s in stocks:
+        k = s.getKData(Query(-days))
+        x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+        z = PRICELIST(x)
+        z -= z
+        break
+
+    for s in stocks:
+        k = s.getKData(Query(-days))
+        x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+        if (len(x) == days):
+            z += PRICELIST(x)
+    d = k.getDatetimeList()
+    p = []
+    for i in range(len(z)):
+        t = []
+        t.append(d[i].number)
+        t.append(z[i])
+        p.append(t)
+    return str(p)
+
+def dump_profit_month(stocks,days):
+    """
+    导出一个策略的每月净利润数据，需在策略回测完成后调用，策略的资产组合可包含多个股票
+    :param stocks: 策略的股票组合
+    :param days:   回测的天数
+    usage::
+    >>> sp = ['sz000002','sz000004','sz000008','sz000010']
+    >>> dump_profit_month(sp,500)
+    """
+    for s in stocks:
+        k = s.getKData(Query(-days))
+        x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+        z = PRICELIST(x)
+        z -= z
+        break
+
+    for s in stocks:
+        k = s.getKData(Query(-days))
+        x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+        if (len(x) == days):
+            z += PRICELIST(x)
+    # cal monthly data from daily data
+    #k = stocks[0].getKData(Query(-days))
+    d = k.getDatetimeList()
+    m = 0
+    p = []
+    for i in range(len(z)):
+        if (d[i].month != m):
+            m = d[i].month
+            t = []
+            t.append(d[i].number)
+            t.append(z[i])
+            p.append(t)
+    return str(p)
+
+#sp = ['sz000002','sz000004','sz000008','sz000010']
+#plot_profit_day(sp,500)
+
 
 def getNextWeekDate(week):
     print('getNextWeekDate')
@@ -23,11 +107,8 @@ def dofilter(start_date, end_date, stk, max_num):
     sMarket = []
     for s in blocka:
         stk = s.getWeight()
-        stk_len = len(stk)
-        if stk_len <= 0:
-            continue
         stkValue = s.getMarketValue(end_date, KQuery.KType.DAY)
-        sMarket.append((s.market_code, stkValue * stk[stk_len - 1].totalCount))
+        sMarket.append((s.market_code, stkValue * stk[len(stk) - 1].totalCount))
     # print(s.code,stkValue*stk[len(stk)-1].totalCount)
     arr1 = np.array(sMarket, dtype=[('stock', np.str_, 8), ('market', int)])
     arr2 = np.sort(arr1, order='market')
@@ -46,7 +127,6 @@ def dofilter(start_date, end_date, stk, max_num):
 
 def TurtleSG(self):
     print('TurtleSG')
-    print(self)
     m1 = self.getParam("m1")
     m2 = self.getParam("m2")
     k = self.getTO()
@@ -109,6 +189,7 @@ class DEMO_MM(MoneyManagerBase):
         mm.next_buy_num = self.next_buy_num
 
     def _getBuyNumber(self, datetime, stk, price, risk, part_from):  # 由多个地方触发，这里是信号指示器和系统有效性
+
         tm = self.getTM()
         cash = tm.currentCash
         if part_from == System.Part.CONDITION:
@@ -121,11 +202,12 @@ class DEMO_MM(MoneyManagerBase):
         return self.next_buy_num  # 返回的是需要买入股票的证券数量
 
     def _getSellNumber(self, datetime, stk, price, risk, part_from):  # 这个程序的触发是通过_getBuyNumber函数返回的值来判断的，若是0就不会被触发
+
         tm = self.getTM()
         position = tm.getPosition(stk)
         current_num = int(position.number)
         if self.next_buy_num == 0:
-            # print('_getSellNumber',datetime,part_from, current_num)
+            print('_getSellNumber',datetime,part_from, current_num)
             self.next_buy_num = current_num
 
         print('_getSellNumber', datetime, part_from, current_num)
@@ -137,6 +219,7 @@ class DEMO_MM(MoneyManagerBase):
     def sellNotify(self, trade_record):
         print('sellNotify', trade_record)
 
+
 cn_open_position = True
 
 init_cash = 500000
@@ -145,12 +228,12 @@ week_n1 = 12
 week_n2 = 26
 week_n3 = 9
 max_num = 40
-stk = sm['sh000001']
+stk = [sm['sz000001'], sm['sz000002']]
 
 start_date = Datetime('2018-01-01')
-end_date = Datetime()
+end_date = Datetime.now()
 
-stk = dofilter(start_date, end_date, stk, max_num)
+#stk = dofilter(start_date, end_date, stk, max_num)
 # 创建模拟交易账户进行回测，初始资金50万
 my_tm = crtTM(datetime=Datetime(init_date), initCash=init_cash)
 
@@ -168,7 +251,15 @@ my_sys.mm = DEMO_MM()
 my_sys.sg = crtSG(TurtleSG, {'m1': week_n1, 'm2': week_n2}, 'TurtleSG')
 
 q = QueryByDate(start_date, end_date, kType=Query.DAY, recoverType=Query.FORWARD)
-
+db = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
 for s in stk:
-    print(s)
     my_sys.run(s, q)
+    per = Performance()
+    per.report(my_tm, Datetime.now())
+    db.save_strategy_test(sp_id, s_id, 'sz000001', cwd, per)
+
+day = dump_profit_day(stk, 100)
+month = dump_profit_month(stk, 100)
+print(day)
+print(month)
+db.update_strategy_perf(sp_id, s_id, day, month)

@@ -9,18 +9,27 @@ import time
 from datetime import datetime
 import os
 import sys
+#设置当前工作目录，确保代码位置迁移后仍可以正确执行
+work_dir = sys.path[0]
+os.chdir(work_dir)
+cwd = os.getcwd()
+sys.path.append(cwd)
+print("LqPolicyTask:".ljust(15), cwd)
+
 import LqCommon as lqc
+import LqDB as lqdb
 
 taskThreadNum = 4
 taskQueueSize = 1000000
 threadList = []
 taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
-policyFileDefault = 'gy_demo1.py'
+policyFileDefault = 'gy_demo2.py'
 policyFile = ''
 sp_name = 'LQ_Policy'
 author = 'LongQuant'
-sp_id = 111
+sp_id = 1
+arg_num = 1
 
 def show_process_bar(end=False):
     queSzCur = taskQueue.qsize()
@@ -31,21 +40,24 @@ def show_process_bar(end=False):
     sys.stdout.write(showPercent)
     sys.stdout.flush()
     if end:
-        print('\r\n')
+        print('')
     pass
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2:
         policyFile = sys.argv[1]
+        arg_num = 1
     if policyFile == '':
         policyFile = policyFileDefault
     if len(sys.argv) >= 3:
         sp_id = int(sys.argv[2])
-        print(sp_id)
+        arg_num = 2
     if len(sys.argv) >= 4:
         sp_name = sys.argv[3]
+        arg_num = 3
     if len(sys.argv) >= 5:
         author = sys.argv[4]
+        arg_num = 4
     startTime = datetime.now()
     # 读取策略模板文件内容
     if not os.path.exists(policyFile):
@@ -62,8 +74,9 @@ if __name__ == '__main__':
     if ret != True:
         lqc.ERR('Policy task generate failed')
     queSz = taskQueue.qsize()
-    #lqc.gDBProc.save_strategy_pattern(sp_name, author, 1, queSz, 1, policyTemplate)
-
+    if arg_num == 0:
+        db = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
+        db.save_strategy_pattern(sp_name, author, 2, queSz, 2, policyTemplate)
     # 创建多线程列表
     i = 0
     while (i < taskThreadNum):
@@ -71,14 +84,12 @@ if __name__ == '__main__':
         thd.start()
         threadList.append(thd)
         i += 1
-
     # 等待任务队列执行完毕
     while not taskQueue.empty():
         show_process_bar()
         time.sleep(1)
         pass
     show_process_bar(end=True)
-
     # 线程退出
     for t in threadList:
         if t.finish == True:
