@@ -139,57 +139,59 @@ class SqlDB():
             self.lock.release()
 
     def update_strategy_perf(self, sp_id, s_id, profit_day, profit_month):
-        sqlsids = "select distinct(s_id) from lq_strategy_test where sp_id = %d;"%sp_id
+        '''sqlsids = "select distinct(s_id) from lq_strategy_test where sp_id = %d;"%sp_id
         try:
             cursor = self.conn.cursor()
             cursor.execute(sqlsids)
             sids = cursor.fetchall()
+            print("sids:",sids)
         except Exception as e:
             print("DB query error: ", e)
             print(sqlsids)
+            cursor.close()'''
+        sqlperf = """select 
+                sum(net_profit) as sum_net_profit,
+                sum(total_profit) as sum_tot_profit,
+                sum(total_loss) as sum_tot_loss,
+                sum(trade_lot) as sum_trade_lot,
+                avg(profit_ratio) as avg_profit_ratio,
+                avg(average_profit) as avg_avg_profit,
+                avg(average_loss) as avg_avg_loss,
+                max(max_profit) as max_max_profit,
+                max(max_loss) as max_max_loss,
+                avg(average_hold_period) as avg_hold_period,
+                max(max_fund_use) as max_max_fund,
+                avg(yield_rate) as avg_yield_rate,
+                avg(annual_return) as avg_ann_ret,
+                avg(r_square_yield_curve) as avg_r_square,
+                max(max_retrace_ratio) as max_retrace
+                from lq_strategy_test
+                where sp_id = %ld and s_id = %ld;""" % (sp_id, s_id)
+        print(sqlperf)
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(sqlperf)
+            results = cursor.fetchall()
+            perfs = results[0]
+            sqlupd = """update lq_strategy set 
+                    net_profit = %f, total_profit = %f, total_loss = %f, trade_lot = %d, profit_ratio = %f, average_profit = %f,
+                    average_loss = %f, max_profit = %f, max_loss = %f, average_hold_period = %d, max_fund_use = %f, yield_rate = %f,
+                    annual_return = %f, r_square_yield_curve = %f, max_retrace_ratio = %f, profit_daily = '%s', profit_monthly = '%s' 
+                    where sp_id = %ld and s_id = %ld;""" % \
+                     (perfs[0], perfs[1], perfs[2], perfs[3], perfs[4], perfs[5], perfs[6], perfs[7], perfs[8], perfs[9], perfs[10], perfs[11], perfs[12],
+                      perfs[13], perfs[14],
+                      profit_day, profit_month,
+                      sp_id,
+                      s_id)
+            cursor.execute(sqlupd)
+            print(sqlupd)
+            self.conn.commit()
+        except Exception as e:
+            print("DB update_strategy_perf error: ", e)
+            print(sqlupd)
+            self.conn.rollback()
+        finally:
             cursor.close()
-        for row in sids:
-            sid = row[0]
-            sqlperf = """select 
-                    sum(net_profit) as sum_net_profit,
-                    sum(total_profit) as sum_tot_profit,
-                    sum(total_loss) as sum_tot_loss,
-                    sum(trade_lot) as sum_trade_lot,
-                    avg(profit_ratio) as avg_profit_ratio,
-                    avg(average_profit) as avg_avg_profit,
-                    avg(average_loss) as avg_avg_loss,
-                    max(max_profit) as max_max_profit,
-                    max(max_loss) as max_max_loss,
-                    avg(average_hold_period) as avg_hold_period,
-                    max(max_fund_use) as max_max_fund,
-                    avg(yield_rate) as avg_yield_rate,
-                    avg(annual_return) as avg_ann_ret,
-                    avg(r_square_yield_curve) as avg_r_square,
-                    max(max_retrace_ratio) as max_retrace
-                    from lq_strategy_test
-                    where sp_id = %ld and s_id = %ld;""" % (sp_id, sid)
-            try:
-                cursor.execute(sqlperf)
-                results = cursor.fetchall()
-                perfs = results[0]
-                sqlupd = """update lq_strategy set 
-                        net_profit = %f, total_profit = %f, total_loss = %f, trade_lot = %d, profit_ratio = %f, average_profit = %f,
-                        average_loss = %f, max_profit = %f, max_loss = %f, average_hold_period = %d, max_fund_use = %f, yield_rate = %f,
-                        annual_return = %f, r_square_yield_curve = %f, max_retrace_ratio = %f, profit_daily = '%s', profit_monthly = '%s' 
-                        where sp_id = %ld and s_id = %ld;""" % \
-                         (perfs[0], perfs[1], perfs[2], perfs[3], perfs[4], perfs[5], perfs[6], perfs[7], perfs[8], perfs[9], perfs[10], perfs[11], perfs[12],
-                          perfs[13], perfs[14],
-                          profit_day, profit_month,
-                          sp_id,
-                          s_id)
-                cursor.execute(sqlupd)
-                self.conn.commit()
-            except Exception as e:
-                print("DB update_strategy_perf error: ", e)
-                print(sqlupd)
-                self.conn.rollback()
-            finally:
-                cursor.close()
 
     def update_task_stat(self, wait, run, over):
         sqlstr = """update lq_task_stat set

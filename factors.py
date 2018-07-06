@@ -4,6 +4,10 @@
 from hikyuu.indicator import *
 import talib
 
+def func_return_input(p):
+	'''00000,1,1'''
+	return p
+
 def lqAMA(data, n=10, fast_n=2, slow_n=30):
     '''00001,4,2'''
     return AMA(data, n=10, fast_n=2, slow_n=30)
