@@ -76,6 +76,27 @@ class PolicyTask:
         pos_s = 0
         pos_e = 0
         while (remain_len > 0):
+            cut_res = str_cut('$$PP:', '$', remain_str)
+            if cut_res != -1:
+                while (remain_len > 0):
+                    pos_s = cut_res[0]
+                    pos_e = cut_res[1]
+                    pp_list = get_func_para_list(remain_str[pos_s:pos_e])
+                    gPPList.append(pp_list)
+                    pos_s -= 5
+                    pos_e += 1
+                    pp_key = remain_str[pos_s:pos_e]
+                    gPPKeyList.append(pp_key)
+                    remain_len -= pos_e
+                    remain_str = remain_str[pos_e:]
+                    cut_res = str_cut('$$F:', '$', remain_str)
+                    if cut_res != -1:
+                        break
+                    cut_res = str_cut('$$PP:', '$', remain_str)
+                    if cut_res == -1:
+                        break
+                pass
+
             cut_res = str_cut('$$F:', '$', remain_str)
             if cut_res == -1:
                 break
@@ -132,33 +153,41 @@ class PolicyTask:
         j = 0
         policy_count = 0
         replace_str = self.template
-        for f in its.product(*f_ll):
+        for pp_l in its.product(*gPPList):
+            print(pp_l)
             i = 0
             replace_str = self.template
-            for f_key in gFuncNameDict:
-                f_name = f[i]
-                replace_str = replace_str.replace(f_key, f_name)
-                #para_num = int(gFuncDocDict[f_name][1])
+            for pp_key in gPPKeyList:
+                replace_str = replace_str.replace(pp_key, str(pp_l[i]))
                 i += 1
-                pass
-            for p in its.product(*p_ll):
-                j = 0
-                replace_str_2 = replace_str
+
+            for f in its.product(*f_ll):
+                i = 0
+                #replace_str = self.template
                 for f_key in gFuncNameDict:
-                    if gRightValueKeyDict.__contains__(f_key) == False:
-                        continue
-                    p_key_list = gRightValueKeyDict[f_key]
-                    for p_key in p_key_list:
-                        replace_str_2 = replace_str_2.replace(p_key, str(p[j]))
-                        j += 1
+                    f_name = f[i]
+                    replace_str = replace_str.replace(f_key, f_name)
+                    #para_num = int(gFuncDocDict[f_name][1])
+                    i += 1
                     pass
-                policy_count += 1
-                for func_name in f:
-                    pat = '(' + func_name + ')(\()(.*?)(\))'
-                    replace_str_2 = re.sub(pat, re_replace2, replace_str_2)
-                task = [self.policyName, replace_str_2]
-                gTaskList.append(task)
-            pass
+                for p in its.product(*p_ll):
+                    j = 0
+                    replace_str_2 = replace_str
+                    for f_key in gFuncNameDict:
+                        if gRightValueKeyDict.__contains__(f_key) == False:
+                            continue
+                        p_key_list = gRightValueKeyDict[f_key]
+                        for p_key in p_key_list:
+                            replace_str_2 = replace_str_2.replace(p_key, str(p[j]))
+                            j += 1
+                        pass
+                    policy_count += 1
+                    for func_name in f:
+                        pat = '(' + func_name + ')(\()(.*?)(\))'
+                        replace_str_2 = re.sub(pat, re_replace2, replace_str_2)
+                    task = [self.policyName, replace_str_2]
+                    gTaskList.append(task)
+                pass
         #INF("Task queue size: %d"%self.que.qsize())
         self.put_queue()
         return True
@@ -369,6 +398,8 @@ gTaskFileReserve = True
 #gTaskFileReserve = False
 # 获取StockFilter全部筛选函数
 gTaskList = []
+gPPList = []
+gPPKeyList = []
 gFuncList = []
 gFuncDocDict = {}
 gFuncTupleDict = {}
