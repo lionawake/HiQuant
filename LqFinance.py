@@ -823,3 +823,16 @@ def fa_cashflow_ttm(stock):
 def fa_opertax_ttm(stock):
     """00320,1,1"""
     return findat.at[stock, 'fa_opertax_ttm']
+
+
+def total_shares(stock):
+    """00321,1,1"""
+    return findat.at[stock, 'total_shares']
+
+
+def free_float_shares(stock):
+    """00322,1,1"""
+    return findat.at[stock, 'free_float_shares']
+
+
+print(total_shares('sz000001'))

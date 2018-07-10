@@ -77,26 +77,26 @@ class PolicyTask:
         pos_e = 0
         while (remain_len > 0):
             cut_res = str_cut('$$PP:', '$', remain_str)
-            if cut_res != -1:
-                while (remain_len > 0):
-                    pos_s = cut_res[0]
-                    pos_e = cut_res[1]
-                    pp_list = get_func_para_list(remain_str[pos_s:pos_e])
-                    gPPList.append(pp_list)
-                    pos_s -= 5
-                    pos_e += 1
-                    pp_key = remain_str[pos_s:pos_e]
-                    gPPKeyList.append(pp_key)
-                    remain_len -= pos_e
-                    remain_str = remain_str[pos_e:]
-                    cut_res = str_cut('$$F:', '$', remain_str)
-                    if cut_res != -1:
-                        break
-                    cut_res = str_cut('$$PP:', '$', remain_str)
-                    if cut_res == -1:
-                        break
-                pass
-
+            if cut_res == -1:
+                break
+            pos_s = cut_res[0]
+            pos_e = cut_res[1]
+            pp_list = get_func_para_list(remain_str[pos_s:pos_e])
+            gPPList.append(pp_list)
+            pos_s -= 5
+            pos_e += 1
+            pp_key = remain_str[pos_s:pos_e]
+            gPPKeyList.append(pp_key)
+            remain_len -= pos_e
+            remain_str = remain_str[pos_e:]
+            pass
+        para_count = 0
+        remain_str = self.template
+        str_len = len(self.template)
+        remain_len = str_len
+        pos_s = 0
+        pos_e = 0
+        while (remain_len > 0):
             cut_res = str_cut('$$F:', '$', remain_str)
             if cut_res == -1:
                 break
@@ -152,18 +152,18 @@ class PolicyTask:
         i = 0
         j = 0
         policy_count = 0
-        replace_str = self.template
+        replace_str0 = self.template
         for pp_l in its.product(*gPPList):
             print(pp_l)
             i = 0
-            replace_str = self.template
+            replace_str0 = self.template
             for pp_key in gPPKeyList:
-                replace_str = replace_str.replace(pp_key, str(pp_l[i]))
+                replace_str0 = replace_str0.replace(pp_key, str(pp_l[i]))
                 i += 1
 
             for f in its.product(*f_ll):
                 i = 0
-                #replace_str = self.template
+                replace_str = replace_str0
                 for f_key in gFuncNameDict:
                     f_name = f[i]
                     replace_str = replace_str.replace(f_key, f_name)
