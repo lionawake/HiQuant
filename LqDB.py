@@ -92,7 +92,7 @@ class SqlDB():
             self.lock.release()
 
     def save_strategy_test(self, sp_id, s_id, stock, path, perf):
-        time_stamp = datetime.datetime.now()
+        time_stamp = datetime.datetime.now().strftime("%H:%M:%S")
         sqlstr = """insert into lq_strategy_test 
                     (sp_id, s_id, stock, data_path,test_time,
                     net_profit, total_profit, total_loss,
@@ -167,7 +167,7 @@ class SqlDB():
                 max(max_retrace_ratio) as max_retrace
                 from lq_strategy_test
                 where sp_id = %ld and s_id = %ld;""" % (sp_id, s_id)
-        print(sqlperf)
+        #print(sqlperf)
         try:
             cursor = self.conn.cursor()
             cursor.execute(sqlperf)
@@ -184,7 +184,7 @@ class SqlDB():
                       sp_id,
                       s_id)
             cursor.execute(sqlupd)
-            print(sqlupd)
+            #print(sqlupd)
             self.conn.commit()
         except Exception as e:
             print("DB update_strategy_perf error: ", e)
