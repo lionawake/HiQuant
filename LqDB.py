@@ -178,7 +178,7 @@ class SqlDB():
                     average_loss = %f, max_profit = %f, max_loss = %f, average_hold_period = %d, max_fund_use = %f, yield_rate = %f,
                     annual_return = %f, r_square_yield_curve = %f, max_retrace_ratio = %f, profit_daily = '%s', profit_monthly = '%s' 
                     where sp_id = %ld and s_id = %ld;""" % \
-                     (perfs[0], perfs[1], perfs[2], perfs[3], perfs[4], perfs[5], perfs[6], perfs[7], perfs[8], perfs[9], perfs[10], perfs[11], perfs[12],
+                     (perfs[0], perfs[1], perfs[2], perfs[3], perfs[4]/100, perfs[5], perfs[6], perfs[7], perfs[8], perfs[9], perfs[10]/100, perfs[11]/100, perfs[12]/100,
                       perfs[13], perfs[14],
                       profit_day, profit_month,
                       sp_id,
