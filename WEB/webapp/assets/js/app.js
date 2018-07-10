@@ -135,11 +135,7 @@ var APPUtils = function(){
                         zxCookie.setCookieValue( zxCookie.ACCT, account);
                         // var sys = $.url().param('sys');
                         // if( sys == undefined || sys == 0){
-                            if( Number(data.roleId)-99 == 0){
-                                location.href='custom/index.html';
-                            }else{
-                                location.href='custom/index.html';
-                            }
+                            location.href='custom/index.html';
                         // }else{
                         //     location.href='index.html';
                         // }
@@ -307,6 +303,10 @@ var APPUtils = function(){
     function handler_changepwd(){
         APPUtils.changepwd_handler( $('#btn_changePwd'));
     }
+    //账户管理
+    function handler_actManager(){
+        APPUtils.actManager_handler( $('#btn_actManager'));
+    }
     //在线检测cookies
     function checkOnline(){
         if( !zxCookie.hasCookie()){
@@ -434,6 +434,124 @@ var APPUtils = function(){
                 });
             });
         },
+        actManager_handler:function($btn){
+            var table;
+            $btn.on('click', function(){
+                draw(true);
+            });
+            function draw(needOpen){
+                if(table!=undefined) table.destroy();
+                ZX.getDataByAjax(
+                    "../sup/account/list",
+                    "json",
+                    function(res){
+                        ZX.renderList(
+                            res,
+                            $(".usr-actManager-panel tbody"),
+                            $("#users"),
+                            $(".usr-actManager-panel tbody"),
+                            true
+                        )
+                        open(needOpen);
+                    },
+                    function(){
+                        open(needOpen);
+                    }
+                )
+                function open(needOpen){
+                    table = $(".usr-actManager-panel table").DataTable({
+                        "bPaginate": true, //翻页功能
+                        "bFilter": true, //列筛序功能
+                        "searching": true,//本地搜索
+                        "ordering": true,
+                        "Info": true,//页脚信息
+                        "autoWidth": true,//自动宽度
+                        "oLanguage": {//国际语言转化
+                           "oAria": {
+                               "sSortAscending": " - click/return to sort ascending",
+                               "sSortDescending": " - click/return to sort descending"
+                           },
+                           "sLengthMenu": "显示 _MENU_ 记录",
+                           "sZeroRecords": "对不起，查询不到任何相关数据",
+                           "sEmptyTable": "未有相关数据",
+                           "sLoadingRecords": "正在加载数据-请等待...",
+                           "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录。",
+                           "sInfoEmpty": "当前显示0到0条，共0条记录",
+                           "sInfoFiltered": "",
+                           // "sProcessing": "<img src='../resources/user_share/row_details/select2-spinner.gif'/> 正在加载数据...",
+                           "sSearch": "查询：",
+                           "sUrl": "",
+                           //多语言配置文件，可将oLanguage的设置放在一个txt文件中，例：Javascript/datatable/dtCH.txt
+                           "oPaginate": {
+                               "sFirst": "首页",
+                               "sPrevious": " 上一页 ",
+                               "sNext": " 下一页 ",
+                               "sLast": " 尾页 "
+                           }
+                        },
+                    });
+                    if(needOpen){
+                        $.blockUI({
+                            message: $('.usr-actManager-panel'),
+                            css: {
+                                background: '#fff',
+                                border: '0px',
+                                cursor: 'default',
+                                top: '8%',
+                                left: '50%',
+                                width: '80%',
+                                margin:'0px 0px 0px -40%',
+                                padding: '30px',
+                                borderRadius:'5px',
+                                opacity:'0.9'
+                            },
+                            overlayCSS: {
+                                cursor: 'default'
+                            }
+                        });
+                    }
+                }
+            }
+            $(".usr-actManager-panel .close").click(function(){
+                $.unblockUI();
+            });
+            $("body").delegate(".actDel","click",function(){
+                var userName = $(this).parent().parent().find(".userName").text().trim();
+                event_dialog.confirm( del, userName, '您确定要删除 '+userName+' 吗?', '删除');
+                function del(userName){
+                    ZX.getDataByAjax(
+                        "../sup/account/delete?username="+userName,
+                        "json",
+                        function(res){
+                            event_dialog.alert('删除成功.');
+                            draw();
+                        },
+                        function(){
+                            event_dialog.alert('删除失败.');
+                        }
+                    );
+                }
+            })
+            $(".actAdd").click(function(){
+                var userName = $("input[name=userName]").val();
+                var personName = $("input[name=personName]").val();
+                var phone = $("input[name=phone]").val();
+                var email = $("input[name=email]").val();
+                var role = $("input[name=isAdmin]:checked").val();
+                var data = {"userName":userName,"personName":personName,"phone":phone,"email":email,"role":role};
+                ZX.postDataByAjax(
+                    "../sup/account/reg",
+                    JSON.stringify(data),
+                    function(res){
+                        event_dialog.alert('添加成功.初始密码为 123456');
+                        draw();
+                    },
+                    function(res){
+                        event_dialog.alert("添加失败");
+                    }
+                )
+            });
+        },
         setEmpty: function(){
             var emptyHtml = '<div class="data-empty" style="position: absolute;top: 50%;width: 100%;text-align: center;">'+
                                 '<span class="empty-iv">&#9731</span>'+
@@ -446,6 +564,7 @@ var APPUtils = function(){
             // init_view();
             handler_logout();
             handler_changepwd();
+            handler_actManager();
             //添加logo事件
             // handler_logo();
         },

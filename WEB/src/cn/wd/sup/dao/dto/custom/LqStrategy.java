@@ -22,7 +22,7 @@ public class LqStrategy extends Domain{
 	/**
 	 * s id
 	 */
-	private Long sId;
+	private Long s_id;
 	
 	/**
 	 * 代码
@@ -197,14 +197,6 @@ public class LqStrategy extends Domain{
 
 	public void setSpId(Long spId) {
 		this.spId = spId;
-	}
-
-	public Long getsId() {
-		return sId;
-	}
-
-	public void setsId(Long sId) {
-		this.sId = sId;
 	}
 
 	public String getCode() {
@@ -441,6 +433,14 @@ public class LqStrategy extends Domain{
 
 	public void setSortStr(String sortStr) {
 		this.sortStr = sortStr;
+	}
+
+	public Long getS_id() {
+		return s_id;
+	}
+
+	public void setS_id(Long s_id) {
+		this.s_id = s_id;
 	}
 	
 	

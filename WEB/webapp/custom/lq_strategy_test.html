@@ -78,7 +78,7 @@ select{
         <i class="fa fa-circle"></i> 策略模板编号: &nbsp;<span class="spId"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <i class="fa fa-circle"></i> 策略模板名称: &nbsp;<span class="spName"></span><br>
         &nbsp;&nbsp;
-        <i class="fa fa-circle"></i> 策略编号: &nbsp;<span class="sId"></span>
+        <i class="fa fa-circle"></i> 策略编号: &nbsp;<span class="s_id"></span>
 
         <div class="stocks hide">
             股票池&nbsp;: &nbsp;
@@ -207,12 +207,12 @@ select{
         $(document).ready(function(){
             var spId = $.url().param("spId");
             var spName = $.url().param("spName");
-            var sId = $.url().param("sId");
-            $("title").html("回测报告-"+spId+"/"+sId);
+            var s_id = $.url().param("s_id");
+            $("title").html("回测报告-"+spId+"/"+s_id);
             var pEditor;
             $(".spId").html(spId);
             $(".spName").html(spName);
-            $(".sId").html(sId);
+            $(".s_id").html(s_id);
 
             $(".lq_strategy").attr("href","lq_strategy.html?spId="+spId);
             
@@ -222,7 +222,7 @@ select{
                 function loadS(){
                 	var json = {};
                 	json.spId = spId;
-                	json.sId = sId;
+                	json.s_id = s_id;
                     ZX.getDataByAjax(
                         "../lq/s/find?json="+encodeURIComponent(JSON.stringify(json)),
                         "json",
@@ -281,6 +281,9 @@ select{
             				left:50,
             				top:60
             			},
+                        tooltip:{
+                            show:true
+                        },
             			grid:{
             				top:120
             			},
@@ -313,6 +316,9 @@ select{
             				left:50,
             				top:60
             			},
+                        tooltip:{
+                            show:true
+                        },
             			grid:{
             				top:120
             			},
@@ -325,7 +331,20 @@ select{
 					    },
 					    series: [{
 					        data: sData,
-					        type: 'line'
+					        type: 'bar',
+                            label:{
+                                show:true,
+                                position:'insideBottom'
+                            },
+                            itemStyle : { 
+                                color: function(params) {
+                                    if(params.value>=0){
+                                        return '#00f525';
+                                    }else{
+                                        return '#ff3239'
+                                    }
+                                },
+                            }
 					    }]
 					};
 					myChart.setOption(option);

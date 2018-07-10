@@ -24,7 +24,7 @@ public class LqStrategyTest extends Domain{
 	/**
 	 * s id
 	 */
-	private Long sId;
+	private Long s_id;
 	
 	/**
 	 * s id
@@ -184,13 +184,6 @@ public class LqStrategyTest extends Domain{
 		this.spId = spId;
 	}
 
-	public Long getsId() {
-		return sId;
-	}
-
-	public void setsId(Long sId) {
-		this.sId = sId;
-	}
 
 	public Long gettId() {
 		return tId;
@@ -434,6 +427,14 @@ public class LqStrategyTest extends Domain{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Long getS_id() {
+		return s_id;
+	}
+
+	public void setS_id(Long s_id) {
+		this.s_id = s_id;
 	}
 
 }

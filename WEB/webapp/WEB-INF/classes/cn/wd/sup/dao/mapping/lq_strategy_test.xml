@@ -6,7 +6,7 @@
 	<typeAlias alias="lqStrategyTest" type="cn.wd.sup.dao.dto.custom.LqStrategyTest" />
 	<resultMap id="lqStrategyTest" class="lqStrategyTest">
 		<result property="spId" column="sp_id" />
-		<result property="sId" column="s_id" />
+		<result property="s_id" column="s_id" />
 		<result property="tId" column="t_id" />
 		<result property="stock" column="stock" />
 		<result property="dataPath" column="data_path" />
@@ -75,7 +75,7 @@
 					max_retrace_ratio
 				)values(
 					#spId#,
-					#sId#,
+					#s_id#,
 					#tId#,
 					#stock#,
 					#dataPath#,
@@ -149,7 +149,7 @@
 		FROM  lq_strategy
 		<dynamic prepend="WHERE"> 
 			<isNotNull prepend="AND" property="s_id"> 
-				s_id = #sId#
+				s_id = #s_id#
 			</isNotNull>
 			<isNotNull prepend="AND" property="spId"> 
 				sp_id = #spId#

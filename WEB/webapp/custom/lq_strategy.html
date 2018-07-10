@@ -305,11 +305,11 @@ table.dataTable thead .sorting_asc.first {
                         })
                     },
                     createdRow: function( row, data, dataIndex ) {
-                        $(row).attr("sId",data.sId);
+                        $(row).attr("s_id",data.s_id);
                     },
                     columns: [{
-                          "data": "sId",
-                          "sClass":"sId"
+                          "data": "s_id",
+                          "sClass":"s_id"
                       },{
                           "data": "yieldRate",
                           "sClass":"yieldRate"
@@ -370,8 +370,8 @@ table.dataTable thead .sorting_asc.first {
                 function ptCz(){
                     //详情
                     $("body").delegate(".detail","click",function(){
-                        var sId = $(this).parent().parent().attr("sId");
-                        window.parent.open("lq_strategy_test.html?spId="+spId+"&sId="+sId+"&spName="+spName);
+                        var s_id = $(this).parent().parent().attr("s_id");
+                        window.parent.open("lq_strategy_test.html?spId="+spId+"&s_id="+s_id+"&spName="+spName);
                     })
                     //保存
                     $("body").delegate(".save","click",function(){

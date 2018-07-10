@@ -67,6 +67,12 @@ $(document).ready(function(){
                 setView();
                 APPUtils.init_base();
                 $('.lable_account').text( zxCookie.getCookieValue(zxCookie.ACCT).u );
+                var r = zxCookie.getCookieValue(zxCookie.ACCT).r;
+                if(r!=0 && r!=1){
+                    $("#btn_actManager").parent().remove();
+                }else{
+                    $("#btn_actManager").removeClass("hide");
+                }
                 Loader.init();
                 Event.init();
             },

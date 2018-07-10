@@ -94,7 +94,7 @@ public class LqSCtrl extends CustomBaseController{
 	public JSONObject lqSFindById(
 			@PathVariable ("sId") Long sId) {
 		LqStrategy lq = new LqStrategy();
-		lq.setsId(sId);
+		lq.setS_id(sId);
 		ArrayList<LqStrategy> data = lqSBo.find(lq, 0, 1);
 		if(data.size()==0) {
 			return getErrorResult(null);

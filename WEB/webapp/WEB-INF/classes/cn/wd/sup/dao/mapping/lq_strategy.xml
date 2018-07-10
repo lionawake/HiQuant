@@ -6,7 +6,7 @@
 	<typeAlias alias="lqStrategy" type="cn.wd.sup.dao.dto.custom.LqStrategy" />
 	<resultMap id="lqStrategy" class="lqStrategy">
 			<result property="spId" column="sp_id" />
-			<result property="sId" column="s_id" />
+			<result property="s_id" column="s_id" />
 			<result property="code" column="code" />
 			<result property="dataPath" column="data_path" />
 			<result property="netProfit" column="net_profit" />
@@ -101,8 +101,8 @@
 					#maxRetraceValue#,
 					#maxRetraceRatio#
 				)
-			<selectKey resultClass="long" keyProperty="sId">
-				SELECT LAST_INSERT_ID() AS sId
+			<selectKey resultClass="long" keyProperty="s_id">
+				SELECT LAST_INSERT_ID() AS s_id
 			</selectKey>
 	</insert>
 	
@@ -142,8 +142,8 @@
 			profit_monthly
 		FROM  lq_strategy
 		<dynamic prepend="WHERE"> 
-			<isNotNull prepend="AND" property="sId"> 
-				s_id = #sId#
+			<isNotNull prepend="AND" property="s_id"> 
+				s_id = #s_id#
 			</isNotNull>
 			<isNotNull prepend="AND" property="spId"> 
 				sp_id = #spId#
@@ -169,8 +169,8 @@
 			count(*)
 		FROM  lq_strategy
 		<dynamic prepend="WHERE"> 
-			<isNotNull prepend="AND" property="sId"> 
-				s_id = #sId#
+			<isNotNull prepend="AND" property="s_id"> 
+				s_id = #s_id#
 			</isNotNull>
 			<isNotNull prepend="AND" property="spId"> 
 				sp_id = #spId#

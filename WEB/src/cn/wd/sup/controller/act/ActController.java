@@ -84,7 +84,7 @@ public class ActController  extends SupController{
 			//set ActWrapperper to session 
 			ActWrapper wrap = new ActWrapper();
 			wrap.setUserName( userName);
-			wrap.setRoleId(account.getRole()+99 );
+			wrap.setRoleId(account.getRole());
 			
 			HttpSession session = request.getSession();
 			session.setAttribute( CtrlSettingConst.HTTP_SESSION_ATTR,  JSONObject.toJSON( wrap));
@@ -140,7 +140,7 @@ public class ActController  extends SupController{
 			return getErrorResult( be.exceptionInfo);
 		}catch( BOException be ){
 			logger.warn( "ADD ACCOUNT FAILED IN BO, BEACAUSE:" + be.getExceptionInfo());
-			return getErrorResult( null);
+			return getErrorResult( be.exceptionInfo);
 		}catch( Exception e){
 			e.printStackTrace();
 			logger.warn( "ADD ACCOUNT FAILED IN CONTROLLER, BEACAUSE:" + e.getCause());

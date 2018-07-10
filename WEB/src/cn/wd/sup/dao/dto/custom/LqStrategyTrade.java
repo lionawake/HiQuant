@@ -23,7 +23,7 @@ public class LqStrategyTrade extends Domain{
 	/**
 	 * s id
 	 */
-	private Long sId;
+	private Long s_id;
 	
 	/**
 	 * 代码
@@ -188,13 +188,7 @@ public class LqStrategyTrade extends Domain{
 		this.spId = spId;
 	}
 
-	public Long getsId() {
-		return sId;
-	}
-
-	public void setsId(Long sId) {
-		this.sId = sId;
-	}
+	
 
 	public String getCode() {
 		return code;
@@ -446,5 +440,13 @@ public class LqStrategyTrade extends Domain{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Long getS_id() {
+		return s_id;
+	}
+
+	public void setS_Id(Long s_id) {
+		this.s_id = s_id;
 	}
 }

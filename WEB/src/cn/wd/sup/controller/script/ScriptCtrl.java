@@ -117,13 +117,22 @@ public class ScriptCtrl extends VOController{
 	        resultData.add(exe);
 	        resultData.add(command);
 	        String line;
-	        Thread.sleep(100);
+	        //Thread.sleep(100);
 	        while ((line = in.readLine()) != null) {
 	        	System.out.println(line);
 	        	resultData.add(line);
-	        	Thread.sleep(100);
+	        	//Thread.sleep(100);
 	        }
 	        in.close();
+	        
+	        //读取标准错误流
+	        BufferedReader brError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+	        String errline = null;
+	        while ((errline = brError.readLine()) != null) {
+	        	System.out.println(errline);
+	        	resultData.add(errline);
+	        }
+	        brError.close();
 	        pr.waitFor();
 	        
 	        //成功 保存
@@ -153,18 +162,24 @@ public class ScriptCtrl extends VOController{
 		//String command = "C:/Users/fu/PycharmProjects/Hi/HiQuant/LqPolicyTask.py";
 		String command = "C:/Users/fu/PycharmProjects/Hi/HiQuant/LqPolicyTask.py";
         //参数  code路径
-        String path = "D:/LqProject/project/result/2/code_2.py";
-        String[] cmdArr = new String[] {exe,command,path,"2", "201807022209", "admin"};
+        String path = "D:/LqProject/project/result/88/code_88.py";
+        String[] cmdArr = new String[] {exe,command,path,"88", "201807022209", "admin"};
         
         Process pr = Runtime.getRuntime().exec(cmdArr);
         BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
         String line;
-        Thread.sleep(10);
         while ((line = in.readLine()) != null) {
             System.out.println(line);
-            Thread.sleep(10);
         }
         in.close();
+        
+        //读取标准错误流
+        BufferedReader brError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+        String errline = null;
+        while ((errline = brError.readLine()) != null) {
+        	System.out.println(errline);
+        }
+        brError.close();
         pr.waitFor();
         System.out.println("end");
 	}

@@ -1,6 +1,77 @@
+var table = null;
+var id;
+var LQ_WS = function(){
+    function getUrlRoot(){
+        var u = window.location.href, p = window.location.protocol;
+        if(p.indexOf('https') != -1){
+            u = u.substring( 8, u.lastIndexOf('/'));
+        }else{
+            u = u.substring( 7, u.lastIndexOf('/'));
+        }
+        return u;
+    }
+    var wsUri ="ws://"+getUrlRoot()+"/../ws/lq"; 
+    var $output = $('.output ul');  
+    var webSocket;
+ 
+    function onMessage(event) {
+        var result = $(event.data).text().trim();
+        if(result=="end"){
+            table.draw(false);
+            FrameUtils.unloading();
+            return;
+        }
+        var s = '<li style="color:#0C6;">' + event.data+'</li>';
+        $output.append(s);
+        //保持div随内容变化，自动滚动到底
+        $('.output').slimScroll({ scrollTo: $('.output ul').height() });
+    }
+    function onOpen(event) {
+        
+    }
+    function onClose(evt) { 
 
+    } 
+    function onError(event) {
+        $output.append('<li style="color:#f00;"><i class="icon-chevron-right"></i>系统异常!</li>');
+    }
+    return {
+        start: function(data) {
+            FrameUtils.loading("任务执行中...");
+            webSocket = new WebSocket( wsUri);
+            webSocket.onopen = function(event) {
+                webSocket.send(JSON.stringify(data));
+                $(".output_div").addClass("active");
+                 id = setInterval(function(){ 
+                     var l = $('.output ul').find('li').length;
+                     if( l > 300){//清理数据，防止数据量过大，客户端使用受影响
+                      console.log("清理")
+                         $('.output ul li').slice(0, l-300).remove();
+                     }
+                 },2000); 
+            };
+
+            webSocket.onerror = function(event) {
+                onError(event);
+            };
+         
+            webSocket.onmessage = function(event) {
+                onMessage(event);
+            };
+
+            webSocket.onclose = function(event) { 
+                onClose(event);
+                clearInterval(id);
+            }; 
+        },
+        close: function(){
+            if( webSocket != undefined){
+                webSocket.close();
+            }
+        }
+    }
+}();
 $(document).ready(function(){
-    var table = null;
     var pEditor;
 
     var $start = "<span class='btn btn-success btn-xs cz start'>开始</span>",
@@ -491,45 +562,17 @@ $(document).ready(function(){
                 var spId = $this.parent().parent().attr("spId");
                 var data = {};
                 data["spId"] = spId;
-                data["code"] = $this.parent().next().text();
+                //data["code"] = $this.parent().next().text();
                 data["spName"] = $this.parent().parent().find(".spName").text().trim();
                 data["author"] = $this.parent().parent().find(".author").text().trim();
                 event_dialog.confirm( start, data, '您确定进行任务回测吗?', '开始');
                 function start(data){
-                    FrameUtils.loading("任务开始中...");
                     $this.parent().parent().find(".testStatus").html("<span style='color:#E67E22'>进行中</span>");
                     var waitNum = parseFloat($(".waiting", window.parent.document).text().trim());
                     $(".waiting", window.parent.document).text(--waitNum);
                     var runNum = parseFloat($(".running", window.parent.document).text().trim());
                     $(".running", window.parent.document).text(++runNum);
-                    ZX.postDataByAjax(
-                        "../script/startTest",
-                        JSON.stringify(data),
-                        function(res){
-                            if(res==null){
-                                event_dialog.alert("任务开始失败!");
-                            }else{
-                                $this.parent().html($edit+$del+$report);
-                                FrameUtils.unloading();
-                                //TODO 任务停止脚本
-                                event_dialog.alert("结果保存路径："+res);
-                                // $("#tbl_simple tr[spId="+spId+"]").find(".testStatus .jqmeter-container").jQMeter({
-                                //     goal:'100',
-                                //     raised:'100',
-                                //     width:'80px',
-                                //     height:'20px',
-                                //     barColor:"#2dd47b;",
-                                // });
-                                // setTimeout(function(){
-                                    table.draw(false);
-                                // },2000);
-                            }
-                        },
-                        function(){
-                            event_dialog.alert("任务开始失败!");
-                            FrameUtils.unloading();
-                        }
-                    );
+                    LQ_WS.start(data);
                 }
             })
             //停止
@@ -626,6 +669,24 @@ $(document).ready(function(){
                 table.draw(false);
             })
         }
+        //进程面板关闭
+        function clsOutput(){
+            $(".cls").click(function(e){
+                if(e.stopPropagation()){
+                    e.stopPropagation();
+                }else{
+                    e.cancelBubble = true;
+                }
+                $(".output_div").removeClass("active");
+            });
+        }
+        //进程面板打开
+        function openOutput(){
+          $(".output_b").click(function(){
+              if($(".output_div").hasClass("active")) return;
+              $(".output_div").addClass("active");
+          });
+        }
         return {
             init: function(){
                 // ptCheck();
@@ -633,6 +694,8 @@ $(document).ready(function(){
                 ptDelete();
                 ptCz();
                 ptSort();
+                clsOutput();
+                openOutput();
             }
         }
     }();
@@ -657,11 +720,21 @@ $(document).ready(function(){
             //     $(".ptCheckResult").removeClass("right").removeClass("wrong");
             // })
         }
+        function initOutput(){
+            $('.output').slimScroll({
+                scrollTo: $('.output').height(),
+                height: 300,
+                color: '#ffcc00',
+                allowPageScroll:false,
+                wheelStep:1
+            });
+        }
 
         return {
             init: function(){
                 // console.log( zxCookie.getCookieValue(zxCookie.ACCT));
                 setView();
+                initOutput();
                 APPUtils.init_base();
                 $('.lable_account').text( zxCookie.getCookieValue(zxCookie.ACCT).u );
                 Loader.init();

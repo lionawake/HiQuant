@@ -6,7 +6,7 @@
 	<typeAlias alias="lqStrategyTrade" type="cn.wd.sup.dao.dto.custom.LqStrategyTrade" />
 	<resultMap id="lqStrategyTrade" class="lqStrategyTrade">
 		<result property="spId" column="sp_id" />
-		<result property="sId" column="s_id" />
+		<result property="s_id" column="s_id" />
 		<result property="code" column="code" />
 		<result property="dataPath" column="data_path" />
 		<result property="startTime" column="start_time" />
