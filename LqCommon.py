@@ -154,7 +154,7 @@ class PolicyTask:
         policy_count = 0
         replace_str0 = self.template
         for pp_l in its.product(*gPPList):
-            print(pp_l)
+            #print(pp_l)
             i = 0
             replace_str0 = self.template
             for pp_key in gPPKeyList:
@@ -300,9 +300,18 @@ def get_func_para_list(src):
                     res.append(x.strip())
     else:
         l = src.split(',')
-        min = float(l[0])
-        max = float(l[1])
-        step = float(l[2])
+        if '.' in l[0]:
+            min = float(l[0])
+        else:
+            min = int(l[0])
+        if '.' in l[1]:
+            max = float(l[1])
+        else:
+            max = int(l[1])
+        if '.' in l[2]:
+            step = float(l[2])
+        else:
+            step = int(l[2])
         while (min <= max):
             res.append(round(min,3))
             min = min + step
