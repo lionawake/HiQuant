@@ -71,7 +71,6 @@ table.dataTable thead .sorting_asc.first {
 </style>
 <body>
     <div class="lable_account hidden"></div>
-    <div class="page_title"><a href="index_pt.html">策略模板</a> > 生成的策略</div>
     <div class="caption">
         <i class="fa fa-list-ol"></i> 策略列表<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <i class="fa fa-circle"></i> 策略模板编号: &nbsp;<span class="spId"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -197,6 +196,7 @@ table.dataTable thead .sorting_asc.first {
             var spName;
             var spId = $.url().param("spId");
             $(".spId").html(spId);
+            $("title").html("策略报告-"+spId);
             var table = null;
 
             function formatTable(){

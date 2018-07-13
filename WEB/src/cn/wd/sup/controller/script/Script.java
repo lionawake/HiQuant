@@ -77,13 +77,15 @@ public class Script {
 				
 		//2.调用python脚本
 		WsBase.wInfo(session, "数据分析中... ...");
+		BufferedReader in = null;
+		BufferedReader brError = null;
 		try {
 			//py exe文件路径
 			String exe = PropertiesConfigUtils.getString("py.script.exe");
 			String command = PropertiesConfigUtils.getString("py.script.path");
 			String[] cmdArr = new String[] {exe,command,codeFilePath,spId.toString(), spName, author};
 	        Process pr = Runtime.getRuntime().exec(cmdArr);
-	        BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+	        in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 	        List<String> resultData = new ArrayList<String>();
 	        resultData.add(exe);
 	        resultData.add(command);
@@ -94,31 +96,38 @@ public class Script {
 	        while ((line = in.readLine()) != null) {
 	        	//System.out.println(line);
 	        	//WsBase.wInfo(session, line);
-	        	//resultData.add(line);
+	        	resultData.add(line);
 	        	//Thread.sleep(100);
-	        	com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, line);
-	        	com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, "\n");
+	        	//com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, line);
+	        	//com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, "\n");
 	        }
 	        in.close();
 	        
 	        //读取标准错误流
-	        BufferedReader brError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+	        brError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
 	        String errline = null;
 	        while ((errline = brError.readLine()) != null) {
 	        	WsBase.wError(session, errline);
-	        	//resultData.add(errline);
-	        	com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, errline);
-	        	com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, "\n");
+	        	resultData.add(errline);
+	        	//com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, errline);
+	        	//com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, "\n");
 	        }
 	        brError.close();
 	        pr.waitFor();
 	        
 	        //成功 保存
-	    	//FileUtils.writeLines(new File(resultFilePAth),"UTF-8", resultData);
+	    	FileUtils.writeLines(new File(resultFilePAth),"UTF-8", resultData);
 	    	WsBase.wInfo(session, "分析结束，结果保存在 "+resultFilePAth);
 		} catch (Exception e) {
 			e.printStackTrace();
 			WsBase.wError(session, "分析失败");
+		}finally{
+			if(in!=null){
+				in.close();
+			}
+			if(brError!=null){
+				brError.close();
+			}
 		}
 	}
 }

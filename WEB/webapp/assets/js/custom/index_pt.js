@@ -42,13 +42,13 @@ var LQ_WS = function(){
             webSocket.onopen = function(event) {
                 webSocket.send(JSON.stringify(data));
                 $(".output_div").addClass("active");
-                 id = setInterval(function(){ 
-                     var l = $('.output ul').find('li').length;
-                     if( l > 300){//清理数据，防止数据量过大，客户端使用受影响
-                      console.log("清理")
-                         $('.output ul li').slice(0, l-300).remove();
-                     }
-                 },2000); 
+                 //id = setInterval(function(){ 
+                     //var l = $('.output ul').find('li').length;
+                     //if( l > 300){//清理数据，防止数据量过大，客户端使用受影响
+                      //console.log("清理")
+                         //$('.output ul li').slice(0, l-300).remove();
+                    // }
+                // },2000); 
             };
 
             webSocket.onerror = function(event) {
@@ -163,6 +163,7 @@ $(document).ready(function(){
                             _.each(res.data.data,function(d){
                                 d.first = '<input type="checkbox" name="checkList"></td>';
                                 d.createTime = new Date(d.createTime).Format("yyyy-MM-dd hh:mm:ss");
+                                d.code = "<textarea>"+d.code+"</textarea>";
                                 var testStatus = "";
                                 var cz = "";
                                 switch(d.testStatus){
@@ -556,6 +557,13 @@ $(document).ready(function(){
         }
         //操作栏按钮
         function ptCz(){
+            //创建
+            $(".create").click(function(){
+                $(".ptSave").attr("spId",null);
+                $("input[name=policyName]").val('');
+                pEditor.setValue("填写模板代码\n在这里输入您的代码");
+                $(".edit").removeClass("active");
+            });
             //开始
             $("body").delegate(".start","click",function(){
                 var $this = $(this);
@@ -614,7 +622,7 @@ $(document).ready(function(){
                     $(".ptSave").attr("spId",spId);
                     $(".edit").removeClass("active");
                     $("input[name=policyName]").val($(this).parent().parent().find(".spName").text());
-                    pEditor.setValue($(this).parent().parent().find(".code").text());
+                    pEditor.setValue($(this).parent().parent().find(".code textarea").text());
                     // $(".ptStatus").addClass("ed");
                     $(this).addClass("active");
                 }
@@ -655,7 +663,7 @@ $(document).ready(function(){
             //报告
             $("body").delegate(".report","click",function(){
                 var spId = $(this).parent().parent().attr("spId");
-                window.location.href = "lq_strategy.html?spId="+spId;
+                window.open ("lq_strategy.html?spId="+spId);
             })
         }
         //排序

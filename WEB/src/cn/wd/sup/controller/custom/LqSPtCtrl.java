@@ -93,6 +93,7 @@ public class LqSPtCtrl extends CustomBaseController{
 		JSONObject json = JSONObject.parseObject(jsonString);
 		json.put("sortStr", sortStr);
 		LqStrategyPattern lqSPt = JSONObject.toJavaObject(json, LqStrategyPattern.class);
+		System.out.println(lqSPt);
 		if(pageStart==null) pageStart = 0;
 		if(pageSize==null) pageSize = 1;
 		ArrayList<LqStrategyPattern> data = lqSPtBo.find(lqSPt, pageStart, pageSize);
