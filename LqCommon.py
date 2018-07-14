@@ -29,7 +29,7 @@ class PolicyTask:
             s = t[1]
             tuple_ll = []
             for f_key in gFuncTupleDict:
-                if s.find(f_key) != -1:
+                if s.find(f_key + '(') != -1:
                     tuple_ll.append(gFuncTupleDict[f_key])
                 pass
             if len(tuple_ll) == 0:

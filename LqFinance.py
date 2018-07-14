@@ -835,4 +835,4 @@ def free_float_shares(stock):
     return findat.at[stock, 'free_float_shares']
 
 
-print(total_shares('sz000001'))
+#print(total_shares('sz000001'))
