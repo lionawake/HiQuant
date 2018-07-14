@@ -92,7 +92,7 @@ def lqTA_AD(ind=None):
 	return TA_AD(ind)
 
 def lqTA_ADOSC(ind=None, fastperiod=3, slowperiod=10):
-	'''00021,3,1'''
+	'''00323,3,1'''
 	return TA_ADOSC(ind, fastperiod, slowperiod)
 
 def lqTA_ADX(ind=None, timeperiod=14):
@@ -144,7 +144,7 @@ def lqTA_DEMA(ind=None, timeperiod=30):
 	return TA_DEMA(ind, timeperiod)
 
 def lqTA_DX(ind=None, timeperiod=14):
-	'''00033,2,1'''
+	'''00324,2,1'''
 	return TA_DX(ind, timeperiod)
 
 def lqTA_EMA(ind=None, timeperiod=30):

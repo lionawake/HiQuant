@@ -364,6 +364,21 @@ def get_func_doc_dict():
 def get_func_list():
     f_l = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
     f_num = len(f_l)
+    '''Find Duplicate Functions
+    id_l = []
+    for f in f_l:
+        l = getattr(LqIndicator, f).__doc__.split(',')
+        f_id = int(l[0])
+        id_l.append(f_id)
+
+    for id1 in id_l:
+        n = 0
+        for id2 in id_l:
+            if id1 == id2:
+                n += 1
+                if n > 1:
+                    print("Duplicate function: " + str(id1) + ", " + str(n))
+    '''
     i = 0
     while (i <= f_num):
         for f in f_l:
