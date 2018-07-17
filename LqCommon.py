@@ -256,8 +256,9 @@ def str_cut(start, end, src):
     return -1
 
 def get_func_name_list(src):
-    s = src.strip('[')
-    s = s.strip(']')
+    s = src.strip()
+    s = s.lstrip('[')
+    s = s.rstrip(']')
     res = []
     l = s.split(',')
     for x in l:
@@ -275,10 +276,11 @@ def get_func_name_list(src):
     return res
 
 def get_func_para_list(src):
+    s = src.strip()
     res = []
-    if src[0] == '[':
-        s = src.strip('[')
-        s = s.strip(']')
+    if s[0] == '[':
+        s = s.lstrip('[')
+        s = s.rstrip(']')
         l = s.split(',')
         for x in l:
             t = x.split('-')
@@ -299,7 +301,7 @@ def get_func_para_list(src):
                 else:
                     res.append(x.strip())
     else:
-        l = src.split(',')
+        l = s.split(',')
         if '.' in l[0]:
             min = float(l[0])
         else:
