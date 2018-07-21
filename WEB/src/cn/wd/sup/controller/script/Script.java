@@ -74,47 +74,44 @@ public class Script {
 			throw new Exception("更新状态失败");
 		}
 		WsBase.wInfo(session, "更新任务状态成功");
-				
+		
 		//2.调用python脚本
 		WsBase.wInfo(session, "数据分析中... ...");
-		BufferedReader in = null;
-		BufferedReader brError = null;
+		BufferedReader br = null;
+		Process process = null;
 		try {
-			//py exe文件路径
+			int rs = 0;
+			String output = null;
 			String exe = PropertiesConfigUtils.getString("py.script.exe");
 			String command = PropertiesConfigUtils.getString("py.script.path");
-			String[] cmdArr = new String[] {exe,command,codeFilePath,spId.toString(), spName, author};
-	        Process pr = Runtime.getRuntime().exec(cmdArr);
-	        in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+	        String[] cmds = new String[] {exe,command,codeFilePath,spId.toString(), spName, author};
 	        List<String> resultData = new ArrayList<String>();
 	        resultData.add(exe);
 	        resultData.add(command);
 	        String resultFileName = PropertiesConfigUtils.getString("result.file.name").replaceAll("#spId#", spId.toString());
 	        String resultFilePAth = filePath+resultFileName;
-	        String line;
-	        //Thread.sleep(100);
-	        while ((line = in.readLine()) != null) {
-	        	//System.out.println(line);
-	        	//WsBase.wInfo(session, line);
-	        	resultData.add(line);
-	        	//Thread.sleep(100);
-	        	//com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, line);
-	        	//com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, "\n");
-	        }
-	        in.close();
 	        
-	        //读取标准错误流
-	        brError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
-	        String errline = null;
-	        while ((errline = brError.readLine()) != null) {
-	        	WsBase.wError(session, errline);
-	        	resultData.add(errline);
-	        	//com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, errline);
-	        	//com.zxt.framework.utils.file.FileUtils.appendMethodB(resultFilePAth, "\n");
-	        }
-	        brError.close();
-	        pr.waitFor();
+	        ProcessBuilder builder = new ProcessBuilder(cmds);
+	        builder.redirectErrorStream(true);
+	        process = builder.start();
+	        br = new BufferedReader(new InputStreamReader(process.getInputStream()));
 	        
+	        while (null != (output = br.readLine()))
+	        {
+//	        	System.out.println(output);
+	        	resultData.add(output);
+	        }
+	        rs = process.waitFor();
+	        if(rs != 0) {
+	        	System.out.printf("Python failed: %d\n", rs);
+	        	WsBase.wError(session, "执行Python任务失败");
+	        }else {
+	        	System.out.println("Python Successful");
+	        	WsBase.wInfo(session, "执行Python任务成功");
+	        }
+//	        process.destroy();
+//	        br.close();
+	        System.out.println("结束");
 	        //成功 保存
 	    	FileUtils.writeLines(new File(resultFilePAth),"UTF-8", resultData);
 	    	WsBase.wInfo(session, "分析结束，结果保存在 "+resultFilePAth);
@@ -122,11 +119,11 @@ public class Script {
 			e.printStackTrace();
 			WsBase.wError(session, "分析失败");
 		}finally{
-			if(in!=null){
-				in.close();
+			if(br != null) {
+				br.close();
 			}
-			if(brError!=null){
-				brError.close();
+			if(process != null) {
+				process.destroy();
 			}
 		}
 	}

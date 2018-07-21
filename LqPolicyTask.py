@@ -24,12 +24,12 @@ taskQueueSize = 1000000
 threadList = []
 taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
-policyFileDefault = 'gy_demo2.py'
+policyFileDefault = 'gy_demo3.py'
 policyFile = ''
 sp_name = 'LQ_Policy'
 author = 'LongQuant'
-sp_id = 1
-arg_num = 1
+sp_id = 10001
+arg_num = 10
 
 def show_process_bar(end=False):
     queSzCur = taskQueue.qsize()
@@ -86,10 +86,10 @@ if __name__ == '__main__':
         i += 1
     # 等待任务队列执行完毕
     while not taskQueue.empty():
-        show_process_bar()
+        #show_process_bar()
         time.sleep(1)
         pass
-    show_process_bar(end=True)
+    #show_process_bar(end=True)
     # 线程退出
     for t in threadList:
         if t.finish == True:

@@ -1,113 +1,76 @@
-#!/usr/bin/python
-# -*- coding: utf8 -*-
-#==============================================================================
-# written by fuxuanhuang
-#==============================================================================
-
-'''
-#FPDF:  function parameters default value
-#FPDFL: function parameters default value list
-sf = StockFilter('')
-if sf.$$F:[1-2,8]$() > $$P:[10-11,15]$ and sf.$$F:[9,10]$() <= $$P:0.1, 0.5, 0.2$:
-    if sf.$$F:[3-5]$() == $$P:8, 10, 2$:
-        pass
-    else:
-        pass
-else:
-    pass
-pass
-'''
-
-class test:
-    def test_func1(self):
-        return 6,7,8
-
-import re
-def r_replace(s):
-    tmp = s.group(0)
-    return tmp + '[]'
-
-'''
-rep = 'xxxxAMA(1,2,3).xxxxx > xxxxxAMA(a,b)xxx'
-print(rep)
-s1 = 'AMA(*)'
-s2 = 'AMA(*)[0]'
-rep = rep.replace(s1, s2)
-print(rep)
-rep = re.sub('AMA\((.*?)\)', r_replace, rep)
-print(rep)
-
-import LqFinance as lqfin
-import factors as lqidc
 from hikyuu.interactive.interactive import *
-from hikyuu.indicator import *
+import datetime
+from datetime import timedelta
+import pandas as pd
+import numpy as np
+import talib as tb
 
-my_sys = SYS_Simple()
-data = CLOSE(my_sys.getTO())
-lqidc.lqEMA(data,1,2)
-'''
+#创建模拟交易账户进行回测，初始资金30万
+my_tm = crtTM(initCash = 300000)
 
-import LqIndicator
+#创建信号指示器（以5日EMA为快线，5日EMA自身的10日EMA最为慢线，快线向上穿越慢线时买入，反之卖出）
+my_sg = SG_Flex(OP(EMA(n=5)), slow_n=10)
 
-gFuncList = []
-def get_func_list():
-    f_l = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
-    print(f_l)
-    f_num = len(f_l)
-    i = 0
-    while (i <= f_num):
-        for f in f_l:
-            l = getattr(LqIndicator, f).__doc__.split(',')
-            f_id = int(l[0])
-            if f_id == i:
-                gFuncList.append(f)
-                break
-        pass
-        if f_id != i:
-            gFuncList.append('NULL')
-        i += 1
-    pass
-#get_func_list()
-#print(gFuncList)
+#固定每次买入1000股
+my_mm = MM_FixedCount(1000)
 
-def func_p2(a=1, b=2):
-    print("func_p2")
-    print("a=%d"%a)
-    print("b=%d" % b)
-    return 100
+#创建交易系统并运行
+sys = SYS_Simple(tm = my_tm, sg = my_sg, mm = my_mm)
+sys.run(sm['sz000001'], Query(-150))
 
-def func_p5(a=10, b=20, c=30, d=40, e=50):
-    print("func_p5")
-    print("a=%d" % a)
-    print("b=%d" % b)
-    print("c=%d" % c)
-    print("d=%d" % d)
-    print("e=%d" % e)
-    return 200
+#绘制系统信号
+sys.plot()
 
-def my_replace(s):
-    s0 = s.group(0)
-    s1 = s.group(1)
-    s2 = s.group(2)
-    s3 = s.group(3)
-    l = s2.split(',')
-    dst = ""
-    i = 0
-    paraNum = 3
-    if len(l) <= paraNum:
-        return s0
-    for c in l:
-        if i >= paraNum:
-            break
-        dst += c
-        i += 1
-        if i != paraNum:
-            dst += ','
+k = sm['sz000001'].getKData(Query(-150))
+print(k)
+c = CLOSE(k)
+print(c)
+d = CLOSE(c)
+print(d)
+fast = EMA(c, 5)
+slow = EMA(fast, 10)
 
-    return s1 + dst + s3
+#绘制信号指示器使用两个指标
+fast.plot(new=False)
+slow.plot(new=False)
 
-s1 = "if ABC(1,2,3,4,5,6) and CDE(x,y,z):"
+#绘制资金收益曲线
+x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
+x = PRICELIST(x)
+x.plot()
 
-print(s1)
-s2 = re.sub('(ABC\()(.*?)(\))', my_replace, s1)
-print(s2)
+per = Performance()
+print(per.report(my_tm, Datetime(datetime.datetime.today())))
+
+
+def test_func(stock, query):
+    """计算指定stock的系统策略胜率，系统策略为之前的简单双均线交叉系统（每次固定买入100股）
+    """
+    # 创建模拟交易账户进行回测，初始资金30万
+    my_tm = crtTM(initCash=1000000)
+
+    # 创建信号指示器（以5日EMA为快线，5日EMA自身的10日EMA最为慢线，快线向上穿越慢线时买入，反之卖出）
+    my_sg = SG_Flex(OP(EMA(n=5)), slow_n=10)
+
+    # 固定每次买入1000股
+    my_mm = MM_FixedCount(100)
+
+    # 创建交易系统并运行
+    sys = SYS_Simple(tm=my_tm, sg=my_sg, mm=my_mm)
+    sys.run(stock, query)
+
+    per = Performance()
+    per.statistics(my_tm, Datetime(datetime.datetime.today()))
+    return per.get("赢利交易比例%".encode('gb2312'))
+
+
+def total_func(blk, query):
+    """遍历指定板块的所有的股票，计算系统胜率"""
+    result = {}
+    for s in blk:
+        if s.valid and s.type != constant.STOCKTYPE_INDEX:
+            result[s.name] = test_func(s, query)
+    return result
+
+#a = total_func(sm, Query(-500))
+#l = len(a)

@@ -3,90 +3,85 @@
 
 from hikyuu.indicator import *
 import talib
-
-def func_return_input(p):
-	'''00000,1,1'''
-	return p
-
-def lqAMA(data, n=10, fast_n=2, slow_n=30):
+def LQ_Hikyuu_AMA(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
     '''00001,4,2'''
-    return AMA(data, n=10, fast_n=2, slow_n=30)
+    return AMA(close, n=n1, fast_n=n2, slow_n=n3)
 
-def lqAMO(data):
-	'''00002,1,1'''
-	return AMO(data)
+def LQ_Hikyuu_AMO(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00002,1,1'''
+    return AMO(close)
 
-def lqCLOSE(data):
-	'''00003,1,1'''
-	return CLOSE(data)
+def LQ_Hikyuu_CLOSE(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00003,1,1'''
+    return CLOSE(close)
 
-def lqCVAL(data, value=0.0, len=0, discard=0):
-	'''00004,4,1'''
-	return CVAL(data,value,len,discard)
+def LQ_Hikyuu_CVAL(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00004,4,1'''
+    return CVAL(close,value=value,len=len,discard=discard)
 
-def lqDIFF(data):
-	'''00005,1,1'''
-	return DIFF(data)
+def LQ_Hikyuu_DIFF(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00005,1,1'''
+    return DIFF(close)
 
-def lqEMA(data, n=22):
-	'''00006,2,1'''
-	return EMA(data,n)
+def LQ_Hikyuu_EMA(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00006,2,1'''
+    return EMA(close,n=n1)
 
-def lqHHV(data, n=20):
-	'''00007,2,1'''
-	return HHV(data,n)
+def LQ_Hikyuu_HHV(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00007,2,1'''
+    return HHV(close,n=n1)
 
-def lqHIGH(data):
-	'''00008,1,1'''
-	return HIGH(data)
+def LQ_Hikyuu_HIGH(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00008,1,1'''
+    return HIGH(close)
 
-def lqKDATA(data):
-	'''00009,1,1'''
-	return KDATA(data)
+def LQ_Hikyuu_Kclose(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00009,1,1'''
+    return Kclose(close)
 
-def lqLLV(data, n=20):
-	'''00010,2,1'''
-	return LLV(data,n)
+def LQ_Hikyuu_LLV(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00010,2,1'''
+    return LLV(close,n=n1)
 
-def lqLOW(data):
-	'''00011,1,1'''
-	return LOW(data)
+def LQ_Hikyuu_LOW(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00011,1,1'''
+    return LOW(close)
 
-def lqMA(data, n=22, type="SMA"):
-	'''00012,3,1'''
-	return MA(data,n,type)
+def LQ_Hikyuu_MA(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00012,3,1'''
+    return MA(close,n=n1,type=type)
 
-def lqMACD(data, n1=12, n2=26, n3=9):
-	'''00013,4,3'''
-	return MACD(data,n1,n2,n3)
+def LQ_Hikyuu_MACD(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00013,4,3'''
+    return MACD(close,n1=n1,n2=n2,n3=n3)
 
-def lqOPEN(data):
-	'''00014,1,1'''
-	return OPEN(data)
+def LQ_Hikyuu_OPEN(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00014,1,1'''
+    return OPEN(close)
 
-def lqREF(data, n):
-	'''00015,2,1'''
-	return REF(data,n)
+def LQ_Hikyuu_REF(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00015,2,1'''
+    return REF(close,n=n1)
 
-def lqSAFTYLOSS(data, n1=10, n2=3, p=2.0):
-	'''00016,4,1'''
-	return SAFTYLOSS(data,n1,n2,p)
+def LQ_Hikyuu_SAFTYLOSS(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00016,4,1'''
+    return SAFTYLOSS(close,n1=n1,n2=n2,p=p)
 
-def lqSMA(data, n=22):
-	'''00017,2,1'''
-	return SMA(data,n)
+def LQ_Hikyuu_SMA(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00017,2,1'''
+    return SMA(close,n=n1)
 
-def lqSTDEV(data, n=10):
-	'''00018,2,1'''
-	return STDEV(data,n)
+def LQ_Hikyuu_STDEV(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00018,2,1'''
+    return STDEV(close,n=n1)
 
-def lqVIGOR(data, n=2):
-	'''00019,2,1'''
-	return VIGOR(data,n)
+def LQ_Hikyuu_VIGOR(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00019,2,1'''
+    return VIGOR(close,n=n1)
 
-def lqVOL(data):
-	'''00020,1,1'''
-	return VOL(data)
+def LQ_Hikyuu_VOL(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
+    '''00020,1,1'''
+    return VOL(close)
 
 def lqTA_AD(ind=None):
 	'''00021,1,1'''

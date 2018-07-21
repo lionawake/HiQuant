@@ -98,13 +98,13 @@ public class ScriptCtrl extends VOController{
 		}
 		
 		//2.更新状态
-		LqStrategyPattern lqSPt = new LqStrategyPattern();
-		lqSPt.setSpId(spId);
-		lqSPt.setTestStatus(2);
-		Integer result = lqSPtBo.update(lqSPt);
-		if(result==0 || result==null) {
-			return getErrorResult("更新状态失败");
-		}
+		//LqStrategyPattern lqSPt = new LqStrategyPattern();
+		//lqSPt.setSpId(spId);
+		//lqSPt.setTestStatus(2);
+		//Integer result = lqSPtBo.update(lqSPt);
+		//if(result==0 || result==null) {
+			//return getErrorResult("更新状态失败");
+		//}
 //		//2.调用python脚本
 		try {
 			//py exe文件路径
@@ -159,30 +159,28 @@ public class ScriptCtrl extends VOController{
 		//String exe = "C:/Users/fu/PycharmProjects/Hi/venv/Scripts/python.exe";
 		String exe = "python";
 		//调用脚本路径
-		//String command = "C:/Users/fu/PycharmProjects/Hi/HiQuant/LqPolicyTask.py";
 		String command = "C:/Users/fu/PycharmProjects/Hi/HiQuant/LqPolicyTask.py";
         //参数  code路径
-        String path = "D:/LqProject/project/result/88/code_88.py";
-        String[] cmdArr = new String[] {exe,command,path,"88", "201807022209", "admin"};
-        
-        Process pr = Runtime.getRuntime().exec(cmdArr);
-        BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-        String line;
-        while ((line = in.readLine()) != null) {
-            System.out.println(line);
+        String path = "D:/LqProject/project/result/243/code_243.py";        
+        int rs = 0;
+        String[] cmds = new String[] {exe,command,path,"10001", "201807022209", "admin"};
+        ProcessBuilder builder = new ProcessBuilder(cmds);
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
+        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String output = null;
+        while (null != (output = br.readLine()))
+        {
+        	System.out.println(output);
         }
-        in.close();
-        
-        //读取标准错误流
-        BufferedReader brError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
-        String errline = null;
-        while ((errline = brError.readLine()) != null) {
-        	System.out.println(errline);
+        rs = process.waitFor();
+        if(rs != 0) {
+        	System.out.printf("Python failed: %d\n", rs);
+        }else {
+        	System.out.println("Python Successful");
         }
-        brError.close();
-        pr.waitFor();
-        System.out.println("end");
+        process.destroy();
+        br.close();
+        System.exit(rs);
 	}
-	
-
 }
