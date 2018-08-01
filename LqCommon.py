@@ -26,6 +26,13 @@ class PolicyTask:
     def put_queue(self):
         c = 0
         for t in gTaskList:
+            c += 1
+            self.que.put(t)
+            if c >= self.sz:
+                ALM("Tasks overrun: %d" % c)
+                return True
+            continue
+
             s = t[1]
             tuple_ll = []
             for f_key in gFuncTupleDict:
@@ -420,8 +427,8 @@ def INF(str):
     pass
 
 # 是否保留新生成的策略模板代码文件
-gTaskFileReserve = True
-#gTaskFileReserve = False
+#gTaskFileReserve = True
+gTaskFileReserve = False
 # 获取StockFilter全部筛选函数
 gTaskList = []
 gPPList = []
