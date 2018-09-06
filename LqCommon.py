@@ -372,7 +372,8 @@ def get_func_doc_dict():
 
 def get_func_list():
     f_l = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
-    f_num = len(f_l)
+    #f_num = len(f_l)
+    f_num = 1000
     '''Find Duplicate Functions
     id_l = []
     for f in f_l:
@@ -446,3 +447,7 @@ gDBProc = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
 get_func_list()
 #生成多返回值指标函数字典
 get_func_doc_dict()
+
+if __name__ == '__main__':
+    print(gFuncDocDict)
+    print(gFuncList)
