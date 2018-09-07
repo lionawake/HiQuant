@@ -20,13 +20,36 @@ import numpy as np
 import operator
 from numpy import mean,math,sum
 
-def get_stock_day(enddate, code):
-    return QA.QA_fetch_stock_day_adv(code, '2018-01-01', enddate)
-
-def get_index_day(enddate, index):
-    return QA.QA_fetch_index_day_adv(index, '2018-01-01', enddate)
-
 ###################### 共用函数群 ######################
+
+def get_stock_day(begindate, enddate, code):
+    return QA.QA_fetch_stock_day_adv(code, begindate, enddate)
+
+def get_index_day(begindate, enddate, index):
+    return QA.QA_fetch_index_day_adv(index, begindate, enddate)
+
+def get_price(stock_pool=None, begin_date=None, end_date=None, field=None, head_count=0, plat_form_type='QA'):
+    if plat_form_type != 'QA':
+        return None
+
+    data = QA.QA_fetch_stock_day_adv(stock_pool, begin_date, end_date)
+    if field == 'open':
+        field_data = data.open
+    elif field == 'high':
+        field_data = data.high
+    elif field == 'low':
+        field_data = data.low
+    elif field == 'close':
+        field_data = data.close
+    else:
+        return None
+
+    if head_count != 0:
+        res = field_data.unstack().tail(head_count)
+    else:
+        res = field_data.unstack()
+
+    return res
 
 def get_pool(index,enddate=None):
 
@@ -41,14 +64,15 @@ def get_pool(index,enddate=None):
         成分股的list
     '''
 
-    #if index == 'all':
-    #    return list(get_all_securities(['stock'],date=enddate).index)
-    #else:
-    #    return get_index_stocks(index,date=enddate)
     if index == 'all':
-        return QA.QA_fetch_stock_block_adv().code
+        return list(get_all_securities(['stock'],date=enddate).index)
     else:
-        return QA.QA_fetch_stock_block_adv(code=index).code
+        return get_index_stocks(index,date=enddate)
+
+    #if index == 'all':
+    #    return QA.QA_fetch_stock_block_adv().code
+    #else:
+    #    return QA.QA_fetch_stock_block_adv(code=index).code
 
 def sign(x):
     # x is a series
@@ -438,10 +462,9 @@ def ts_rank(dataframe):
     return output
 
 
-
 ###################### Alpha函数群 ######################
 
-def alpha_001(enddate,index='all'):
+def alpha_001(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
 
     '''
@@ -454,24 +477,12 @@ def alpha_001(enddate,index='all'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
-    print(pool)
+    #pool = get_pool(index,enddate)
     #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=25)['close']
-    n = 0
-    for s in pool:
-        d = get_stock_day(enddate, s)
-        n = n + 1
-        if n == 25:
-            break
-
-    d = get_stock_day(enddate, pool[0])
-    close = d.close
+    close = get_price(pool, begin_date, end_date, 'close', 25, plat_form_type)
     returns_df = returns(close)
-    print(returns_df)
     signedpower_df = pd.DataFrame([],index=range(5),columns=pool)
-    print(signedpower_df)
     for stock in pool:
-        print(stock)
         for i in range(5):
 
             if returns_df[stock].iloc[-5+i]<0:
@@ -481,7 +492,6 @@ def alpha_001(enddate,index='all'):
             else:
                 signedpower_df[stock].loc[i] = signedpower(close[stock].iloc[20+i],2)
 
-
 #         print(signedpower_df[stock])
 
     result = rank_pool(ts_argmax(signedpower_df))-0.5
@@ -489,7 +499,7 @@ def alpha_001(enddate,index='all'):
     return result
 
 
-def alpha_002(enddate,index='all'):
+def alpha_002(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -501,16 +511,10 @@ def alpha_002(enddate,index='all'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
-    d = get_stock_day(enddate, index)
-    high = d.high
-    close = d.close
-    low = d.low
-    openprice = d.open
-
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=6)['open']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=8)['volume']
+    #pool = get_pool(index,enddate)
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=6)['open']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=8)['volume']
 
     #求rank(    delta(   log(volume)   , 2)   )
     delta_df_01= np.log(volume).diff(2)
@@ -532,7 +536,7 @@ def alpha_002(enddate,index='all'):
     return -result
 
 
-def alpha_003(enddate,index='all'):
+def alpha_003(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -562,7 +566,7 @@ def alpha_003(enddate,index='all'):
     return -result
 
 
-def alpha_004(enddate,index='all'):
+def alpha_004(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -587,7 +591,7 @@ def alpha_004(enddate,index='all'):
     return -result
 
 
-def alpha_005(enddate,index='all'):
+def alpha_005(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -618,7 +622,7 @@ def alpha_005(enddate,index='all'):
     return result
 
 
-def alpha_006(enddate,index='all'):
+def alpha_006(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -638,7 +642,7 @@ def alpha_006(enddate,index='all'):
     return -1*result
 
 
-def alpha_007(enddate,index='all'):
+def alpha_007(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -678,7 +682,7 @@ def alpha_007(enddate,index='all'):
 
     return result_series
 
-def alpha_008(enddate,index='all'):
+def alpha_008(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -707,7 +711,7 @@ def alpha_008(enddate,index='all'):
     return -result
 
 
-def alpha_009(enddate,index='all'):
+def alpha_009(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -742,7 +746,7 @@ def alpha_009(enddate,index='all'):
     return result_series
 
 
-def alpha_010(enddate,index='all'):
+def alpha_010(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -783,7 +787,7 @@ def alpha_010(enddate,index='all'):
 
 
 
-def alpha_011(enddate,index='all'):
+def alpha_011(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -818,7 +822,7 @@ def alpha_011(enddate,index='all'):
     return result
 
 
-def alpha_012(enddate,index='all'):
+def alpha_012(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -845,7 +849,7 @@ def alpha_012(enddate,index='all'):
 
 
 
-def alpha_013(enddate,index='all'):
+def alpha_013(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -873,7 +877,7 @@ def alpha_013(enddate,index='all'):
     return -1*result
 
 
-def alpha_014(enddate,index='all'):
+def alpha_014(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -903,7 +907,7 @@ def alpha_014(enddate,index='all'):
     return -1*result
 
 
-def alpha_015(enddate,index='all'):
+def alpha_015(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -935,7 +939,7 @@ def alpha_015(enddate,index='all'):
     return -1*result
 
 
-def alpha_016(enddate,index='all'):
+def alpha_016(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -963,7 +967,7 @@ def alpha_016(enddate,index='all'):
     return -1*result
 
 
-def alpha_017(enddate,index='all'):
+def alpha_017(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1011,7 +1015,7 @@ def alpha_017(enddate,index='all'):
     return -1*rank_series1*rank_series2*rank_series3
 
 
-def alpha_018(enddate,index='all'):
+def alpha_018(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1043,7 +1047,7 @@ def alpha_018(enddate,index='all'):
     return -1*result
 
 
-def alpha_019(enddate,index='all'):
+def alpha_019(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1069,7 +1073,7 @@ def alpha_019(enddate,index='all'):
     return -1*series1*(rank_series+1)
 
 
-def alpha_020(enddate,index='all'):
+def alpha_020(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1101,7 +1105,7 @@ def alpha_020(enddate,index='all'):
     return -1*series1*series2*series3
 
 
-def alpha_021(enddate,index='all'):
+def alpha_021(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1147,7 +1151,7 @@ def alpha_021(enddate,index='all'):
 
 
 
-def alpha_022(enddate,index='all'):
+def alpha_022(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1179,7 +1183,7 @@ def alpha_022(enddate,index='all'):
 
 
 
-def alpha_023(enddate,index='all'):
+def alpha_023(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1209,7 +1213,7 @@ def alpha_023(enddate,index='all'):
 
 
 
-def alpha_024(enddate,index='all'):
+def alpha_024(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1248,7 +1252,7 @@ def alpha_024(enddate,index='all'):
     return result_series
 
 
-def alpha_025(enddate,index='all'):
+def alpha_025(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1275,7 +1279,7 @@ def alpha_025(enddate,index='all'):
     return rank_result
 
 
-def alpha_026(enddate,index='all'):
+def alpha_026(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1308,7 +1312,7 @@ def alpha_026(enddate,index='all'):
     return -1*result
 
 
-def alpha_027(enddate,index='all'):
+def alpha_027(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1349,7 +1353,7 @@ def alpha_027(enddate,index='all'):
     return result_series
 
 
-def alpha_028(enddate,index='all'):
+def alpha_028(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1378,7 +1382,7 @@ def alpha_028(enddate,index='all'):
     return result_series
 
 
-def alpha_029(enddate,index='all'):
+def alpha_029(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1416,7 +1420,7 @@ def alpha_029(enddate,index='all'):
     return ts_min_series+ts_rank_series
 
 
-def alpha_030(enddate,index='all'):
+def alpha_030(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1442,7 +1446,7 @@ def alpha_030(enddate,index='all'):
 
     return result_series
 
-def alpha_031(enddate,index='all'):
+def alpha_031(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1481,7 +1485,7 @@ def alpha_031(enddate,index='all'):
     return rank_series_01+rank_series_02+sign_series
 
 
-def alpha_032(enddate,index='all'):
+def alpha_032(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1508,7 +1512,7 @@ def alpha_032(enddate,index='all'):
     return scale_series_02+scale_series_01
 
 
-def alpha_033(enddate,index='all'):
+def alpha_033(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1531,7 +1535,7 @@ def alpha_033(enddate,index='all'):
     return rank_series
 
 
-def alpha_034(enddate,index='all'):
+def alpha_034(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1554,7 +1558,7 @@ def alpha_034(enddate,index='all'):
     return rank_series
 
 
-def alpha_035(enddate,index='all'):
+def alpha_035(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1587,7 +1591,7 @@ def alpha_035(enddate,index='all'):
     return ts_rank_series01*series02*series03
 
 
-def alpha_036(enddate,index='all'):
+def alpha_036(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1632,7 +1636,7 @@ def alpha_036(enddate,index='all'):
     return series_01+series_02+series_03+series_04+series_05
 
 
-def alpha_037(enddate,index='all'):
+def alpha_037(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1660,7 +1664,7 @@ def alpha_037(enddate,index='all'):
     return rank_series01+rank_series02
 
 
-def alpha_038(enddate,index='all'):
+def alpha_038(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1688,7 +1692,7 @@ def alpha_038(enddate,index='all'):
     return -1*rank_series_01*rank_series_02
 
 
-def alpha_039(enddate,index='all'):
+def alpha_039(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1727,7 +1731,7 @@ def alpha_039(enddate,index='all'):
     return series_01*series_02
 
 
-def alpha_040(enddate,index='all'):
+def alpha_040(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1754,7 +1758,7 @@ def alpha_040(enddate,index='all'):
     return series_01*series_02
 
 
-def alpha_041(enddate,index='all'):
+def alpha_041(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1778,7 +1782,7 @@ def alpha_041(enddate,index='all'):
     return result
 
 
-def alpha_042(enddate,index='all'):
+def alpha_042(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1801,7 +1805,7 @@ def alpha_042(enddate,index='all'):
     return result
 
 
-def alpha_043(enddate,index='all'):
+def alpha_043(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1842,7 +1846,7 @@ def alpha_043(enddate,index='all'):
     return series01*series02
 
 
-def alpha_044(enddate,index='all'):
+def alpha_044(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1870,7 +1874,7 @@ def alpha_044(enddate,index='all'):
     return result
 
 
-def alpha_045(enddate,index='all'):
+def alpha_045(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1907,7 +1911,7 @@ def alpha_045(enddate,index='all'):
     return series01*series02*series03
 
 
-def alpha_046(enddate,index='all'):
+def alpha_046(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1941,7 +1945,7 @@ def alpha_046(enddate,index='all'):
     return result
 
 
-def alpha_047(enddate,index='all'):
+def alpha_047(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -1988,7 +1992,7 @@ def alpha_047(enddate,index='all'):
     return series01*series02-series03
 
 
-def alpha_049(enddate,index='all'):
+def alpha_049(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2017,7 +2021,7 @@ def alpha_049(enddate,index='all'):
     return result
 
 
-def alpha_050(enddate,index='all'):
+def alpha_050(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2053,7 +2057,7 @@ def alpha_050(enddate,index='all'):
     return result
 
 
-def alpha_051(enddate,index='all'):
+def alpha_051(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2083,7 +2087,7 @@ def alpha_051(enddate,index='all'):
     return result
 
 
-def alpha_052(enddate,index='all'):
+def alpha_052(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2121,7 +2125,7 @@ def alpha_052(enddate,index='all'):
     return series01*series02*series03
 
 
-def alpha_053(enddate,index='all'):
+def alpha_053(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2146,7 +2150,7 @@ def alpha_053(enddate,index='all'):
     return result
 
 
-def alpha_054(enddate,index='all'):
+def alpha_054(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2173,7 +2177,7 @@ def alpha_054(enddate,index='all'):
     return result.iloc[0,:]
 
 
-def alpha_055(enddate,index='all'):
+def alpha_055(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2204,7 +2208,7 @@ def alpha_055(enddate,index='all'):
     return result
 
 
-def alpha_056(enddate,index='all'):
+def alpha_056(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2242,7 +2246,7 @@ def alpha_056(enddate,index='all'):
     return -1*series02*series01
 
 
-def alpha_057(enddate,index='all'):
+def alpha_057(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2274,7 +2278,7 @@ def alpha_057(enddate,index='all'):
     return -1*numerator_series/denominator_series
 
 
-def alpha_060(enddate,index='all'):
+def alpha_060(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2305,7 +2309,7 @@ def alpha_060(enddate,index='all'):
     return temp1+temp2
 
 
-def alpha_061(enddate,index='all'):
+def alpha_061(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2344,7 +2348,7 @@ def alpha_061(enddate,index='all'):
     return stock_series
 
 
-def alpha_062(enddate,index='all'):
+def alpha_062(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2399,7 +2403,7 @@ def alpha_062(enddate,index='all'):
     return series*-1
 
 
-def alpha_064(enddate,index='all'):
+def alpha_064(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2459,7 +2463,7 @@ def alpha_064(enddate,index='all'):
     return series*-1
 
 
-def alpha_065(enddate,index='all'):
+def alpha_065(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2508,7 +2512,7 @@ def alpha_065(enddate,index='all'):
     return series*-1
 
 
-def alpha_066(enddate,index='all'):
+def alpha_066(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2555,7 +2559,7 @@ def alpha_066(enddate,index='all'):
 
 
 
-def alpha_068(enddate,index='all'):
+def alpha_068(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2609,7 +2613,7 @@ def alpha_068(enddate,index='all'):
     return -1*series
 
 
-def alpha_071(enddate,index='all'):
+def alpha_071(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2668,7 +2672,7 @@ def alpha_071(enddate,index='all'):
     return result
 
 
-def alpha_072(enddate,index='all'):
+def alpha_072(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2717,7 +2721,7 @@ def alpha_072(enddate,index='all'):
     return temp1/temp2
 
 
-def alpha_073(enddate,index='all'):
+def alpha_073(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2769,7 +2773,7 @@ def alpha_073(enddate,index='all'):
     return result
 
 
-def alpha_074(enddate,index='all'):
+def alpha_074(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2820,7 +2824,7 @@ def alpha_074(enddate,index='all'):
     return -1*result
 
 
-def alpha_075(enddate,index='all'):
+def alpha_075(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2865,7 +2869,7 @@ def alpha_075(enddate,index='all'):
     return result
 
 
-def alpha_077(enddate,index='all'):
+def alpha_077(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2907,7 +2911,7 @@ def alpha_077(enddate,index='all'):
     return result
 
 
-def alpha_078(enddate,index='all'):
+def alpha_078(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -2959,7 +2963,7 @@ def alpha_078(enddate,index='all'):
     return result
 
 
-def alpha_083(enddate,index='all'):
+def alpha_083(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3000,7 +3004,7 @@ def alpha_083(enddate,index='all'):
     return temp1*temp2/temp3
 
 
-def alpha_084(enddate,index='all'):
+def alpha_084(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3035,7 +3039,7 @@ def alpha_084(enddate,index='all'):
     return result
 
 
-def alpha_085(enddate,index='all'):
+def alpha_085(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3079,7 +3083,7 @@ def alpha_085(enddate,index='all'):
     return result
 
 
-def alpha_086(enddate,index='all'):
+def alpha_086(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3127,7 +3131,7 @@ def alpha_086(enddate,index='all'):
 
 
 
-def alpha_088(enddate,index='all'):
+def alpha_088(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3190,7 +3194,7 @@ def alpha_088(enddate,index='all'):
 
 
 
-def alpha_092(enddate,index='all'):
+def alpha_092(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3258,7 +3262,7 @@ def alpha_092(enddate,index='all'):
     return result
 
 
-def alpha_094(enddate,index='all'):
+def alpha_094(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3301,7 +3305,7 @@ def alpha_094(enddate,index='all'):
     return -1*signedpower(temp1,temp2)
 
 
-def alpha_095(enddate,index='all'):
+def alpha_095(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3354,7 +3358,7 @@ def alpha_095(enddate,index='all'):
     return result
 
 
-def alpha_096(enddate,index='all'):
+def alpha_096(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3436,7 +3440,7 @@ def alpha_096(enddate,index='all'):
     return result*-1
 
 
-def alpha_098(enddate,index='all'):
+def alpha_098(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3504,7 +3508,7 @@ def alpha_098(enddate,index='all'):
     return temp1-temp2
 
 
-def alpha_099(enddate,index='all'):
+def alpha_099(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3552,7 +3556,7 @@ def alpha_099(enddate,index='all'):
     return result*-1
 
 
-def alpha_101(enddate,index='all'):
+def alpha_101(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
     公式：
@@ -3569,61 +3573,24 @@ def alpha_101(enddate,index='all'):
 
     #pool = get_pool(index,enddate)
 
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+
+    high = get_price(pool, begin_date, end_date, 'high', 1, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 1, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 1, plat_form_type)
+    openprice = get_price(pool, begin_date, end_date, 'open', 1, plat_form_type)
 
     result = (close-openprice)/((high-low)+.001)
 
     return result.iloc[0,:]
 
-def alpha_102(enddate,index='all'):
-
-    '''
-    公式：
-    ((close - open) / ((high - low) + .001))
-
-    Inputs:
-        enddate: 查询日期
-        index: 股票池
-
-    Outputs:
-        因子的值
-
-    '''
-
-    #pool = get_pool(index,enddate)
-    #d = QA.QA_fetch_stock_day_adv(index, '2018-01-01', enddate)
-    #d = QA.QAFetch.QATdx.QA_fetch_get_stock_list(index)
-    d = get_index_day(enddate, index)
-    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
-    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
-    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
-    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
-    high = d.high
-    close = d.close
-    low = d.low
-    openprice = d.open
-    d.select_code('000001')
-    print(d.data)
-    print(d.volume)
-    result = (close-openprice)/((high-low)+.001)
-    #print(result)
-
-    return result.iloc[0,]
-
 if __name__ == '__main__':
-    import sys
-    sys.path.append("C:/Users/fu/quantaxis/")
     import QUANTAXIS as QA
-    #alpha_102("2018-08-24", '000001')
-    #a = QA.QA_DataStruct_Stock_block().get_code(code='000001')
-    #print(a)
-    #d = QA.QA_fetch_stock_block_adv(code='000001', blockname='通达信88')
-    #print(d.len)
-    #n = d.block_name
-    #print(n)
-    #c = d.code
-    #print(c)
-    alpha_001("2018-08-24")
+    pool = ['000001', '000002', '000005']
+    res = alpha_001(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_101(pool, '2018-01-01', '2018-06-30')
+    print(res)
