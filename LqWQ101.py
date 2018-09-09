@@ -28,9 +28,11 @@ def get_stock_day(begindate, enddate, code):
 def get_index_day(begindate, enddate, index):
     return QA.QA_fetch_index_day_adv(index, begindate, enddate)
 
-def get_price(stock_pool=None, begin_date=None, end_date=None, field=None, head_count=0, plat_form_type='QA'):
+def get_price(stock_pool=None, begin_date=None, end_date=None, field=None, tail_count=0, plat_form_type='QA'):
     if plat_form_type != 'QA':
         return None
+    if begin_date == None:
+        begin_date = '2015-01-01'
 
     data = QA.QA_fetch_stock_day_adv(stock_pool, begin_date, end_date)
     if field == 'open':
@@ -41,11 +43,29 @@ def get_price(stock_pool=None, begin_date=None, end_date=None, field=None, head_
         field_data = data.low
     elif field == 'close':
         field_data = data.close
+    elif field == 'volume':
+        field_data = data.volume
+    elif field == 'money':
+        field_data = data.money
+    elif field == 'avg':
+        field_data = data.avg
+    elif field == 'factor':
+        #field_data = data.factor
+        return None
+    elif field == 'high_limit':
+        field_data = data.high_limit
+    elif field == 'low_limit':
+        field_data = data.low_limit
+    elif field == 'pre_close' or field == 'preclose':
+        field_data = data.preclose
+    elif field == 'paused':
+        #field_data = data.paused
+        return None
     else:
         return None
 
-    if head_count != 0:
-        res = field_data.unstack().tail(head_count)
+    if tail_count != 0:
+        res = field_data.unstack().tail(tail_count)
     else:
         res = field_data.unstack()
 
@@ -515,6 +535,9 @@ def alpha_002(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
     #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=6)['open']
     #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
     #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=8)['volume']
+    openprice = get_price(pool, begin_date, end_date, 'open', 6, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 6, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 8, plat_form_type)
 
     #求rank(    delta(   log(volume)   , 2)   )
     delta_df_01= np.log(volume).diff(2)
@@ -548,10 +571,12 @@ def alpha_003(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=10)['open']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=10)['open']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
+    openprice = get_price(pool, begin_date, end_date, 'open', 10, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 10, plat_form_type)
 
     #求rank(open),rank(volume)
     rank_open = pd.DataFrame([],range(10),columns=pool)
@@ -578,9 +603,10 @@ def alpha_004(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=9)['low']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=9)['low']
+    low = get_price(pool, begin_date, end_date, 'low', 9, plat_form_type)
 
     rank_low = pd.DataFrame([],index=range(9),columns=pool)
     for i in range(9):
@@ -603,11 +629,14 @@ def alpha_005(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=10)['avg']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=10)['avg']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    openprice = get_price(pool, begin_date, end_date, 'open', 1, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 1, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 10, plat_form_type)
 
     #rank(   open - sum(vwap, 10) / 10   )
     df_01 = openprice-sum(vwap)/10
@@ -633,9 +662,11 @@ def alpha_006(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
     Outputs:
         因子的值
     '''
-    pool = get_pool(index,enddate)
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=10)['open']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
+    #pool = get_pool(index,enddate)
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=10)['open']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
+    openprice = get_price(pool, begin_date, end_date, 'open', 10, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 10, plat_form_type)
 
     result = correlation_pool(openprice,volume)
 
@@ -653,11 +684,14 @@ def alpha_007(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
     Outputs:
         因子的值
     '''
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=67)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=20)['money']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=67)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=20)['money']
+    close = get_price(pool, begin_date, end_date, 'close', 67, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 1, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 20, plat_form_type)
 
     adv20 = adv(money,20,1)
 
@@ -693,10 +727,12 @@ def alpha_008(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
     Outputs:
         因子的值
     '''
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=15)['open']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=16)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=15)['open']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=16)['close']
+    openprice = get_price(pool, begin_date, end_date, 'open', 15, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 16, plat_form_type)
 
     returns_df = returns(close)
 
@@ -723,9 +759,10 @@ def alpha_009(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
     Outputs:
         因子的值
     '''
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 6, plat_form_type)
 
     delta_df_01 = pd.DataFrame([],index=range(5),columns=pool)
     for i in range(5):
@@ -758,9 +795,10 @@ def alpha_010(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=5)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=5)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 5, plat_form_type)
 
     delta_df_01 = pd.DataFrame([],index=range(4),columns=pool)
     for i in range(4):
@@ -799,11 +837,14 @@ def alpha_011(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=4)['volume']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=3)['close']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=3)['avg']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=4)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=3)['close']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=3)['avg']
+    close = get_price(pool, begin_date, end_date, 'close', 3, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 4, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 3, plat_form_type)
 
     #rank(    ts_max(   vwap - close   , 3)   )
     ts_max_df = ts_max(vwap-close)
@@ -834,10 +875,12 @@ def alpha_012(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=2)['volume']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=2)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=2)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=2)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 2, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 2, plat_form_type)
 
     #sign(delta(volume, 1))
     sign_series = sign(delta(volume,1))
@@ -861,10 +904,12 @@ def alpha_013(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=5)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=5)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 5, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 5, plat_form_type)
 
     rank_volume_df = pd.DataFrame([],index=range(5),columns=pool)
     rank_close_df = pd.DataFrame([],index=range(5),columns=pool)
@@ -890,11 +935,14 @@ def alpha_014(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
     '''
 
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=5)['close']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=10)['open']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=5)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=10)['open']
+    openprice = get_price(pool, begin_date, end_date, 'open', 10, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 5, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 10, plat_form_type)
 
     #rank(   delta(returns, 3)   )
     rank_series = rank_pool(delta(returns(close),3))
@@ -919,10 +967,12 @@ def alpha_015(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
+    volume = get_price(pool, begin_date, end_date, 'volume', 5, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 5, plat_form_type)
 
     rank_volume_df = pd.DataFrame([],index=range(5),columns=pool)
     rank_high_df = pd.DataFrame([],index=range(5),columns=pool)
@@ -951,10 +1001,12 @@ def alpha_016(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
+    volume = get_price(pool, begin_date, end_date, 'volume', 5, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 5, plat_form_type)
 
     rank_high = pd.DataFrame([],index=range(5),columns=pool)
     rank_volume = pd.DataFrame([],index=range(5),columns=pool)
@@ -979,11 +1031,14 @@ def alpha_017(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=24)['money']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=24)['money']
+    close = get_price(pool, begin_date, end_date, 'close', 10, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 5, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 24, plat_form_type)
 
     adv20 = adv(money,20,5)
 
@@ -1028,10 +1083,12 @@ def alpha_018(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=10)['open']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=10)['open']
+    openprice = get_price(pool, begin_date, end_date, 'open', 10, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 10, plat_form_type)
 
     # correlation(   close, open  , 10)
     corre_series = correlation_pool(close,openprice)
@@ -1060,9 +1117,10 @@ def alpha_019(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=251)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=251)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 251, plat_form_type)
 
     #sign(   close - delay(close, 7) + delta(close, 7)    )
     series1 = sign(close.iloc[-1,:]-close.iloc[-8,:]+delta(close.iloc[-8:,:],7))
@@ -1086,12 +1144,16 @@ def alpha_020(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=2)['close']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=2)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=2)['low']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=2)['close']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=2)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=2)['low']
+    openprice = get_price(pool, begin_date, end_date, 'open', 1, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 2, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 2, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 2, plat_form_type)
 
     #rank(   open - delay(high, 1)  )
     series1 = rank_pool(openprice.iloc[-1,:]-high.iloc[-2,:])
@@ -1117,11 +1179,14 @@ def alpha_021(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=8)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=20)['money']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=8)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=20)['money']
+    close = get_price(pool, begin_date, end_date, 'close', 8, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 1, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 20, plat_form_type)
 
     adv20 = adv(money,20,1)
 
@@ -1163,11 +1228,14 @@ def alpha_022(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=10)['high']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=20)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=10)['high']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=20)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
+    close = get_price(pool, begin_date, end_date, 'close', 20, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 10, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 10, plat_form_type)
 
     #delta(      correlation(high, volume, 5)    , 5)
     correlation_df = pd.DataFrame([],index=range(6),columns=pool)
@@ -1195,9 +1263,10 @@ def alpha_023(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=20)['high']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=20)['high']
+    high = get_price(pool, begin_date, end_date, 'high', 20, plat_form_type)
 
     result_series = pd.Series([0.0]*len(pool),index=pool)
     delta_series = delta(high,2)
@@ -1227,9 +1296,10 @@ def alpha_024(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=200)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=200)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 200, plat_form_type)
 
     #delta(  sum(close, 100) / 100, 100) / delay(  close, 100) < =0.05
     mean_df = pd.DataFrame([],index=range(101),columns=pool)
@@ -1264,12 +1334,16 @@ def alpha_025(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    high = (get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']).iloc[-1,:]
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=2)['close']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=20)['money']
-    vwap = (get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']).iloc[-1,:]
+    #high = (get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']).iloc[-1,:]
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=2)['close']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=20)['money']
+    #vwap = (get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']).iloc[-1,:]
+    close = get_price(pool, begin_date, end_date, 'close', 2, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 1, plat_form_type).iloc[-1,:]
+    vwap = get_price(pool, begin_date, end_date, 'avg', 1, plat_form_type).iloc[-1,:]
+    money = get_price(pool, begin_date, end_date, 'money', 20, plat_form_type)
 
     adv20 = (adv(money,20,1)).iloc[-1,:]
     returns_series  = returns(close).iloc[-1,:]
@@ -1291,10 +1365,12 @@ def alpha_026(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=11)['high']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=11)['volume']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=11)['high']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=11)['volume']
+    volume = get_price(pool, begin_date, end_date, 'volume', 11, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 11, plat_form_type)
 
     #ts_rank(volume, 5), ts_rank(high, 5)
     ts_rank_volume_df = pd.DataFrame([],index=range(7),columns=pool)
@@ -1325,10 +1401,12 @@ def alpha_027(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
     '''
 
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=7)['volume']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=7)['avg']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=7)['volume']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=7)['avg']
+    volume = get_price(pool, begin_date, end_date, 'volume', 7, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 7, plat_form_type)
 
     #rank(volume), rank(vwap)
     rank_volume_df = pd.DataFrame([],index=range(7),columns=pool)
@@ -1365,12 +1443,16 @@ def alpha_028(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=5)['low']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=24)['money']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=5)['low']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=24)['money']
+    close = get_price(pool, begin_date, end_date, 'close', 1, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 5, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 1, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 24, plat_form_type)
 
     adv20 = adv(money,20,5)
 
@@ -1396,9 +1478,10 @@ def alpha_029(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=12)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=12)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 12, plat_form_type)
 
     #ts_min(    rank(    rank(    ts_min(  rank(   rank(   -1 * rank(   delta(close, 5)   )  )  )  , 2)   )   )   , 5)
     #min没有意义，手动改为ts_min
@@ -1434,10 +1517,12 @@ def alpha_030(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=4)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=20)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=4)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=20)['volume']
+    close = get_price(pool, begin_date, end_date, 'close', 4, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 20, plat_form_type)
 
     #rank( sign(  close - delay(close, 1)  ) + sign( delay(close, 1) - delay(close, 2) ) + sign(  delay(close, 2) - delay(close, 3) ) )
     rank_series = rank_pool(sign(close.iloc[-1,:]-close.iloc[-2,:])+sign(close.iloc[-2,:]-close.iloc[-3,:])+sign(close.iloc[-3,:]-close.iloc[-4,:]))
@@ -1460,11 +1545,14 @@ def alpha_031(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=20)['close']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=12)['low']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=31)['money']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=20)['close']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=12)['low']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=31)['money']
+    close = get_price(pool, begin_date, end_date, 'close', 20, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 12, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 31, plat_form_type)
 
     #rank(     decay_linear(   -1 * rank(   rank(    delta(close, 10)  )   )   , 10)  )
     rank_df = pd.DataFrame([],index=range(10),columns=pool)
@@ -1498,10 +1586,12 @@ def alpha_032(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=235)['close']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=230)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=235)['close']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=230)['avg']
+    close = get_price(pool, begin_date, end_date, 'close', 235, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 230, plat_form_type)
 
     #20 * scale(    correlation(    vwap, delay(close, 5)   , 230)   )
     scale_series_02 = 20*scale(correlation_pool(vwap,close.iloc[:230,:]))
@@ -1525,10 +1615,12 @@ def alpha_033(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    openprice = get_price(pool, begin_date, end_date, 'open', 1, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 1, plat_form_type)
 
     rank_series = rank_pool(-1*(1-openprice.iloc[-1,:]/close.iloc[-1,:]))
 
@@ -1548,9 +1640,10 @@ def alpha_034(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 6, plat_form_type)
 
     returns_df = returns(close)
     rank_series = rank_pool(1-rank_pool(stddev(returns_df.iloc[-2:,:])/stddev(returns_df))+1-rank_pool(delta(close.iloc[-2:,:],1)))
@@ -1571,12 +1664,16 @@ def alpha_035(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=33)['close']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=16)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=16)['low']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=32)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=33)['close']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=16)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=16)['low']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=32)['volume']
+    close = get_price(pool, begin_date, end_date, 'close', 33, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 32, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 16, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 16, plat_form_type)
 
     #Ts_Rank(volume, 32)
     ts_rank_series01 = ts_rank(volume)
@@ -1606,13 +1703,18 @@ def alpha_036(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=200)['close']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=25)['money']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=15)['open']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=16)['volume']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=6)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=200)['close']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=25)['money']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=15)['open']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=16)['volume']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=6)['avg']
+    openprice = get_price(pool, begin_date, end_date, 'open', 15, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 200, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 16, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 6, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 25, plat_form_type)
 
     #0.7 * rank(open - close)
     series_02 = 0.7*rank_pool(openprice.iloc[-1,:]-close.iloc[-1,:])
@@ -1649,10 +1751,12 @@ def alpha_037(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=201)['close']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=201)['open']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=201)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=201)['open']
+    openprice = get_price(pool, begin_date, end_date, 'open', 201, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 201, plat_form_type)
 
     #rank(open - close)
     rank_series02 = openprice.iloc[-1,:]-close.iloc[-1,:]
@@ -1677,10 +1781,12 @@ def alpha_038(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+    openprice = get_price(pool, begin_date, end_date, 'open', 1, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 10, plat_form_type)
 
     #rank(  Ts_Rank(close, 10)   )
     rank_series_01 = rank_pool(ts_rank(close))
@@ -1705,12 +1811,14 @@ def alpha_039(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=251)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=9)['volume']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=28)['money']
-
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=251)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=9)['volume']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=28)['money']
+    close = get_price(pool, begin_date, end_date, 'close', 251, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 9, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 28, plat_form_type)
 
     #-1 * rank(    delta(close, 7) * (1 -  rank(   decay_linear(volume / adv20, 9)  )   )  )
     adv20 = adv(money,20,9)
@@ -1744,10 +1852,12 @@ def alpha_040(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=10)['high']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=10)['volume']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=10)['high']
+    volume = get_price(pool, begin_date, end_date, 'volume', 10, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 10, plat_form_type)
 
     #-1 * rank(  stddev(high, 10)  )
     series_01 = -1*rank_pool(stddev(high))
@@ -1771,11 +1881,14 @@ def alpha_041(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
+    low = get_price(pool, begin_date, end_date, 'low', 1, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 1, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 1, plat_form_type)
 
     result = (high.iloc[0,:]*low.iloc[0,:])**0.5-vwap.iloc[0,:]
 
@@ -1795,10 +1908,12 @@ def alpha_042(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 1, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 1, plat_form_type)
 
     result = rank_pool(vwap.iloc[0,:]-close.iloc[0,:])/rank_pool(vwap.iloc[0,:]+close.iloc[0,:])
 
@@ -1818,11 +1933,14 @@ def alpha_043(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=39)['money']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=15)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=20)['volume']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=39)['money']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=15)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=20)['volume']
+    close = get_price(pool, begin_date, end_date, 'close', 15, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 20, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 39, plat_form_type)
 
     #ts_rank(volume / adv20, 20)
     adv20 = adv(money,20,20)
@@ -1859,10 +1977,12 @@ def alpha_044(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
+    volume = get_price(pool, begin_date, end_date, 'volume', 5, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 5, plat_form_type)
 
     rank_volume = pd.DataFrame([],index=range(5),columns=pool)
     for i in range(5):
@@ -1888,10 +2008,12 @@ def alpha_045(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=25)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=2)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=25)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=2)['volume']
+    close = get_price(pool, begin_date, end_date, 'close', 25, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 2, plat_form_type)
 
     #-1 * rank(  sum(   delay(close, 5), 20) / 20  )
     series01 = -1*rank_pool(mean(close.iloc[:20,:]))
@@ -1927,9 +2049,10 @@ def alpha_046(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=21)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=21)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 21, plat_form_type)
 
     result = pd.Series([0.0]*len(pool),index=pool)
 
@@ -1959,13 +2082,18 @@ def alpha_047(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=20)['money']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=6)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=20)['money']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=6)['avg']
+    close = get_price(pool, begin_date, end_date, 'close', 1, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 1, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 5, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 6, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 20, plat_form_type)
 
     #rank(1 / close) * volume / adv20
     adv20 = adv(money,20,1)
@@ -2006,9 +2134,10 @@ def alpha_049(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=21)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=21)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 21, plat_form_type)
 
     #(  delay(close, 20) - delay(close, 10)  ) / 10 - (  delay(close, 10) - close) / 10 < -0.1
     result = pd.Series([0.0]*len(pool),index=pool)
@@ -2034,10 +2163,12 @@ def alpha_050(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=9)['avg']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=9)['volume']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=9)['avg']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=9)['volume']
+    volume = get_price(pool, begin_date, end_date, 'volume', 9, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 9, plat_form_type)
 
     #-1 * ts_max(   rank(   correlation(  rank(volume), rank(vwap)  , 5)  )   , 5)
     rank_df_volume = pd.DataFrame([],index=range(9),columns=pool)
@@ -2071,9 +2202,10 @@ def alpha_051(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=21)['close']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=21)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 21, plat_form_type)
 
     #(delay(close, 20) - delay(close, 10)) / 10 - (delay(close, 10) - close) / 10 < -0.05
     result = pd.Series([0.0]*len(pool),index=pool)
@@ -2101,11 +2233,14 @@ def alpha_052(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=241)['close']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=10)['low']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=241)['close']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=10)['low']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=5)['volume']
+    close = get_price(pool, begin_date, end_date, 'close', 241, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 5, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 10, plat_form_type)
 
     # (   -1 * ts_min(low, 5) + delay(   ts_min(low, 5)  , 5)  )
     ts_min_df = pd.DataFrame([],index=range(6),columns=pool)
@@ -2138,11 +2273,14 @@ def alpha_053(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=10)['low']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=10)['high']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=10)['low']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=10)['high']
+    close = get_price(pool, begin_date, end_date, 'close', 10, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 10, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 10, plat_form_type)
 
     #-1 * delta(   (close*2 - low - high) / (close - low)   , 9)
     result = -1*delta((close*2-low-high)/(close-low),9)
@@ -2163,12 +2301,16 @@ def alpha_054(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
+    openprice = get_price(pool, begin_date, end_date, 'open', 1, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 1, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 1, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 1, plat_form_type)
 
     #-1 * (low - close) * (open^5) / (  (low - high) * close^5  )
     result = -1*(low-close)*(openprice**5)/((low-high)*close**5)
@@ -2190,12 +2332,16 @@ def alpha_055(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=6)['volume']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=17)['low']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=17)['high']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=6)['volume']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=17)['low']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=17)['high']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 6, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 6, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 17, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 17, plat_form_type)
 
     rank_01_df = pd.DataFrame([],index=range(6),columns=pool)
     rank_volume = pd.DataFrame([],index=range(6),columns=pool)
@@ -2221,10 +2367,10 @@ def alpha_056(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=11)['close']
-
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=11)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 11, plat_form_type)
 
     #提取市值数据
     cap_series = pd.Series([0.0]*len(pool),index=pool)
@@ -2261,10 +2407,12 @@ def alpha_057(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=31)['close']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=31)['close']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
+    close = get_price(pool, begin_date, end_date, 'close', 31, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 1, plat_form_type)
 
     numerator_series = close.ix[-1]-vwap.ix[-1]
 
@@ -2292,12 +2440,16 @@ def alpha_060(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         index成分股对应的因子的值
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
+    close = get_price(pool, begin_date, end_date, 'close', 10, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 1, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 1, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 1, plat_form_type)
 
     #scale(rank(ts_argmax(close, 10)))
     temp2 = scale(rank_pool(ts_argmax(close)))
@@ -2323,11 +2475,13 @@ def alpha_061(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         符合的股票对应值为1，不符合的股票对应值为-1
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=18)['avg']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=197)['money']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=18)['avg']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=197)['money']
+    vwap = get_price(pool, begin_date, end_date, 'avg', 18, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 197, plat_form_type)
 
     #获取adv180的DataFrame
     adv180 = adv(money,180,18)
@@ -2362,14 +2516,19 @@ def alpha_062(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
         符合的股票对应值为-1，不符合的股票对应值为1
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=10)['avg']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=50)['money']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=10)['avg']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=50)['money']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=1)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
+    openprice = get_price(pool, begin_date, end_date, 'open', 1, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 1, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 1, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 10, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 50, plat_form_type)
 
     #求adv20，含22行index
     for i in range(10):
@@ -2419,15 +2578,20 @@ def alpha_064(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=31)['close']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=5)['avg']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=29)['low']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=29)['open']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=148)['money']
-
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=31)['close']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=5)['avg']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=5)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=29)['low']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=29)['open']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=148)['money']
+    openprice = get_price(pool, begin_date, end_date, 'open', 29, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 31, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 29, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 5, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 5, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 148, plat_form_type)
 
     #求rank(   delta(        (high + low) / 2 * 0.178404 + vwap * 0.821596        , 4)  )
     dataframe_temp2 = pd.DataFrame([],index=high.index,columns=high.columns)
@@ -2479,11 +2643,14 @@ def alpha_065(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=6)['avg']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=73)['money']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=14)['open']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=6)['avg']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=73)['money']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=14)['open']
+    openprice = get_price(pool, begin_date, end_date, 'open', 14, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 6, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 73, plat_form_type)
 
     #rank(  open - ts_min(open, 14)  )
     temp2 = rank_pool(openprice.ix[-1]-ts_min(openprice))
@@ -2528,13 +2695,16 @@ def alpha_066(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=17)['avg']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=17)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=17)['low']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=17)['open']
-
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=17)['avg']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=17)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=17)['low']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=17)['open']
+    openprice = get_price(pool, begin_date, end_date, 'open', 17, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 17, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 17, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 17, plat_form_type)
 
     #rank(decay_linear(delta(vwap, 4), 7))
     dataframe1 = pd.DataFrame([],index=range(7),columns=pool)
@@ -2575,12 +2745,16 @@ def alpha_068(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=36)['money']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=22)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=2)['low']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=2)['close']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=36)['money']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=22)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=2)['low']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=2)['close']
+    close = get_price(pool, begin_date, end_date, 'close', 2, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 2, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 22, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 36, plat_form_type)
 
     #Ts_Rank(    correlation(  rank(high)  , rank(adv15), 9)   , 14)
     correlation_frame = pd.DataFrame([],index=range(14),columns=high.columns)
@@ -2629,13 +2803,18 @@ def alpha_071(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=226)['money']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=19)['open']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=19)['low']
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=38)['close']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=19)['avg']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=226)['money']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=19)['open']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=19)['low']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=38)['close']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=19)['avg']
+    openprice = get_price(pool, begin_date, end_date, 'open', 19, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 38, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 19, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 19, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 226, plat_form_type)
 
     #Ts_Rank(   decay_linear(    rank(   low + open - vwap*2  )^2    , 16)    , 4)
     rank_dataframe = pd.DataFrame([],index=range(19),columns=pool)
@@ -2688,13 +2867,18 @@ def alpha_072(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=57)['money']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=18)['low']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=18)['high']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=27)['volume']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=12)['avg']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=57)['money']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=18)['low']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=18)['high']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=27)['volume']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=12)['avg']
+    volume = get_price(pool, begin_date, end_date, 'volume', 27, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 18, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 18, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 12, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 57, plat_form_type)
 
     #rank(       decay_linear(      correlation(   (high + low) / 2, adv40, 9)   , 10)      )
     high_plus_low = (high+low)/2
@@ -2737,11 +2921,14 @@ def alpha_073(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=21)['open']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=21)['low']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=8)['avg']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=21)['open']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=21)['low']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=8)['avg']
+    openprice = get_price(pool, begin_date, end_date, 'open', 21, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 21, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 8, plat_form_type)
 
     #rank(   decay_linear(  delta(vwap, 5), 3)   ),
     delta_vwap = pd.DataFrame([],index=range(3),columns=pool)
@@ -2789,13 +2976,18 @@ def alpha_074(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=15)['close']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=11)['high']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=11)['volume']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=80)['money']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=11)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=15)['close']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=11)['high']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=11)['volume']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=80)['money']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=11)['avg']
+    close = get_price(pool, begin_date, end_date, 'close', 15, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 11, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 11, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 11, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 80, plat_form_type)
 
     #rank(    correlation(close, sum(adv30, 37), 15)     )
     adv30 = adv(money,30,51)
@@ -2839,12 +3031,16 @@ def alpha_075(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=61)['money']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=12)['low']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=4)['avg']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=4)['volume']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=61)['money']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=12)['low']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=4)['avg']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=4)['volume']
+    volume = get_price(pool, begin_date, end_date, 'volume', 4, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 12, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 4, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 61, plat_form_type)
 
     #rank(    correlation(vwap, volume, 4)   )
     temp1 = rank_pool(correlation_pool(vwap,volume))
@@ -2885,12 +3081,16 @@ def alpha_077(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=47)['money']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=20)['low']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=20)['high']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=20)['avg']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=47)['money']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=20)['low']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=20)['high']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=20)['avg']
+    low = get_price(pool, begin_date, end_date, 'low', 20, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 20, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 20, plat_form_type)
+    money = get_price(pool, begin_date, end_date, 'money', 47, plat_form_type)
 
     #rank(   decay_linear(    (high + low) / 2 + high*2 - vwap , 20)   )
     df_01 = (high+low)/2+2*high-vwap
@@ -2927,12 +3127,16 @@ def alpha_078(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=65)['money']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=26)['low']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=6)['volume']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=26)['avg']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=65)['money']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=26)['low']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=6)['volume']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=26)['avg']
+    money = get_price(pool, begin_date, end_date, 'money', 65, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 26, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 6, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 26, plat_form_type)
 
     #rank(    correlation(   sum(low * 0.352233 + vwap * (1 - 0.352233), 20), sum(adv40, 20)   , 7)   )
     df_01 = low * 0.352233 + vwap * (1 - 0.352233)
@@ -2979,13 +3183,18 @@ def alpha_083(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=7)['close']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=3)['low']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=3)['high']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=7)['close']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=3)['low']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=3)['high']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=1)['volume']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
+    close = get_price(pool, begin_date, end_date, 'close', 7, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 3, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 3, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 1, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 1, plat_form_type)
 
     #rank(rank(volume))
     temp2 = rank_pool(rank_pool(volume.iloc[0,:]))
@@ -3020,10 +3229,12 @@ def alpha_084(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=35)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=6)['close']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=35)['avg']
+    close = get_price(pool, begin_date, end_date, 'close', 6, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 35, plat_form_type)
 
     # delta(close, 5)
     temp2 = delta(close,5)
@@ -3056,13 +3267,18 @@ def alpha_085(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=10)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=10)['low']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=39)['money']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=16)['volume']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=10)['close']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=10)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=10)['low']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=39)['money']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=16)['volume']
+    money = get_price(pool, begin_date, end_date, 'money', 39, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 10, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 10, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 10, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 16, plat_form_type)
 
     #rank(     correlation(     high * 0.876703 + close * (1 - 0.876703)   , adv30, 10)     )
     plus_df = high * 0.876703 + close * (1 - 0.876703)
@@ -3099,11 +3315,14 @@ def alpha_086(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=25)['close']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=58)['money']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=25)['close']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=58)['money']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=1)['avg']
+    money = get_price(pool, begin_date, end_date, 'money', 58, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 25, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 1, plat_form_type)
 
     #rank(close - vwap)
     temp2 = rank_pool(close.iloc[-1,:]-vwap.iloc[-1,:])
@@ -3148,13 +3367,18 @@ def alpha_088(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=23)['close']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=8)['open']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=8)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=8)['low']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=94)['money']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=23)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=8)['open']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=8)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=8)['low']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=94)['money']
+    money = get_price(pool, begin_date, end_date, 'money', 94, plat_form_type)
+    openprice = get_price(pool, begin_date, end_date, 'open', 8, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 23, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 8, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 8, plat_form_type)
 
     #rank(   decay_linear(  rank(open) + rank(low) - rank(high) - rank(close)     , 8)   )
     rank_open_df = pd.DataFrame([],index=range(8),columns=pool)
@@ -3211,13 +3435,18 @@ def alpha_092(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=33)['close']
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=33)['open']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=33)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=33)['low']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=49)['money']
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=33)['close']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=33)['open']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=33)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=33)['low']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=49)['money']
+    money = get_price(pool, begin_date, end_date, 'money', 49, plat_form_type)
+    openprice = get_price(pool, begin_date, end_date, 'open', 33, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 33, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 33, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 33, plat_form_type)
 
     #Ts_Rank(   decay_linear(     (high + low) / 2 + close < low + open    , 15)       , 19   )
     compare_01 = (high+low)/2+close
@@ -3279,10 +3508,12 @@ def alpha_094(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=39)['avg']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=82)['money']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=39)['avg']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=82)['money']
+    money = get_price(pool, begin_date, end_date, 'money', 82, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 39, plat_form_type)
 
     #rank(    vwap - ts_min(vwap, 12)   )
     series_01 = vwap.iloc[-1,:]-ts_min(vwap.iloc[-12:,:])
@@ -3322,12 +3553,16 @@ def alpha_095(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=12)['open']
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=42)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=42)['low']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=81)['money']
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=12)['open']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=42)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=42)['low']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=81)['money']
+    money = get_price(pool, begin_date, end_date, 'money', 81, plat_form_type)
+    openprice = get_price(pool, begin_date, end_date, 'open', 12, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 42, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 42, plat_form_type)
 
     #rank(   open - ts_min(open, 12)  )
     series_01 = openprice.iloc[-1,:]-ts_min(openprice)
@@ -3375,14 +3610,16 @@ def alpha_096(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=47)['close']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=14)['volume']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=103)['money']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=14)['avg']
-
-
+    #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=47)['close']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=14)['volume']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=103)['money']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=14)['avg']
+    money = get_price(pool, begin_date, end_date, 'money', 103, plat_form_type)
+    close = get_price(pool, begin_date, end_date, 'close', 47, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 14, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 14, plat_form_type)
 
     #Ts_Rank(      decay_linear(      correlation(rank(vwap), rank(volume), 4)   , 4)   , 8)
 
@@ -3457,13 +3694,14 @@ def alpha_098(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=41)['open']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=55)['money']
-    vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=11)['avg']
-
-
+    #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=41)['open']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=55)['money']
+    #vwap = get_price(pool,end_date = enddate,frequency='daily',fields=['avg'],count=11)['avg']
+    money = get_price(pool, begin_date, end_date, 'money', 55, plat_form_type)
+    openprice = get_price(pool, begin_date, end_date, 'open', 41, plat_form_type)
+    vwap = get_price(pool, begin_date, end_date, 'avg', 11, plat_form_type)
 
     #rank(     decay_linear(     correlation(vwap, sum(adv5, 26), 5)   , 7)   )
     adv5 = adv(money.iloc[-40:,:],5,36)
@@ -3525,12 +3763,16 @@ def alpha_099(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
 
     '''
 
-    pool = get_pool(index,enddate)
+    #pool = get_pool(index,enddate)
 
-    high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=28)['high']
-    low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=28)['low']
-    money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=87)['money']
-    volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=6)['volume']
+    #high = get_price(pool,end_date = enddate,frequency='daily',fields=['high'],count=28)['high']
+    #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=28)['low']
+    #money = get_price(pool,end_date = enddate,frequency='daily',fields=['money'],count=87)['money']
+    #volume = get_price(pool,end_date = enddate,frequency='daily',fields=['volume'],count=6)['volume']
+    money = get_price(pool, begin_date, end_date, 'money', 87, plat_form_type)
+    low = get_price(pool, begin_date, end_date, 'low', 28, plat_form_type)
+    high = get_price(pool, begin_date, end_date, 'high', 28, plat_form_type)
+    volume = get_price(pool, begin_date, end_date, 'volume', 6, plat_form_type)
 
     #rank(     correlation(    sum((high + low) / 2, 20), sum(adv60, 20)   , 9)   )
     df_01 = (high+low)/2
@@ -3577,7 +3819,6 @@ def alpha_101(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
     #close = get_price(pool,end_date = enddate,frequency='daily',fields=['close'],count=1)['close']
     #low = get_price(pool,end_date = enddate,frequency='daily',fields=['low'],count=1)['low']
     #openprice = get_price(pool,end_date = enddate,frequency='daily',fields=['open'],count=1)['open']
-
     high = get_price(pool, begin_date, end_date, 'high', 1, plat_form_type)
     close = get_price(pool, begin_date, end_date, 'close', 1, plat_form_type)
     low = get_price(pool, begin_date, end_date, 'low', 1, plat_form_type)
@@ -3591,6 +3832,166 @@ if __name__ == '__main__':
     import QUANTAXIS as QA
     pool = ['000001', '000002', '000005']
     res = alpha_001(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_002(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_003(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_004(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_005(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_006(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_007(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_008(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_009(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_010(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_011(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_012(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_013(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_014(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_015(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_016(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_017(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_018(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_019(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_020(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_021(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_022(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_023(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_024(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_025(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_026(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_027(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_028(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_029(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_030(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_031(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_032(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_033(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_034(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_035(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_036(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_037(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_038(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_039(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_040(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_041(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_042(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_043(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_044(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_045(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_046(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_047(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_049(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_050(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_051(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_052(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_053(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_054(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_055(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_056(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_057(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_060(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_061(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_062(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_064(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_065(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_066(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_068(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_071(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_072(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_073(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_074(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_075(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_077(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_078(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_083(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_084(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_085(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_086(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_088(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_092(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_094(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_095(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_096(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_098(pool, '2018-01-01', '2018-06-30')
+    print(res)
+    res = alpha_099(pool, '2018-01-01', '2018-06-30')
     print(res)
     res = alpha_101(pool, '2018-01-01', '2018-06-30')
     print(res)

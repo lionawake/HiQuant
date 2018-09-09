@@ -439,7 +439,7 @@ def ts_rank(dataframe):
 
 #import QUANTAXIS as QA
 
-def get_price(stock_pool=None, begin_date=None, end_date=None, field=None, head_count=0, plat_form_type='QA'):
+def get_price(stock_pool=None, begin_date=None, end_date=None, field=None, tail_count=0, plat_form_type='QA'):
     if plat_form_type != 'QA':
         return None
 
@@ -452,11 +452,27 @@ def get_price(stock_pool=None, begin_date=None, end_date=None, field=None, head_
         field_data = data.low
     elif field == 'close':
         field_data = data.close
+    elif field == 'volume':
+        field_data = data.volume
+    elif field == 'money':
+        field_data = data.money
+    elif field == 'avg':
+        field_data = data.avg
+    elif field == 'factor':
+        field_data = data.factor
+    elif field == 'high_limit':
+        field_data = data.high_limit
+    elif field == 'low_limit':
+        field_data = data.low_limit
+    elif field == 'pre_close':
+        field_data = data.preclose
+    elif field == 'paused':
+        field_data = data.paused
     else:
         return None
 
-    if head_count != 0:
-        res = field_data.unstack().head(head_count)
+    if tail_count != 0:
+        res = field_data.unstack().tail(tail_count)
     else:
         res = field_data.unstack()
 
@@ -514,3 +530,7 @@ if __name__ == '__main__':
     pool = ['000001', '000002']
     res = alpha_001(pool, '2018-01-01', '2018-03-31')
     print(res)
+    d = get_price(pool, '2018-01-01', '2018-03-31', 'money', 10)
+    print(d)
+    data = QA.QA_fetch_stock_day_adv(pool, '2018-01-01', '2018-03-31')
+    print(data.select_columns('money'))
