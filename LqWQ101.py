@@ -19,6 +19,7 @@ import copy
 import numpy as np
 import operator
 from numpy import mean,math,sum
+import QUANTAXIS as QA
 
 ###################### 共用函数群 ######################
 

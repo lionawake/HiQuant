@@ -3,6 +3,8 @@
 
 from hikyuu.indicator import *
 import talib
+from LqWQ101 import *
+
 def LQ_Hikyuu_AMA(close, n1=0, n2=0, n3=0, len=0, discard=0, value=0.0, p=0.0, type=""):
     '''00001,4,2'''
     return AMA(close, n=n1, fast_n=n2, slow_n=n3)
@@ -652,3 +654,408 @@ def lqTA_CORREL(ind=None, timeperiod=30):
 def lqTA_OBV(ind=None):
 	'''00155,1,1'''
 	return TA_OBV(ind)
+
+
+def LQ_WQ_alpha_001(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00501,2,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_002(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00502,2,1"""
+    return alpha_002(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_003(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00503,2,1"""
+    return alpha_003(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_004(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00504,2,1"""
+    return alpha_004(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_005(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00505,2,1"""
+    return alpha_005(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_006(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00506,2,1"""
+    return alpha_006(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_007(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00507,2,1"""
+    return alpha_007(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_008(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00508,2,1"""
+    return alpha_008(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_009(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00509,2,1"""
+    return alpha_009(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_010(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00510,2,1"""
+    return alpha_010(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_011(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00511,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_012(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00512,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_013(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00513,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_014(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00514,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_015(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00515,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_016(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00516,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_017(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00517,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_018(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00518,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_019(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00519,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_020(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00520,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_021(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00521,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_022(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00522,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_023(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00523,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_024(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00524,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_025(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00525,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_026(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00526,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_027(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00527,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_028(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00528,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_029(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00529,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_030(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00530,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_031(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00531,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_032(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00532,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_033(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00533,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_034(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00534,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_035(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00535,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_036(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00536,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_037(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00537,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_038(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00538,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_039(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00539,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_040(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00540,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_041(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00541,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_042(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00542,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_043(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00543,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_044(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00544,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_045(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00545,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_046(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00546,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_047(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00547,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_048(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00548,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_049(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00549,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_050(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00550,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_051(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00551,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_052(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00552,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_053(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00553,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_054(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00554,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_055(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00555,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_056(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00556,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_057(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00557,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_058(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00558,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_059(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00559,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_060(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00560,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_061(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00561,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_062(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00562,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_063(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00563,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_064(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00564,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_065(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00565,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_066(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00566,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_067(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00567,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_068(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00568,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_069(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00569,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_070(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00570,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_071(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00571,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_072(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00572,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_073(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00573,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_074(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00574,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_075(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00575,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_076(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00576,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_077(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00577,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_078(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00578,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_079(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00579,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_080(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00580,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_081(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00581,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_082(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00582,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_083(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00583,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_084(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00584,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_085(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00585,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_086(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00586,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_087(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00587,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_088(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00588,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_089(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00589,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_090(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00590,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_091(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00591,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_092(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00592,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_093(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00593,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_094(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00594,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_095(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00595,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_096(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00596,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_097(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00597,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_098(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00598,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_099(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00599,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_100(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00600,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)
+
+def LQ_WQ_alpha_101(pool=None, begin_date=None, end_date=None, plat_form_type='QA'):
+    """00601,4,1"""
+    return alpha_001(pool, begin_date, end_date, plat_form_type)

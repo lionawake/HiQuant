@@ -17,19 +17,24 @@ sys.path.append(cwd)
 print("LqPolicyTask:".ljust(15), cwd)
 
 import LqCommon as lqc
-import LqDB as lqdb
 
 taskThreadNum = 4
 taskQueueSize = 1000000
 threadList = []
 taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
-policyFileDefault = 'gy_demo3.py'
+policyFileDefault = 'qa_demo5.py'
 policyFile = ''
 sp_name = 'LQ_Policy'
 author = 'LongQuant'
-sp_id = 10001
+sp_id = 20001
 arg_num = 10
+'''0: hikyuu, 1: quantaxis'''
+platform_type = 0
+if platform_type == 0:
+    import LqDB as lqdb
+else:
+    import LqDB_QA as lqdb
 
 def show_process_bar(end=False):
     queSzCur = taskQueue.qsize()
@@ -74,8 +79,10 @@ if __name__ == '__main__':
     if ret != True:
         lqc.ERR('Policy task generate failed')
     queSz = taskQueue.qsize()
+    db = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
+    sql = "update lq_strategy_pattern set task_total=%d where sp_id=%d;"%(queSz, sp_id)
+    db.update(sql)
     if arg_num == 0:
-        db = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
         db.save_strategy_pattern(sp_name, author, 2, queSz, 2, policyTemplate)
     # 创建多线程列表
     i = 0
