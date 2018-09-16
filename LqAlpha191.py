@@ -26,11 +26,54 @@ def alpha191_version():
     '''
     return 'V1.1 优化 func_decaylinear 函数'
 
+# pandas 0.17.0 --> 0.23.4
+def pd_rolling_count(df, win):
+    return df.rolling(win).count()
+
+def pd_rolling_sum(df, win):
+    return df.rolling(win).sum()
+
+def pd_rolling_mean(df, win):
+    return df.rolling(win).mean()
+
+def pd_rolling_median(df, win):
+    return df.rolling(win).median()
+
+def pd_rolling_var(df, win):
+    return df.rolling(win).var()
+
+def pd_rolling_std(df, win):
+    return df.rolling(win).std()
+
+def pd_rolling_min(df, win):
+    return df.rolling(win).min()
+
+def pd_rolling_max(df, win):
+    return df.rolling(win).max()
+
+def pd_rolling_corr(df1, df2, win):
+    rol1 = df1.rolling(win)
+    rol2 = df2.rolling(win)
+    return rol1.corr(rol2)
+
+def pd_rolling_cov(df1, df2, win):
+    rol1 = df1.rolling(win)
+    rol2 = df2.rolling(win)
+    return rol1.cov(rol2)
+
+def pd_rolling_apply(df, win, func):
+    return df.rolling(win).apply(func, raw=True)
+
+def pd_ewma(df, span, adjust=True):
+    return df.ewm(span=span, adjust=adjust).mean()
+
+# pandas 0.17.0 --> 0.23.4
+
 def get_price(stock_pool=None, begin_date=None, end_date=None, field=None, tail_count=0, plat_form_type='QA'):
     if plat_form_type != 'QA':
         return None
     if begin_date == None:
-        begin_date = '2015-01-01'
+        begin_date = '2018-05-01'
 
     data = QA.QA_fetch_stock_day_adv(stock_pool, begin_date, end_date)
     if field == 'open':
@@ -114,7 +157,7 @@ def amount(code, end_date=None):
 
 
 def benchmark_index_open(code, benchmark, end_date=None):
-    output = pd.DataFrame()
+    output = pd.DataFrame(code)
     #temp = get_price(benchmark, None, end_date, '1d', ['open'], False, None, 350)['open']
     temp = get_price(code, None, end_date, 'open', 350, plat_form_type='QA')
     for stock in code:
@@ -123,7 +166,7 @@ def benchmark_index_open(code, benchmark, end_date=None):
 
 
 def benchmark_index_close(code, benchmark, end_date=None):
-    output = pd.DataFrame()
+    output = pd.DataFrame(code)
     #temp = get_price(benchmark, None, end_date, '1d', ['close'], False, None, 350)['close']
     temp = get_price(code, None, end_date, 'close', 350, plat_form_type='QA')
     for stock in code:
@@ -178,7 +221,7 @@ def func_regbeta(a, b, n):
     output = pd.Series()
     for stock in a.columns:
         linreg = LinearRegression()
-        model = linreg.fit(a[stock][-n:].reshape(n, 1), b[stock][-n:].reshape(n, 1))
+        model = linreg.fit(a[stock][-n:].values.reshape(n, 1), b[stock][-n:].values.reshape(n, 1))
         output[stock] = float(model.coef_)
         output = pd.DataFrame(output)
     return output
@@ -189,8 +232,8 @@ def func_regresi(a, b, n):
     output = pd.DataFrame()
     for stock in a.columns:
         linreg = LinearRegression()
-        model = linreg.fit(a[stock][:n].reshape(n, 1), b[stock][:n].reshape(n, 1))
-        temp = pd.DataFrame(model.predict(a[stock][:n].reshape(n, 1)) - b[stock][:n].reshape(n, 1), columns=[stock])
+        model = linreg.fit(a[stock][:n].values.reshape(n, 1), b[stock][:n].values.reshape(n, 1))
+        temp = pd.DataFrame(model.predict(a[stock][:n].values.reshape(n, 1)) - b[stock][:n].values.reshape(n, 1), columns=[stock])
         temp_s = pd.Series(temp[stock])
         output[stock] = temp_s
     output.index = a[:n].index
@@ -262,7 +305,7 @@ def func_decaylinear(a, d):
     abc = pd.Series(seq1) / sum(seq1)
     weight1 = np.array(abc)
     part1 = lambda x: sum(x * weight1)
-    output = pd.rolling_apply(a, d, part1)
+    output = pd_rolling_apply(a, d, part1)
     output = output.iloc[d - 1:, :]
     return output.T
 
@@ -369,16 +412,16 @@ def alpha_004(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    condition1 = (pd.rolling_std(close(code, end_date), 8) < pd.rolling_sum(close(code, end_date), 2) / 2)
-    condition2 = (pd.rolling_sum(close(code, end_date), 2) / 2 < (
-                pd.rolling_sum(close(code, end_date), 8) / 8 - pd.rolling_std(close(code, end_date), 8)))
-    condition3 = (1 <= volume(code, end_date) / pd.rolling_mean(volume(code, end_date), 20))
+    condition1 = (pd_rolling_std(close(code, end_date), 8) < pd_rolling_sum(close(code, end_date), 2) / 2)
+    condition2 = (pd_rolling_sum(close(code, end_date), 2) / 2 < (
+                pd_rolling_sum(close(code, end_date), 8) / 8 - pd_rolling_std(close(code, end_date), 8)))
+    condition3 = (1 <= volume(code, end_date) / pd_rolling_mean(volume(code, end_date), 20))
     indicator1 = pd.DataFrame(np.ones(close(code, end_date).shape), index=close(code, end_date).index,
                               columns=close(code, end_date).columns)  # [condition2]
     indicator2 = -pd.DataFrame(np.ones(close(code, end_date).shape), index=close(code, end_date).index,
                                columns=close(code, end_date).columns)  # [condition3]
 
-    part0 = pd.rolling_sum(close(code, end_date), 8) / 8
+    part0 = pd_rolling_sum(close(code, end_date), 8) / 8
     part1 = indicator2[condition1].fillna(0)
     part2 = (indicator1[~condition1][condition2]).fillna(0)
     part3 = (indicator1[~condition1][~condition2][condition3]).fillna(0)
@@ -404,7 +447,7 @@ def alpha_005(code, end_date=None):
         code = [code]
     ts_volume = (volume(code, end_date).iloc[-7:, :]).rank(axis=0, pct=True)
     ts_high = (high(code, end_date).iloc[-7:, :]).rank(axis=0, pct=True)
-    corr_ts = pd.rolling_corr(ts_high, ts_volume, 5)
+    corr_ts = pd_rolling_corr(ts_high, ts_volume, 5)
     alpha = corr_ts.max()
     return alpha
 
@@ -486,7 +529,7 @@ def alpha_009(code, end_date=None):
     temp = (high(code, end_date) + low(code, end_date)) * 0.5 - (
                 high(code, end_date).shift() + low(code, end_date).shift()) * 0.5 * (
                        high(code, end_date) - low(code, end_date)) / volume(code, end_date)  # 计算close_{i-1}
-    result = pd.ewma(temp, span=6)
+    result = pd_ewma(temp, span=6)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -506,7 +549,7 @@ def alpha_010(code, end_date=None):
         code = [code]
     temp = close(code, end_date).pct_change()
     condtion = (temp < 0)
-    part1 = (pd.rolling_std(temp, 20)[condtion]).fillna(0)
+    part1 = (pd_rolling_std(temp, 20)[condtion]).fillna(0)
     part2 = (close(code, end_date)[~condtion]).fillna(0)
     part3 = (part1 + part2) ** 2
     cond = part3 == 0
@@ -631,7 +674,7 @@ def alpha_016(code, end_date=None):
         code = [code]
     temp1 = volume(code, end_date).rank(axis=0, pct=True)
     temp2 = vwap(code, end_date).rank(axis=0, pct=True)
-    part = pd.rolling_corr(temp1, temp2, 5)
+    part = pd_rolling_corr(temp1, temp2, 5)
     part = part[(part < np.inf) & (part > -np.inf)].rank(axis=0, pct=True)
     result = part.iloc[-5:, :]
     result = result.dropna(axis=0)
@@ -652,7 +695,7 @@ def alpha_017(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp1 = pd.rolling_max(vwap(code, end_date), 15)
+    temp1 = pd_rolling_max(vwap(code, end_date), 15)
     temp2 = (close(code, end_date) - temp1)
     part1 = temp2.rank(axis=0, pct=True)
     part2 = close(code, end_date).diff(5)
@@ -740,13 +783,13 @@ def alpha_021(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    A = pd.rolling_mean(close(code, end_date), 6).iloc[-6:, :]
+    A = pd_rolling_mean(close(code, end_date), 6).iloc[-6:, :]
     B = np.arange(1, 7)  # 等差Sequence 1:6
     output = pd.Series()
     for stock in code:
         A[stock] = A[stock].fillna(0)
         linreg = LinearRegression()
-        model = linreg.fit(A[stock][-6:].reshape(6, 1), B[-6:].reshape(6, 1))
+        model = linreg.fit(A[stock][-6:].values.reshape(6, 1), B[-6:].reshape(6, 1))
         output[stock] = float(model.coef_)
     alpha = output
     for stock in code:
@@ -768,13 +811,13 @@ def alpha_022(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part1 = (close(code, end_date) - pd.rolling_mean(close(code, end_date), 6)) / pd.rolling_mean(close(code, end_date),
+    part1 = (close(code, end_date) - pd_rolling_mean(close(code, end_date), 6)) / pd_rolling_mean(close(code, end_date),
                                                                                                   6)
-    temp = (close(code, end_date) - pd.rolling_mean(close(code, end_date), 6)) / pd.rolling_mean(close(code, end_date),
+    temp = (close(code, end_date) - pd_rolling_mean(close(code, end_date), 6)) / pd_rolling_mean(close(code, end_date),
                                                                                                  6)
     part2 = temp.shift(3)
     result = part1 - part2
-    result = pd.ewma(result, span=23)
+    result = pd_ewma(result, span=23)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -794,12 +837,12 @@ def alpha_023(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     condition1 = (close(code, end_date) > close(code, end_date).shift())
-    temp1 = pd.rolling_std(close(code, end_date), 20)[condition1]
+    temp1 = pd_rolling_std(close(code, end_date), 20)[condition1]
     temp1 = temp1.fillna(0)
-    temp2 = pd.rolling_std(close(code, end_date), 20)[~condition1]
+    temp2 = pd_rolling_std(close(code, end_date), 20)[~condition1]
     temp2 = temp2.fillna(0)
-    part1 = pd.ewma(temp1, span=39)
-    part2 = pd.ewma(temp2, span=39)
+    part1 = pd_ewma(temp1, span=39)
+    part2 = pd_ewma(temp2, span=39)
     result = part1 * 100 / (part1 + part2)
     alpha = result.iloc[-1, :]
     return alpha
@@ -820,7 +863,7 @@ def alpha_024(code, end_date=None):
         code = [code]
     delay5 = close(code, end_date).shift(5)
     result = close(code, end_date) - delay5
-    result = pd.ewma(result, span=9)
+    result = pd_ewma(result, span=9)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -839,10 +882,10 @@ def alpha_025(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     temp_1 = close(code, end_date).diff(7)
-    temp_2 = 1 - func_decaylinear(volume(code, end_date) / pd.rolling_mean(volume(code, end_date), 20), 9).rank(axis=1,
+    temp_2 = 1 - func_decaylinear(volume(code, end_date) / pd_rolling_mean(volume(code, end_date), 20), 9).rank(axis=1,
                                                                                                                 pct=True)
     part_1 = (temp_1 * temp_2.T).rank(pct=True)
-    part_2 = pd.rolling_sum(func_ret(code, end_date), 250).rank(pct=True)
+    part_2 = pd_rolling_sum(func_ret(code, end_date), 250).rank(pct=True)
     alpha = -part_1.iloc[-1, :] * (part_2.iloc[-1, :] + 1)
     for stock in code:
         if alpha[stock] == 0:
@@ -863,10 +906,10 @@ def alpha_026(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part1 = pd.rolling_sum(close(code, end_date), 7) / 7 - close(code, end_date)
+    part1 = pd_rolling_sum(close(code, end_date), 7) / 7 - close(code, end_date)
     part1 = part1.iloc[-1, :]
     delay5 = close(code, end_date).shift(5)
-    part2 = pd.rolling_corr(vwap(code, end_date), delay5, 230)
+    part2 = pd_rolling_corr(vwap(code, end_date), delay5, 230)
     part2 = part2.iloc[-1, :]
     alpha = part1 + part2
     return alpha
@@ -908,11 +951,11 @@ def alpha_028(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp1 = close(code, end_date) - pd.rolling_min(low(code, end_date), 9)
-    temp2 = pd.rolling_max(high(code, end_date), 9) - pd.rolling_min(low(code, end_date), 9)
-    part1 = 3 * pd.ewma(temp1 * 100 / temp2, span=5)
-    temp3 = pd.ewma(temp1 * 100 / temp2, span=5)
-    part2 = 2 * pd.ewma(temp3, span=5)
+    temp1 = close(code, end_date) - pd_rolling_min(low(code, end_date), 9)
+    temp2 = pd_rolling_max(high(code, end_date), 9) - pd_rolling_min(low(code, end_date), 9)
+    part1 = 3 * pd_ewma(temp1 * 100 / temp2, span=5)
+    temp3 = pd_ewma(temp1 * 100 / temp2, span=5)
+    part2 = 2 * pd_ewma(temp3, span=5)
     result = part1 - part2
     alpha = result.iloc[-1, :]  #
     return alpha
@@ -968,7 +1011,7 @@ def alpha_031(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    result = (close(code, end_date) - pd.rolling_mean(close(code, end_date), 12)) * 100 / pd.rolling_mean(
+    result = (close(code, end_date) - pd_rolling_mean(close(code, end_date), 12)) * 100 / pd_rolling_mean(
         close(code, end_date), 12)
     alpha = result.iloc[-1, :]
     return alpha
@@ -989,7 +1032,7 @@ def alpha_032(code, end_date=None):
         code = [code]
     temp1 = high(code, end_date).rank(axis=0, pct=True)
     temp2 = volume(code, end_date).rank(axis=0, pct=True)
-    temp3 = pd.rolling_corr(temp1, temp2, 3)
+    temp3 = pd_rolling_corr(temp1, temp2, 3)
     result = (temp3.rank(axis=0, pct=True)).iloc[-3:, :]
     alpha = -result.sum()
     for stock in code:
@@ -1012,10 +1055,10 @@ def alpha_033(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     ret = close(code, end_date).pct_change()
-    temp1 = pd.rolling_min(low(code, end_date), 5)  # TS_MIN
+    temp1 = pd_rolling_min(low(code, end_date), 5)  # TS_MIN
     part1 = temp1.shift(5) - temp1
     part1 = part1.iloc[-1, :]
-    temp2 = (pd.rolling_sum(ret, 240) - pd.rolling_sum(ret, 20)) / 220
+    temp2 = (pd_rolling_sum(ret, 240) - pd_rolling_sum(ret, 20)) / 220
     part2 = temp2.rank(axis=0, pct=True)
     part2 = part2.iloc[-1, :]
     temp3 = volume(code, end_date).iloc[-5:, :]
@@ -1038,7 +1081,7 @@ def alpha_034(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    result = pd.rolling_mean(close(code, end_date), 12) / close(code, end_date)
+    result = pd_rolling_mean(close(code, end_date), 12) / close(code, end_date)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -1064,7 +1107,7 @@ def alpha_035(code, end_date=None):
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True).iloc[:, -1]
     temp_2 = open(code, end_date) * 0.65 + open(code, end_date) * 0.35
-    temp_3 = pd.rolling_corr(volume(code, end_date), temp_2, 17)
+    temp_3 = pd_rolling_corr(volume(code, end_date), temp_2, 17)
     temp_3 = temp_3.fillna(0)
     part_2 = func_decaylinear(temp_3, 7)
     cond2 = part_2 == 0
@@ -1089,8 +1132,8 @@ def alpha_036(code, end_date=None):
         code = [code]
     temp1 = volume(code, end_date).rank(axis=0, pct=True)
     temp2 = vwap(code, end_date).rank(axis=0, pct=True)
-    part1 = pd.rolling_corr(temp1, temp2, 6)
-    result = pd.rolling_sum(part1, 2)
+    part1 = pd_rolling_corr(temp1, temp2, 6)
+    result = pd_rolling_sum(part1, 2)
     result = result.rank(axis=0, pct=True)
     alpha = result.iloc[-1, :]
     return alpha
@@ -1110,7 +1153,7 @@ def alpha_037(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     ret = close(code, end_date).pct_change()
-    temp = pd.rolling_sum(open(code, end_date), 5) * pd.rolling_sum(ret, 5)
+    temp = pd_rolling_sum(open(code, end_date), 5) * pd_rolling_sum(ret, 5)
     part1 = temp.rank(axis=0, pct=True)
     part2 = temp.shift(10)
     result = -part1 - part2
@@ -1131,7 +1174,7 @@ def alpha_038(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    sum_20 = pd.rolling_sum(high(code, end_date), 20) / 20
+    sum_20 = pd_rolling_sum(high(code, end_date), 20) / 20
     delta2 = high(code, end_date).diff(2)
     condition = (sum_20 < high(code, end_date))
     result = -delta2[condition].fillna(0)
@@ -1159,8 +1202,8 @@ def alpha_039(code, end_date=None):
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True)
     temp_1 = vwap(code, end_date) * 0.3 + open(code, end_date) * 0.7
-    temp_2 = pd.rolling_sum(pd.rolling_mean(volume(code, end_date), 180), 37)
-    part_2 = func_decaylinear(pd.rolling_corr(temp_1, temp_2, 14), 12).rank(axis=1, pct=True)
+    temp_2 = pd_rolling_sum(pd_rolling_mean(volume(code, end_date), 180), 37)
+    part_2 = func_decaylinear(pd_rolling_corr(temp_1, temp_2, 14), 12).rank(axis=1, pct=True)
     result = part_1.iloc[:, -1] - part_2.iloc[:, -1]
     alpha = result
     return alpha
@@ -1182,9 +1225,9 @@ def alpha_040(code, end_date=None):
     delay1 = close(code, end_date).shift()
     condition = (close(code, end_date) > delay1)
     vol = volume(code, end_date)[condition].fillna(0)
-    vol_sum = pd.rolling_sum(vol, 26)
+    vol_sum = pd_rolling_sum(vol, 26)
     vol1 = volume(code, end_date)[~condition].fillna(0)
-    vol1_sum = pd.rolling_sum(vol1, 26)
+    vol1_sum = pd_rolling_sum(vol1, 26)
     result = 100 * vol_sum / vol1_sum
     result = result.iloc[-1, :]
     alpha = result
@@ -1225,8 +1268,8 @@ def alpha_042(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part1 = pd.rolling_corr(high(code, end_date), volume(code, end_date), 10)
-    part2 = pd.rolling_std(high(code, end_date), 10)
+    part1 = pd_rolling_corr(high(code, end_date), volume(code, end_date), 10)
+    part2 = pd_rolling_std(high(code, end_date), 10)
     part2 = part2.rank(axis=0, pct=True)
     result = -part1 * part2
     alpha = result.iloc[-1, :]
@@ -1252,7 +1295,7 @@ def alpha_043(code, end_date=None):
     temp1 = volume(code, end_date)[condition1].fillna(0)
     temp2 = -volume(code, end_date)[condition2].fillna(0)
     result = temp1 + temp2
-    result = pd.rolling_sum(result, 6)
+    result = pd_rolling_sum(result, 6)
     alpha = result.iloc[-1, :]
     cond = alpha == 0
     alpha[cond] = nan
@@ -1272,7 +1315,7 @@ def alpha_044(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_corr(low(code, end_date), pd.rolling_mean(volume(code, end_date), 10), 7)
+    temp_1 = pd_rolling_corr(low(code, end_date), pd_rolling_mean(volume(code, end_date), 10), 7)
     part_1 = func_decaylinear(temp_1, 6).iloc[:, -4:]
     cond1 = part_1 == 0
     part_1[cond1] = nan
@@ -1303,8 +1346,8 @@ def alpha_045(code, end_date=None):
     temp1 = close(code, end_date) * 0.6 + open(code, end_date) * 0.4
     part1 = temp1.diff()
     part1 = part1.rank(axis=0, pct=True)
-    temp2 = pd.rolling_mean(volume(code, end_date), 150)
-    part2 = pd.rolling_corr(vwap(code, end_date), temp2, 15)
+    temp2 = pd_rolling_mean(volume(code, end_date), 150)
+    part2 = pd_rolling_corr(vwap(code, end_date), temp2, 15)
     part2 = part2.rank(axis=0, pct=True)
     result = part1 * part2
     alpha = result.iloc[-1, :]
@@ -1324,10 +1367,10 @@ def alpha_046(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.rolling_mean(close(code, end_date), 3)
-    part_2 = pd.rolling_mean(close(code, end_date), 6)
-    part_3 = pd.rolling_mean(close(code, end_date), 12)
-    part_4 = pd.rolling_mean(close(code, end_date), 24)
+    part_1 = pd_rolling_mean(close(code, end_date), 3)
+    part_2 = pd_rolling_mean(close(code, end_date), 6)
+    part_3 = pd_rolling_mean(close(code, end_date), 12)
+    part_4 = pd_rolling_mean(close(code, end_date), 24)
     alpha = (part_1 + part_2 + part_3 + part_4) / (4 * close(code, end_date))
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -1346,9 +1389,9 @@ def alpha_047(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part1 = pd.rolling_max(high(code, end_date), 6) - close(code, end_date)
-    part2 = pd.rolling_max(high(code, end_date), 6) - pd.rolling_min(low(code, end_date), 6)
-    result = pd.ewma(100 * part1 / part2, span=17)
+    part1 = pd_rolling_max(high(code, end_date), 6) - close(code, end_date)
+    part2 = pd_rolling_max(high(code, end_date), 6) - pd_rolling_min(low(code, end_date), 6)
+    result = pd_ewma(100 * part1 / part2, span=17)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -1388,7 +1431,7 @@ def alpha_048(code, end_date=None):
         (~condition3) & (close(code, end_date).shift(2) != close(code, end_date).shift(3))].fillna(0)
 
     summ = indicator1 + indicator2 + indicator3 + indicator11 + indicator22 + indicator33
-    result = -summ * pd.rolling_sum(volume(code, end_date), 5) / pd.rolling_sum(volume(code, end_date), 20)
+    result = -summ * pd_rolling_sum(volume(code, end_date), 5) / pd_rolling_sum(volume(code, end_date), 20)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -1439,11 +1482,11 @@ def alpha_050(code, end_date=None):
     data1 = np.maximum(abs(high(code, end_date) - high(code, end_date).shift()),
                        abs(low(code, end_date) - low(code, end_date).shift()))
     data1[cond1] = 0
-    part1 = pd.rolling_sum(data1, 12)
+    part1 = pd_rolling_sum(data1, 12)
     data2 = np.maximum(abs(high(code, end_date) - high(code, end_date).shift()),
                        abs(low(code, end_date) - low(code, end_date).shift()))
     data2[~cond1] = 0
-    part2 = pd.rolling_sum(data2, 12)
+    part2 = pd_rolling_sum(data2, 12)
     alpha = part1 / (part1 + part2) - part2 / (part1 + part2)
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -1466,12 +1509,12 @@ def alpha_051(code, end_date=None):
     data1 = np.maximum(abs(high(code, end_date) - high(code, end_date).shift()),
                        abs(low(code, end_date) - low(code, end_date).shift()))
     data1[cond1] = 0
-    part1 = pd.rolling_sum(data1, 12)
+    part1 = pd_rolling_sum(data1, 12)
 
     data2 = np.maximum(abs(high(code, end_date) - high(code, end_date).shift()),
                        abs(low(code, end_date) - low(code, end_date).shift()))
     data2[~cond1] = 0
-    part2 = pd.rolling_sum(data2, 12)
+    part2 = pd_rolling_sum(data2, 12)
     alpha = part1 / (part1 + part2)
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -1574,7 +1617,7 @@ def alpha_055(code, end_date=None):
     data1[(~(cond1 & cond2)) & ~(cond3 & cond4)] = temp4 + temp5 / 4
     part1 = abs(data1)
     part2 = np.maximum(temp2, temp3)
-    alpha = pd.rolling_sum(part1 * part2, 20)
+    alpha = pd_rolling_sum(part1 * part2, 20)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -1592,10 +1635,10 @@ def alpha_056(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part1 = (open(code, end_date) - pd.rolling_min(open(code, end_date), 12)).rank(pct=True)
-    temp1 = pd.rolling_sum((high(code, end_date) + low(code, end_date)) / 2, 19)
-    temp2 = pd.rolling_sum(pd.rolling_mean(volume(code, end_date), 40), 19)
-    temp3 = pd.rolling_corr(temp1, temp2, 13).rank(pct=True)
+    part1 = (open(code, end_date) - pd_rolling_min(open(code, end_date), 12)).rank(pct=True)
+    temp1 = pd_rolling_sum((high(code, end_date) + low(code, end_date)) / 2, 19)
+    temp2 = pd_rolling_sum(pd_rolling_mean(volume(code, end_date), 40), 19)
+    temp3 = pd_rolling_corr(temp1, temp2, 13).rank(pct=True)
     part2 = (temp3 ** 5).rank(pct=True)
     alpha = part1 - part2
     alpha = alpha.iloc[-1, :]
@@ -1620,9 +1663,9 @@ def alpha_057(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part1 = close(code, end_date) - pd.rolling_min(low(code, end_date), 9)
-    part2 = pd.rolling_max(high(code, end_date), 9) - pd.rolling_min(low(code, end_date), 9)
-    result = pd.ewma(100 * part1 / part2, span=5)
+    part1 = close(code, end_date) - pd_rolling_min(low(code, end_date), 9)
+    part2 = pd_rolling_max(high(code, end_date), 9) - pd_rolling_min(low(code, end_date), 9)
+    result = pd_ewma(100 * part1 / part2, span=5)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -1716,7 +1759,7 @@ def alpha_061(code, end_date=None):
     cond1 = part_1 == 0
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True)
-    temp_1 = pd.rolling_corr(low(code, end_date), pd.rolling_mean(volume(code, end_date), 80), 8).rank(axis=0, pct=True)
+    temp_1 = pd_rolling_corr(low(code, end_date), pd_rolling_mean(volume(code, end_date), 80), 8).rank(axis=0, pct=True)
     part_2 = func_decaylinear(temp_1, 17)
     cond2 = part_2 == 0
     part_2[cond2] = nan
@@ -1739,7 +1782,7 @@ def alpha_062(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     part_1 = volume(code, end_date).rank(axis=0, pct=True)
-    alpha = pd.rolling_corr(high(code, end_date), part_1, 5) * -1
+    alpha = pd_rolling_corr(high(code, end_date), part_1, 5) * -1
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -1758,9 +1801,9 @@ def alpha_063(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     part1 = np.maximum(close(code, end_date) - close(code, end_date).shift(), 0)
-    part1 = pd.ewma(part1, span=11)
+    part1 = pd_ewma(part1, span=11)
     part2 = (close(code, end_date) - close(code, end_date).shift()).abs()
-    part2 = pd.ewma(part2, span=11)
+    part2 = pd_ewma(part2, span=11)
     result = part1 * 100 / part2
     alpha = result.iloc[-1, :]
     return alpha
@@ -1779,14 +1822,14 @@ def alpha_064(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_corr(vwap(code, end_date).rank(axis=0, pct=True), volume(code, end_date).rank(axis=0, pct=True),
+    temp_1 = pd_rolling_corr(vwap(code, end_date).rank(axis=0, pct=True), volume(code, end_date).rank(axis=0, pct=True),
                              4)
     part_1 = func_decaylinear(temp_1, 4)
     cond1 = part_1 == 0
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True)
-    temp_2 = pd.rolling_corr(close(code, end_date).rank(axis=0, pct=True),
-                             pd.rolling_mean(volume(code, end_date), 60).rank(axis=0, pct=True), 4)
+    temp_2 = pd_rolling_corr(close(code, end_date).rank(axis=0, pct=True),
+                             pd_rolling_mean(volume(code, end_date), 60).rank(axis=0, pct=True), 4)
     temp_3 = np.maximum(temp_2, 13)
     part_2 = func_decaylinear(temp_3, 14).rank(axis=1, pct=True)
     cond2 = part_2 == 0
@@ -1809,7 +1852,7 @@ def alpha_065(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = pd.rolling_mean(close(code, end_date), 6) / close(code, end_date)
+    alpha = pd_rolling_mean(close(code, end_date), 6) / close(code, end_date)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -1827,7 +1870,7 @@ def alpha_066(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = ((close(code, end_date) - pd.rolling_mean(close(code, end_date), 6)) / pd.rolling_mean(
+    alpha = ((close(code, end_date) - pd_rolling_mean(close(code, end_date), 6)) / pd_rolling_mean(
         close(code, end_date), 6)) * 100
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -1848,9 +1891,9 @@ def alpha_067(code, end_date=None):
         code = [code]
     temp1 = close(code, end_date) - close(code, end_date).shift()
     part1 = np.maximum(temp1, 0)
-    part1 = pd.ewma(part1, span=47)
+    part1 = pd_ewma(part1, span=47)
     temp2 = temp1.abs()
-    part2 = pd.ewma(temp2, span=47)
+    part2 = pd_ewma(temp2, span=47)
     result = part1 * 100 / part2
     alpha = result.iloc[-1, :]
     return alpha
@@ -1872,7 +1915,7 @@ def alpha_068(code, end_date=None):
     part1 = (high(code, end_date) + low(code, end_date)) / 2 - high(code, end_date).shift()
     part2 = 0.5 * low(code, end_date).shift() * (high(code, end_date) - low(code, end_date)) / volume(code, end_date)
     result = (part1 + part2) * 100
-    result = pd.ewma(result, span=29)
+    result = pd_ewma(result, span=29)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -1890,15 +1933,15 @@ def alpha_069(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    condition1 = (pd.rolling_sum(func_dtm(code, end_date), 20) > pd.rolling_sum(func_dbm(code, end_date), 20))
-    condition2 = (pd.rolling_sum(func_dtm(code, end_date), 20) < pd.rolling_sum(func_dbm(code, end_date), 20))
+    condition1 = (pd_rolling_sum(func_dtm(code, end_date), 20) > pd_rolling_sum(func_dbm(code, end_date), 20))
+    condition2 = (pd_rolling_sum(func_dtm(code, end_date), 20) < pd_rolling_sum(func_dbm(code, end_date), 20))
 
-    indicator1 = (pd.rolling_sum(func_dtm(code, end_date), 20) - pd.rolling_sum(func_dbm(code, end_date),
-                                                                                20)) / pd.rolling_sum(
+    indicator1 = (pd_rolling_sum(func_dtm(code, end_date), 20) - pd_rolling_sum(func_dbm(code, end_date),
+                                                                                20)) / pd_rolling_sum(
         func_dtm(code, end_date), 20)
     indicator1[(~condition1) & condition2] = 0
-    indicator1[(~condition1) & (-condition2)] = (pd.rolling_sum(func_dtm(code, end_date), 20) - pd.rolling_sum(
-        func_dbm(code, end_date), 20)) / pd.rolling_sum(func_dbm(code, end_date), 20)
+    indicator1[(~condition1) & (-condition2)] = (pd_rolling_sum(func_dtm(code, end_date), 20) - pd_rolling_sum(
+        func_dbm(code, end_date), 20)) / pd_rolling_sum(func_dbm(code, end_date), 20)
     alpha = indicator1.iloc[-1, :]
     for stock in code:
         if alpha[stock] == 0:
@@ -1936,7 +1979,7 @@ def alpha_071(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    data = (close(code, end_date) - pd.rolling_mean(close(code, end_date), 24)) / pd.rolling_mean(close(code, end_date),
+    data = (close(code, end_date) - pd_rolling_mean(close(code, end_date), 24)) / pd_rolling_mean(close(code, end_date),
                                                                                                   24)
     alpha = data.iloc[-1] * 100
     return alpha
@@ -1955,9 +1998,9 @@ def alpha_072(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    data1 = pd.rolling_max(high(code, end_date), 6) - close(code, end_date)
-    data2 = pd.rolling_max(high(code, end_date), 6) - pd.rolling_min(low(code, end_date), 6)
-    alpha = pd.ewma(data1 / data2 * 100, span=29).iloc[-1]
+    data1 = pd_rolling_max(high(code, end_date), 6) - close(code, end_date)
+    data2 = pd_rolling_max(high(code, end_date), 6) - pd_rolling_min(low(code, end_date), 6)
+    alpha = pd_ewma(data1 / data2 * 100, span=29).iloc[-1]
     return alpha
 
 
@@ -1974,13 +2017,13 @@ def alpha_073(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_corr(close(code, end_date), volume(code, end_date), 10)
+    temp_1 = pd_rolling_corr(close(code, end_date), volume(code, end_date), 10)
     temp_2 = func_decaylinear(temp_1, 16).T
     part_1 = func_decaylinear(temp_2, 4).iloc[:, -5:]
     cond1 = part_1 == 0
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True)
-    temp_3 = pd.rolling_corr(vwap(code, end_date), pd.rolling_mean(volume(code, end_date), 30), 4)
+    temp_3 = pd_rolling_corr(vwap(code, end_date), pd_rolling_mean(volume(code, end_date), 30), 4)
     part_2 = func_decaylinear(temp_3, 3).rank(axis=1, pct=True)
     cond2 = part_2 == 0
     part_2[cond2] = nan
@@ -2002,13 +2045,13 @@ def alpha_074(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_sum(low(code, end_date) * 0.35 + vwap(code, end_date) * 0.65, 20)
-    temp_2 = pd.rolling_sum(pd.rolling_mean(volume(code, end_date), 40), 20)
-    part_1 = pd.rolling_corr(temp_1, temp_2, 7).rank(axis=0, pct=True)
+    temp_1 = pd_rolling_sum(low(code, end_date) * 0.35 + vwap(code, end_date) * 0.65, 20)
+    temp_2 = pd_rolling_sum(pd_rolling_mean(volume(code, end_date), 40), 20)
+    part_1 = pd_rolling_corr(temp_1, temp_2, 7).rank(axis=0, pct=True)
 
     temp_3 = vwap(code, end_date).rank(axis=0, pct=True)
     temp_4 = volume(code, end_date).rank(axis=0, pct=True)
-    part_2 = pd.rolling_corr(temp_3, temp_4, 6).rank(axis=0, pct=True)
+    part_2 = pd_rolling_corr(temp_3, temp_4, 6).rank(axis=0, pct=True)
     alpha = part_1.iloc[-1, :] + part_1.iloc[-1, :]
     return alpha
 
@@ -2054,9 +2097,9 @@ def alpha_076(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.rolling_std(abs(close(code, end_date) / close(code, end_date).shift(1) - 1) / volume(code, end_date),
+    part_1 = pd_rolling_std(abs(close(code, end_date) / close(code, end_date).shift(1) - 1) / volume(code, end_date),
                             20)
-    part_2 = pd.rolling_mean(abs(close(code, end_date) / close(code, end_date).shift(1) - 1) / volume(code, end_date),
+    part_2 = pd_rolling_mean(abs(close(code, end_date) / close(code, end_date).shift(1) - 1) / volume(code, end_date),
                              20)
     alpha = (part_1.iloc[-1, :] / part_2.iloc[-1, :])
     return alpha
@@ -2081,8 +2124,8 @@ def alpha_077(code, end_date=None):
     cond1 = part_1 == 0
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True)
-    temp_2 = pd.rolling_corr((high(code, end_date) + low(code, end_date)) / 2,
-                             pd.rolling_mean(volume(code, end_date), 40), 3)
+    temp_2 = pd_rolling_corr((high(code, end_date) + low(code, end_date)) / 2,
+                             pd_rolling_mean(volume(code, end_date), 40), 3)
     part_2 = func_decaylinear(temp_2, 6)
     cond2 = part_2 == 0
     part_2[cond2] = nan
@@ -2104,11 +2147,11 @@ def alpha_078(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = (high(code, end_date) + low(code, end_date) + close(code, end_date)) / 3 - pd.rolling_mean(
+    part_1 = (high(code, end_date) + low(code, end_date) + close(code, end_date)) / 3 - pd_rolling_mean(
         (high(code, end_date) + low(code, end_date) + close(code, end_date)) / 3, 12)
-    temp_1 = abs(close(code, end_date) - pd.rolling_mean(
+    temp_1 = abs(close(code, end_date) - pd_rolling_mean(
         (high(code, end_date) + low(code, end_date) + close(code, end_date)) / 3, 12))
-    part_2 = pd.rolling_mean(temp_1, 12) * 0.015
+    part_2 = pd_rolling_mean(temp_1, 12) * 0.015
     alpha = (part_1 / part_2).iloc[-1, :]
     return alpha
 
@@ -2126,8 +2169,8 @@ def alpha_079(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.ewma(np.maximum((close(code, end_date) - close(code, end_date).shift(1)), 0), span=23)
-    part_2 = pd.ewma(abs(close(code, end_date) - close(code, end_date).shift(1)), span=23)
+    part_1 = pd_ewma(np.maximum((close(code, end_date) - close(code, end_date).shift(1)), 0), span=23)
+    part_2 = pd_ewma(abs(close(code, end_date) - close(code, end_date).shift(1)), span=23)
     alpha = (part_1 / part_2 * 100).iloc[-1, :]
     return alpha
 
@@ -2164,7 +2207,7 @@ def alpha_081(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    result = pd.ewma(volume(code, end_date), span=20)
+    result = pd_ewma(volume(code, end_date), span=20)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -2182,9 +2225,9 @@ def alpha_082(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part1 = pd.rolling_max(high(code, end_date), 6) - close(code, end_date)
-    part2 = pd.rolling_max(high(code, end_date), 6) - pd.rolling_min(low(code, end_date), 6)
-    result = pd.ewma(100 * part1 / part2, span=39)
+    part1 = pd_rolling_max(high(code, end_date), 6) - close(code, end_date)
+    part2 = pd_rolling_max(high(code, end_date), 6) - pd_rolling_min(low(code, end_date), 6)
+    result = pd_ewma(100 * part1 / part2, span=39)
     alpha = result.iloc[-1, :]
     return alpha
 
@@ -2248,7 +2291,7 @@ def alpha_085(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = volume(code, end_date) / pd.rolling_mean(volume(code, end_date), 20)
+    temp_1 = volume(code, end_date) / pd_rolling_mean(volume(code, end_date), 20)
     part_1 = temp_1.iloc[-20:, :].rank(axis=0, pct=True)
     temp_2 = close(code, end_date).diff(7) * -1
     part_2 = temp_2.iloc[-8:, :].rank(axis=0, pct=True)
@@ -2349,9 +2392,9 @@ def alpha_089(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    data1 = pd.ewma(close(code, end_date), span=12, adjust=False)
-    data2 = pd.ewma(close(code, end_date), span=26, adjust=False)
-    data3 = pd.ewma(data1 - data2, span=9, adjust=False)
+    data1 = pd_ewma(close(code, end_date), span=12, adjust=False)
+    data2 = pd_ewma(close(code, end_date), span=26, adjust=False)
+    data3 = pd_ewma(data1 - data2, span=9, adjust=False)
     alpha = ((data1 - data2 - data3) * 2).iloc[-1, :]
     alpha = alpha
     return alpha
@@ -2395,7 +2438,7 @@ def alpha_091(code, end_date=None):
     cond = data1 > 5
     data1[~cond] = 5
     rank1 = ((close(code, end_date) - data1).rank(axis=1, pct=True)).iloc[-1, :]
-    mean = pd.rolling_mean(volume(code, end_date), window=40)
+    mean = pd_rolling_mean(volume(code, end_date), 40)
     corr = mean.iloc[-5:, :].corrwith(low(code, end_date).iloc[-5:, :])
     rank2 = corr.rank(pct=True)
     alpha = rank1 * rank2 * (-1)
@@ -2420,7 +2463,7 @@ def alpha_092(code, end_date=None):
     cond1 = part_1 == 0
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True)
-    temp_2 = abs(pd.rolling_corr(pd.rolling_mean(volume(code, end_date), 180), close(code, end_date), 13))
+    temp_2 = abs(pd_rolling_corr(pd_rolling_mean(volume(code, end_date), 180), close(code, end_date), 13))
     part_2 = func_decaylinear(temp_2, 5).iloc[:, -15:]
     cond2 = part_2 == 0
     part_2[cond2] = nan
@@ -2508,9 +2551,9 @@ def alpha_096(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.ewma(100 * (close(code, end_date) - pd.rolling_min(low(code, end_date), 9)) / (
-                pd.rolling_max(high(code, end_date), 9) - pd.rolling_min(low(code, end_date), 9)), span=5, adjust=False)
-    alpha = pd.ewma(temp_1, span=5, adjust=False).iloc[-1, :]
+    temp_1 = pd_ewma(100 * (close(code, end_date) - pd_rolling_min(low(code, end_date), 9)) / (
+                pd_rolling_max(high(code, end_date), 9) - pd_rolling_min(low(code, end_date), 9)), span=5, adjust=False)
+    alpha = pd_ewma(temp_1, span=5, adjust=False).iloc[-1, :]
     return alpha
 
 
@@ -2544,9 +2587,9 @@ def alpha_098(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    sum_close = pd.rolling_sum(close(code, end_date), 100)
+    sum_close = pd_rolling_sum(close(code, end_date), 100)
     cond = (sum_close / 100 - (sum_close / 100).shift(100)) / close(code, end_date).shift(100) <= 0.05
-    left_value = -(close(code, end_date) - pd.rolling_min(close(code, end_date), 100))
+    left_value = -(close(code, end_date) - pd_rolling_min(close(code, end_date), 100))
     right_value = -(close(code, end_date) - close(code, end_date).shift(3))
     right_value[cond] = left_value[cond]
     alpha = right_value.iloc[-1, :]
@@ -2566,8 +2609,8 @@ def alpha_099(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = (-pd.rolling_cov(close(code, end_date).rank(axis=1, pct=True),
-                             volume(code, end_date).rank(axis=1, pct=True), window=5).rank(axis=0, pct=True)).iloc[-1,
+    alpha = (-pd_rolling_cov(close(code, end_date).rank(axis=1, pct=True),
+                             volume(code, end_date).rank(axis=1, pct=True), 5).rank(axis=0, pct=True)).iloc[-1,
             :]
     return alpha
 
@@ -2602,24 +2645,11 @@ def alpha_101(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    #temp_1 = pd.rolling_sum(pd.rolling_mean(volume(code, end_date), 30), 37)
-    df = volume(code, end_date)
-    rol = df.rolling(30)
-    rol = rol.mean()
-    temp_1 = rol.rolling(37).sum()
-    print(temp_1)
-
-    #part_1 = pd.rolling_corr(close(code, end_date), temp_1, 15).rank(axis=0, pct=True)
-    #part_1 = pd.DataFrame.rolling(close(code, end_date), temp_1, 15).corr().rank(axis=0, pct=True)
-    df = close(code, end_date)
-    rol = df.rolling(15)
-    rol = rol.corr()
-    part_1 = rol.rank(axis=0, pct=True)
-    print(part_1)
-
+    temp_1 = pd_rolling_sum(pd_rolling_mean(volume(code, end_date), 30), 37)
+    part_1 = pd_rolling_corr(close(code, end_date), temp_1, 15).rank(axis=0, pct=True)
     temp_2 = (high(code, end_date) * 0.1 + vwap(code, end_date) * 0.9).rank(axis=0, pct=True)
     temp_3 = volume(code, end_date).rank(axis=0, pct=True)
-    part_2 = pd.rolling_corr(temp_2, temp_3, 11)
+    part_2 = pd_rolling_corr(temp_2, temp_3, 11)
     alpha = part_1 - part_2
     alpha = alpha.iloc[-1, :]
     cond1 = alpha < 0
@@ -2645,8 +2675,8 @@ def alpha_102(code, end_date=None):
     max_cond = (volume(code, end_date) - volume(code, end_date).shift()) > 0
     max_data = volume(code, end_date) - volume(code, end_date).shift()
     max_data[~max_cond] = 0
-    sma1 = pd.ewma(max_data, span=11, adjust=False)
-    sma2 = pd.ewma((volume(code, end_date) - volume(code, end_date).shift()).abs(), span=11, adjust=False)
+    sma1 = pd_ewma(max_data, span=11, adjust=False)
+    sma2 = pd_ewma((volume(code, end_date) - volume(code, end_date).shift()).abs(), span=11, adjust=False)
     alpha = (sma1 / sma2 * 100).iloc[-1, :]
     alpha = alpha
     return alpha
@@ -2684,8 +2714,8 @@ def alpha_104(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.rolling_corr(high(code, end_date), volume(code, end_date), 5).diff(5)
-    part_2 = pd.rolling_std(close(code, end_date), 20).rank(axis=0, pct=True)
+    part_1 = pd_rolling_corr(high(code, end_date), volume(code, end_date), 5).diff(5)
+    part_2 = pd_rolling_std(close(code, end_date), 20).rank(axis=0, pct=True)
     alpha = -part_1 * part_2
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -2704,7 +2734,7 @@ def alpha_105(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = -pd.rolling_corr(open(code, end_date).rank(axis=0, pct=True), volume(code, end_date).rank(axis=0, pct=True),
+    alpha = -pd_rolling_corr(open(code, end_date).rank(axis=0, pct=True), volume(code, end_date).rank(axis=0, pct=True),
                              10)
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -2763,7 +2793,7 @@ def alpha_108(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     part_1 = (high(code, end_date) - np.minimum(high(code, end_date), 2)).rank(axis=0, pct=True)
-    part_2 = pd.rolling_corr(vwap(code, end_date), pd.rolling_mean(volume(code, end_date), 120), 6).rank(axis=0,
+    part_2 = pd_rolling_corr(vwap(code, end_date), pd_rolling_mean(volume(code, end_date), 120), 6).rank(axis=0,
                                                                                                          pct=True)
     alpha = (part_1.iloc[-1, :] ** part_1.iloc[-1, :]) * -1
     alpha = alpha
@@ -2784,8 +2814,8 @@ def alpha_109(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     data = high(code, end_date) - low(code, end_date)
-    sma1 = pd.ewma(data, span=9, adjust=False)
-    sma2 = pd.ewma(sma1, span=9, adjust=False)
+    sma1 = pd_ewma(data, span=9, adjust=False)
+    sma2 = pd_ewma(sma1, span=9, adjust=False)
     alpha = (sma1 / sma2).iloc[-1, :]
     alpha = alpha
     return alpha
@@ -2810,8 +2840,8 @@ def alpha_110(code, end_date=None):
     max_cond2 = data2 < 0
     data1[max_cond1] = 0
     data2[max_cond2] = 0
-    sum1 = pd.rolling_sum(data1, 20)
-    sum2 = pd.rolling_sum(data2, 20)
+    sum1 = pd_rolling_sum(data1, 20)
+    sum2 = pd_rolling_sum(data2, 20)
     alpha = sum1 / sum2 * 100
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -2833,8 +2863,8 @@ def alpha_111(code, end_date=None):
     data1 = volume(code, end_date) * (
                 (close(code, end_date) - low(code, end_date)) - (high(code, end_date) - close(code, end_date))) / (
                         high(code, end_date) - low(code, end_date))
-    x = pd.ewma(data1, span=10)
-    y = pd.ewma(data1, span=3)
+    x = pd_ewma(data1, span=10)
+    y = pd_ewma(data1, span=3)
     alpha = (x - y).iloc[-1, :]
     return alpha
 
@@ -2859,8 +2889,8 @@ def alpha_112(code, end_date=None):
     data1[~cond1] = 0
     data2[~cond2] = 0
     data2 = data2.abs()
-    sum1 = pd.rolling_sum(data1, 12)
-    sum2 = pd.rolling_sum(data2, 12)
+    sum1 = pd_rolling_sum(data1, 12)
+    sum2 = pd_rolling_sum(data2, 12)
     alpha = ((sum1 - sum2) / (sum1 + sum2) * 100).iloc[-1, :]
     return alpha
 
@@ -2878,9 +2908,9 @@ def alpha_113(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = (pd.rolling_sum(close(code, end_date).shift(5), 20) / 20).rank(axis=0, pct=True)
-    part_2 = pd.rolling_corr(close(code, end_date), volume(code, end_date), 2)
-    part_3 = pd.rolling_corr(pd.rolling_sum(close(code, end_date), 5), pd.rolling_sum(close(code, end_date), 20),
+    part_1 = (pd_rolling_sum(close(code, end_date).shift(5), 20) / 20).rank(axis=0, pct=True)
+    part_2 = pd_rolling_corr(close(code, end_date), volume(code, end_date), 2)
+    part_3 = pd_rolling_corr(pd_rolling_sum(close(code, end_date), 5), pd_rolling_sum(close(code, end_date), 20),
                              2).rank(axis=0, pct=True)
     alpha = -part_1.iloc[-1, :] * part_2.iloc[-1, :] * part_3.iloc[-1, :]
     return alpha
@@ -2899,11 +2929,11 @@ def alpha_114(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = (high(code, end_date) - low(code, end_date)) / (pd.rolling_sum(close(code, end_date), window=5) / 5)
+    temp_1 = (high(code, end_date) - low(code, end_date)) / (pd_rolling_sum(close(code, end_date), 5) / 5)
     part_1 = (temp_1.shift(2)).rank(axis=0, pct=True).iloc[-1, :]
     part_2 = ((volume(code, end_date).rank(axis=0, pct=True)).rank(axis=0, pct=True)).iloc[-1, :]
 
-    part_3 = (((high(code, end_date) - low(code, end_date)) / (pd.rolling_sum(close(code, end_date), window=5) / 5)) / (
+    part_3 = (((high(code, end_date) - low(code, end_date)) / (pd_rolling_sum(close(code, end_date), 5) / 5)) / (
                 vwap(code, end_date) - close(code, end_date))).iloc[-1, :]
     alpha = (part_1 * part_2) / part_3
     return alpha
@@ -2922,11 +2952,11 @@ def alpha_115(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.rolling_corr((high(code, end_date) * 0.9 + close(code, end_date) * 0.1),
-                             pd.rolling_mean(volume(code, end_date), 30), 10).rank(axis=0, pct=True)
+    part_1 = pd_rolling_corr((high(code, end_date) * 0.9 + close(code, end_date) * 0.1),
+                             pd_rolling_mean(volume(code, end_date), 30), 10).rank(axis=0, pct=True)
     temp_1 = func_tsrank((high(code, end_date) + low(code, end_date)) / 2, 4)
     temp_2 = func_tsrank(volume(code, end_date), 10)
-    part_2 = pd.rolling_corr(temp_1, temp_2, 7)
+    part_2 = pd_rolling_corr(temp_1, temp_2, 7)
     alpha = part_1.iloc[-1, :] ** part_2.iloc[-1, :]
     return alpha
 
@@ -2984,8 +3014,8 @@ def alpha_118(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.rolling_sum(high(code, end_date) - open(code, end_date), 20)
-    part_2 = pd.rolling_sum(open(code, end_date) - low(code, end_date), 20)
+    part_1 = pd_rolling_sum(high(code, end_date) - open(code, end_date), 20)
+    part_2 = pd_rolling_sum(open(code, end_date) - low(code, end_date), 20)
     alpha = part_1.iloc[-1, :] / part_2.iloc[-1, :] * 100
     return alpha
 
@@ -3003,14 +3033,14 @@ def alpha_119(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_corr(vwap(code, end_date), pd.rolling_sum(pd.rolling_mean(volume(code, end_date), 5), 26), 5)
+    temp_1 = pd_rolling_corr(vwap(code, end_date), pd_rolling_sum(pd_rolling_mean(volume(code, end_date), 5), 26), 5)
     part_1 = func_decaylinear(temp_1, 7)
     cond1 = part_1 == 0
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True)
-    temp_2 = pd.rolling_corr(open(code, end_date).rank(axis=0, pct=True),
-                             pd.rolling_mean(volume(code, end_date), 15).rank(axis=0, pct=True), 21)
-    temp_3 = func_tsrank(pd.rolling_min(temp_2, 9), 7)
+    temp_2 = pd_rolling_corr(open(code, end_date).rank(axis=0, pct=True),
+                             pd_rolling_mean(volume(code, end_date), 15).rank(axis=0, pct=True), 21)
+    temp_3 = func_tsrank(pd_rolling_min(temp_2, 9), 7)
     part_2 = func_decaylinear(temp_3, 8)
     cond2 = part_2 == 0
     part_2[cond2] = nan
@@ -3051,10 +3081,10 @@ def alpha_121(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = (vwap(code, end_date) - pd.rolling_min(vwap(code, end_date), 12)).rank(axis=0, pct=True)
+    part_1 = (vwap(code, end_date) - pd_rolling_min(vwap(code, end_date), 12)).rank(axis=0, pct=True)
     temp_1 = func_tsrank(vwap(code, end_date), 20)
-    temp_2 = func_tsrank(pd.rolling_mean(volume(code, end_date), 60), 2)
-    part_2 = func_tsrank(pd.rolling_corr(temp_1, temp_2, 18), 3)
+    temp_2 = func_tsrank(pd_rolling_mean(volume(code, end_date), 60), 2)
+    part_2 = func_tsrank(pd_rolling_corr(temp_1, temp_2, 18), 3)
     alpha = part_1 ** part_2 * -1
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3074,7 +3104,7 @@ def alpha_122(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     log_close = np.log(close(code, end_date))
-    data = pd.ewma(pd.ewma(pd.ewma(np.log(close(code, end_date)), span=12, adjust=False), span=12, adjust=False),
+    data = pd_ewma(pd_ewma(pd_ewma(np.log(close(code, end_date)), span=12, adjust=False), span=12, adjust=False),
                    span=12, adjust=False)
     alpha = (data.iloc[-1, :] / data.iloc[-2, :]) - 1
     return alpha
@@ -3093,10 +3123,10 @@ def alpha_123(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_sum((high(code, end_date) + low(code, end_date)) / 2, 20)
-    temp_2 = pd.rolling_sum(pd.rolling_mean(volume(code, end_date), 60), 20)
-    part_1 = pd.rolling_corr(temp_1, temp_2, 9)
-    part_2 = pd.rolling_corr(low(code, end_date), volume(code, end_date), 6).rank(axis=0, pct=True)
+    temp_1 = pd_rolling_sum((high(code, end_date) + low(code, end_date)) / 2, 20)
+    temp_2 = pd_rolling_sum(pd_rolling_mean(volume(code, end_date), 60), 20)
+    part_1 = pd_rolling_corr(temp_1, temp_2, 9)
+    part_2 = pd_rolling_corr(low(code, end_date), volume(code, end_date), 6).rank(axis=0, pct=True)
     alpha = part_1 - part_2
     alpha = alpha.iloc[-1, :]
     cond1 = alpha < 0
@@ -3120,7 +3150,7 @@ def alpha_124(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     part_1 = close(code, end_date) - vwap(code, end_date)
-    temp_1 = pd.rolling_max(close(code, end_date), 30).rank(axis=0, pct=True)
+    temp_1 = pd_rolling_max(close(code, end_date), 30).rank(axis=0, pct=True)
     part_2 = func_decaylinear(temp_1, 2)
     alpha = part_1.iloc[-1, :] / part_2.iloc[:, -1]
     return alpha
@@ -3139,7 +3169,7 @@ def alpha_125(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_corr(vwap(code, end_date), pd.rolling_mean(volume(code, end_date), 80), 17)
+    temp_1 = pd_rolling_corr(vwap(code, end_date), pd_rolling_mean(volume(code, end_date), 80), 17)
     part_1 = func_decaylinear(temp_1, 20)
     cond1 = part_1 == 0
     part_1[cond1] = nan
@@ -3214,7 +3244,7 @@ def alpha_128(code, end_date=None):
     data2 = (high(code, end_date) + low(code, end_date) + close(code, end_date) / 3) * volume(code, end_date)
     data1[~cond1] = 0
     data2[~cond2] = 0
-    part_1 = pd.rolling_sum(data1, 14) / pd.rolling_sum(data2, 14)
+    part_1 = pd_rolling_sum(data1, 14) / pd_rolling_sum(data2, 14)
     alpha = 100 - (100 / (1 + part_1))
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3256,13 +3286,13 @@ def alpha_130(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_corr((high(code, end_date) + low(code, end_date)) / 2,
-                             pd.rolling_mean(volume(code, end_date), 40), 9)
+    temp_1 = pd_rolling_corr((high(code, end_date) + low(code, end_date)) / 2,
+                             pd_rolling_mean(volume(code, end_date), 40), 9)
     part_1 = func_decaylinear(temp_1, 10)
     cond1 = part_1 == 0
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True)
-    temp_2 = pd.rolling_corr(vwap(code, end_date).rank(axis=0, pct=True), volume(code, end_date).rank(axis=0, pct=True),
+    temp_2 = pd_rolling_corr(vwap(code, end_date).rank(axis=0, pct=True), volume(code, end_date).rank(axis=0, pct=True),
                              7)
     part_2 = func_decaylinear(temp_2, 3)
     cond2 = part_2 == 0
@@ -3287,7 +3317,7 @@ def alpha_131(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     part_1 = vwap(code, end_date).shift(1).rank(axis=0, pct=True)
-    part_2 = func_tsrank(pd.rolling_corr(close(code, end_date), pd.rolling_mean(volume(code, end_date), 50), 18), 18)
+    part_2 = func_tsrank(pd_rolling_corr(close(code, end_date), pd_rolling_mean(volume(code, end_date), 50), 18), 18)
     alpha = part_1 / part_2
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3306,7 +3336,7 @@ def alpha_132(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = pd.rolling_mean(amount(code, end_date), 20)
+    alpha = pd_rolling_mean(amount(code, end_date), 20)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -3365,7 +3395,7 @@ def alpha_135(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     temp_1 = (close(code, end_date) / close(code, end_date).shift(20)).shift(1)
-    alpha = pd.ewma(temp_1, span=39, adjust=False)
+    alpha = pd_ewma(temp_1, span=39, adjust=False)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -3384,7 +3414,7 @@ def alpha_136(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     part_1 = -1 * (func_ret(code, end_date).shift(3).rank(axis=0, pct=True))
-    part_2 = pd.rolling_corr(open(code, end_date), volume(code, end_date), 10)
+    part_2 = pd_rolling_corr(open(code, end_date), volume(code, end_date), 10)
     alpha = part_1 * part_2
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3440,8 +3470,8 @@ def alpha_138(code, end_date=None):
         code = [code]
     temp_1 = (low(code, end_date) * 0.7 + vwap(code, end_date) * 0.3).diff(3)
     part_1 = func_decaylinear(temp_1, 20).rank(axis=1, pct=True)
-    temp_2 = pd.rolling_corr(func_tsrank(low(code, end_date), 8),
-                             func_tsrank(pd.rolling_mean(volume(code, end_date), 60), 17), 5)
+    temp_2 = pd_rolling_corr(func_tsrank(low(code, end_date), 8),
+                             func_tsrank(pd_rolling_mean(volume(code, end_date), 60), 17), 5)
     part_2 = func_tsrank(func_decaylinear(func_tsrank(temp_2, 19), 16), 7)
     alpha = (part_1 - part_2) * -1
     alpha = alpha.iloc[:, -1]
@@ -3461,7 +3491,7 @@ def alpha_139(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = -1 * pd.rolling_corr(open(code, end_date), volume(code, end_date), 10)
+    alpha = -1 * pd_rolling_corr(open(code, end_date), volume(code, end_date), 10)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -3485,8 +3515,8 @@ def alpha_140(code, end_date=None):
     cond1 = part_1 == 0
     part_1[cond1] = nan
     part_1 = part_1.rank(axis=1, pct=True).T
-    temp_2 = pd.rolling_corr(func_tsrank(close(code, end_date), 8),
-                             func_tsrank(pd.rolling_mean(volume(code, end_date), 60), 20), 8)
+    temp_2 = pd_rolling_corr(func_tsrank(close(code, end_date), 8),
+                             func_tsrank(pd_rolling_mean(volume(code, end_date), 60), 20), 8)
     temp_2 = func_decaylinear(temp_2, 7).T
     cond2 = temp_2 == 0
     temp_2[cond2] = nan
@@ -3508,8 +3538,8 @@ def alpha_141(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = pd.rolling_corr(high(code, end_date).rank(pct=True),
-                            pd.rolling_mean(volume(code, end_date), 15).rank(pct=True), 9).rank(pct=True) * -1
+    alpha = pd_rolling_corr(high(code, end_date).rank(pct=True),
+                            pd_rolling_mean(volume(code, end_date), 15).rank(pct=True), 9).rank(pct=True) * -1
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -3529,7 +3559,7 @@ def alpha_142(code, end_date=None):
         code = [code]
     part_1 = func_tsrank(close(code, end_date), 10).rank(pct=True) * -1
     part_2 = close(code, end_date).diff().diff().rank(pct=True)
-    part_3 = func_tsrank(volume(code, end_date) / pd.rolling_mean(volume(code, end_date), 20), 5).rank(pct=True)
+    part_3 = func_tsrank(volume(code, end_date) / pd_rolling_mean(volume(code, end_date), 20), 5).rank(pct=True)
     alpha = part_1 * part_2 * part_3
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3587,7 +3617,7 @@ def alpha_145(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = pd.rolling_mean(volume(code, end_date), 9) - pd.rolling_mean(volume(code, end_date), 26) / pd.rolling_mean(
+    alpha = pd_rolling_mean(volume(code, end_date), 9) - pd_rolling_mean(volume(code, end_date), 26) / pd_rolling_mean(
         volume(code, end_date), 12) * 100
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3607,8 +3637,8 @@ def alpha_146(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     temp_1 = (close(code, end_date) - close(code, end_date).shift()) / close(code, end_date).shift()
-    part_1 = pd.rolling_mean(temp_1 - pd.ewma(temp_1, span=60, adjust=False), 20)
-    part_2 = pd.ewma(temp_1, span=60, adjust=False) / pd.ewma((pd.ewma(temp_1, span=60, adjust=False) ** 2), span=60,
+    part_1 = pd_rolling_mean(temp_1 - pd_ewma(temp_1, span=60, adjust=False), 20)
+    part_2 = pd_ewma(temp_1, span=60, adjust=False) / pd_ewma((pd_ewma(temp_1, span=60, adjust=False) ** 2), span=60,
                                                               adjust=False)
     alpha = part_1.iloc[-1, :] * part_2.iloc[-1, :]
     return alpha
@@ -3646,9 +3676,9 @@ def alpha_148(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.rolling_corr(open(code, end_date), pd.rolling_sum(pd.rolling_mean(volume(code, end_date), 60), 9),
+    part_1 = pd_rolling_corr(open(code, end_date), pd_rolling_sum(pd_rolling_mean(volume(code, end_date), 60), 9),
                              6).rank(pct=True)
-    part_2 = (open(code, end_date) - pd.rolling_min(open(code, end_date), 14)).rank(pct=True)
+    part_2 = (open(code, end_date) - pd_rolling_min(open(code, end_date), 14)).rank(pct=True)
     alpha = part_1 - part_2
     alpha = alpha.iloc[-1, :]
     cond1 = alpha < 0
@@ -3685,7 +3715,7 @@ def alpha_149(code, benchmark='000300.XSHG', end_date=None):
         temp_2 = part2[stock].fillna(0)
         date = min(len(temp_1), len(temp_2), 252)
         linreg = LinearRegression()
-        model = linreg.fit(temp_1[-date:].reshape(date, 1), temp_2[-date:].reshape(date, 1))
+        model = linreg.fit(temp_1[-date:].values.reshape(date, 1), temp_2[-date:].values.reshape(date, 1))
         output[stock] = float(model.coef_)
     cond1 = output == 0
     output[cond1] = nan
@@ -3723,7 +3753,7 @@ def alpha_151(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = pd.ewma(close(code, end_date) - close(code, end_date).shift(20), span=39, adjust=False)
+    alpha = pd_ewma(close(code, end_date) - close(code, end_date).shift(20), span=39, adjust=False)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -3741,10 +3771,10 @@ def alpha_152(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.ewma((close(code, end_date) / close(code, end_date).shift(9)).shift(), span=17, adjust=False)
-    part_1 = pd.rolling_mean(temp_1, 12)
-    part_2 = pd.rolling_mean(temp_1, 26)
-    alpha = pd.ewma(part_1 - part_2, span=17)
+    temp_1 = pd_ewma((close(code, end_date) / close(code, end_date).shift(9)).shift(), span=17, adjust=False)
+    part_1 = pd_rolling_mean(temp_1, 12)
+    part_2 = pd_rolling_mean(temp_1, 26)
+    alpha = pd_ewma(part_1 - part_2, span=17)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -3762,10 +3792,10 @@ def alpha_153(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.rolling_mean(close(code, end_date), 3)
-    part_2 = pd.rolling_mean(close(code, end_date), 6)
-    part_3 = pd.rolling_mean(close(code, end_date), 12)
-    part_4 = pd.rolling_mean(close(code, end_date), 24)
+    part_1 = pd_rolling_mean(close(code, end_date), 3)
+    part_2 = pd_rolling_mean(close(code, end_date), 6)
+    part_3 = pd_rolling_mean(close(code, end_date), 12)
+    part_4 = pd_rolling_mean(close(code, end_date), 24)
     alpha = (part_1 + part_2 + part_3 + part_4) / 4
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3785,7 +3815,7 @@ def alpha_154(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     part_1 = vwap(code, end_date) - np.minimum(vwap(code, end_date), 16)
-    part_2 = pd.rolling_corr(vwap(code, end_date), pd.rolling_mean(volume(code, end_date), 180), 18)
+    part_2 = pd_rolling_corr(vwap(code, end_date), pd_rolling_mean(volume(code, end_date), 180), 18)
     alpha = part_1 - part_2
     alpha = alpha.iloc[-1, :]
     cond1 = alpha < 0
@@ -3808,9 +3838,9 @@ def alpha_155(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.ewma(volume(code, end_date), span=12)
-    part_2 = pd.ewma(volume(code, end_date), span=26)
-    part_3 = pd.ewma(part_1 - part_2, span=9)
+    part_1 = pd_ewma(volume(code, end_date), span=12)
+    part_2 = pd_ewma(volume(code, end_date), span=26)
+    part_3 = pd_ewma(part_1 - part_2, span=9)
     alpha = part_1 - part_2 - part_3
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3858,7 +3888,7 @@ def alpha_157(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     temp_1 = ((close(code, end_date) - 1).diff(5).rank(axis=0, pct=True) * -1).rank(pct=True).rank(pct=True)
-    temp_2 = pd.rolling_sum(pd.rolling_min(temp_1, 2), 1)
+    temp_2 = pd_rolling_sum(pd_rolling_min(temp_1, 2), 1)
     temp_3 = np.log(temp_2).rank(axis=0, pct=True).rank(axis=0, pct=True)
     part_1 = np.minimum(temp_3, 5)
     part_2 = func_tsrank((func_ret(code, end_date) * -1).shift(6), 5)
@@ -3880,8 +3910,8 @@ def alpha_158(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = high(code, end_date) - pd.ewma(close(code, end_date), span=14)
-    temp_2 = low(code, end_date) - pd.ewma(close(code, end_date), span=14)
+    temp_1 = high(code, end_date) - pd_ewma(close(code, end_date), span=14)
+    temp_2 = low(code, end_date) - pd_ewma(close(code, end_date), span=14)
     alpha = (temp_1 - temp_2) / close(code, end_date)
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -3908,9 +3938,9 @@ def alpha_159(code, end_date=None):
     data4 = close(code, end_date).shift()
     cond = data3 > data4
     data3[~cond] = data4
-    x = ((close(code, end_date) - pd.rolling_sum(data1, 6)) / pd.rolling_sum((data2 - data1), 6)) * 12 * 24
-    y = ((close(code, end_date) - pd.rolling_sum(data1, 12)) / pd.rolling_sum((data2 - data1), 12)) * 6 * 24
-    z = ((close(code, end_date) - pd.rolling_sum(data1, 24)) / pd.rolling_sum((data2 - data1), 24)) * 6 * 24
+    x = ((close(code, end_date) - pd_rolling_sum(data1, 6)) / pd_rolling_sum((data2 - data1), 6)) * 12 * 24
+    y = ((close(code, end_date) - pd_rolling_sum(data1, 12)) / pd_rolling_sum((data2 - data1), 12)) * 6 * 24
+    z = ((close(code, end_date) - pd_rolling_sum(data1, 24)) / pd_rolling_sum((data2 - data1), 24)) * 6 * 24
     data5 = (x + y + z) * (100 / (6 * 12 + 12 * 24 + 6 * 24))
     alpha = data5.iloc[-1, :]
     return alpha
@@ -3930,9 +3960,9 @@ def alpha_160(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     cond1 = close(code, end_date) <= close(code, end_date).shift()
-    data1 = pd.rolling_std(close(code, end_date), 20)
+    data1 = pd_rolling_std(close(code, end_date), 20)
     data1[~cond1] = 0
-    alpha = pd.ewma(data1, span=39)
+    alpha = pd_ewma(data1, span=39)
     alpha = alpha.iloc[-1, :]
     cond1 = alpha == 0
     alpha[cond1] = nan
@@ -3957,7 +3987,7 @@ def alpha_161(code, end_date=None):
     temp_3 = np.maximum(temp_1, temp_2)
     temp_4 = abs(close(code, end_date).shift() - low(code, end_date))
     temp_5 = np.maximum(temp_3, temp_4)
-    alpha = pd.rolling_mean(temp_5, 12)
+    alpha = pd_rolling_mean(temp_5, 12)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -3978,9 +4008,9 @@ def alpha_162(code, end_date=None):
     data1 = close(code, end_date) - close(code, end_date).shift()
     cond = data1 > 0
     data1[~cond] = 0
-    x = pd.ewma(data1, span=23)
+    x = pd_ewma(data1, span=23)
     data2 = abs(close(code, end_date) - close(code, end_date).shift())
-    y = pd.ewma(data2, span=23)
+    y = pd_ewma(data2, span=23)
     z = (x / y) * 100
     cond = z > 12
     z[cond] = 12
@@ -4005,7 +4035,7 @@ def alpha_163(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = -1 * func_ret(code, end_date) * pd.rolling_mean(volume(code, end_date), 20) * vwap(code, end_date) * (
+    alpha = -1 * func_ret(code, end_date) * pd_rolling_mean(volume(code, end_date), 20) * vwap(code, end_date) * (
                 high(code, end_date) - low(code, end_date))
     alpha = alpha.rank(pct=True)
     alpha = alpha.iloc[-1, :]
@@ -4029,7 +4059,7 @@ def alpha_164(code, end_date=None):
     data1 = 1 / (close(code, end_date) - close(code, end_date).shift())
     data1[~cond1] = 1
     data2 = np.minimum(data1, 12)
-    alpha = pd.ewma((data1 - data2) / (high(code, end_date) - low(code, end_date)) * 100, span=12)
+    alpha = pd_ewma((data1 - data2) / (high(code, end_date) - low(code, end_date)) * 100, span=12)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4068,8 +4098,8 @@ def alpha_166(code, end_date=None):
         code = [code]
     part1 = -20 * (19) ** 1.5
     temp = close(code, end_date) / close(code, end_date).shift()
-    part2 = pd.rolling_sum(temp - 1 - pd.rolling_mean(temp - 1, 20), 20)
-    part3 = 19 * 18 * (pd.rolling_sum(temp, 20)) ** (1.5)
+    part2 = pd_rolling_sum(temp - 1 - pd_rolling_mean(temp - 1, 20), 20)
+    part3 = 19 * 18 * (pd_rolling_sum(temp, 20)) ** (1.5)
     alpha = part1 * part2 / part3
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -4091,7 +4121,7 @@ def alpha_167(code, end_date=None):
     cond1 = (close(code, end_date) - close(code, end_date).shift()) > 0
     data1 = close(code, end_date) - close(code, end_date).shift()
     data1[~cond1] = 0
-    alpha = pd.rolling_sum(data1, 12)
+    alpha = pd_rolling_sum(data1, 12)
     alpha = alpha.iloc[-1, :]
     cond1 = alpha == 0
     alpha[cond1] = nan
@@ -4111,7 +4141,7 @@ def alpha_168(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = -volume(code, end_date) / pd.rolling_mean(volume(code, end_date), 20)
+    alpha = -volume(code, end_date) / pd_rolling_mean(volume(code, end_date), 20)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4129,8 +4159,8 @@ def alpha_169(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.ewma(close(code, end_date) - close(code, end_date).shift(), span=17).shift()
-    alpha = pd.ewma((pd.rolling_mean(temp_1, 12) - pd.rolling_mean(temp_1, 26)), span=19)
+    temp_1 = pd_ewma(close(code, end_date) - close(code, end_date).shift(), span=17).shift()
+    alpha = pd_ewma((pd_rolling_mean(temp_1, 12) - pd_rolling_mean(temp_1, 26)), span=19)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4148,10 +4178,10 @@ def alpha_170(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = ((1 / close(code, end_date)).rank(axis=0, pct=True)) * volume(code, end_date) / pd.rolling_mean(
+    part_1 = ((1 / close(code, end_date)).rank(axis=0, pct=True)) * volume(code, end_date) / pd_rolling_mean(
         volume(code, end_date), 20)
     part_2 = (high(code, end_date) - close(code, end_date)).rank(pct=True) * high(code, end_date)
-    part_3 = pd.rolling_sum(high(code, end_date), 5) / 5
+    part_3 = pd_rolling_sum(high(code, end_date), 5) / 5
     part_4 = (vwap(code, end_date) - vwap(code, end_date).shift(5)).rank(pct=True)
     alpha = part_1 * part_2 / part_3 - part_4
     alpha = alpha.iloc[-1, :]
@@ -4201,20 +4231,20 @@ def alpha_172(code, end_date=None):
     cond2 = temp2 > temp3
     temp3[cond2] = temp2[cond2]
     tr = temp3
-    sum_tr14 = pd.rolling_sum(tr, 14)
+    sum_tr14 = pd_rolling_sum(tr, 14)
     cond3 = ld > 0
     cond4 = ld > hd
     cond3[~cond4] = False
     data1 = ld
     data1[~cond3] = 0
-    sum1 = pd.rolling_sum(data1, 14) * 100 / sum_tr14
+    sum1 = pd_rolling_sum(data1, 14) * 100 / sum_tr14
     cond5 = hd > 0
     cond6 = hd > ld
     cond5[~cond6] = False
     data2 = hd
     data2[~cond5] = 0
-    sum2 = pd.rolling_sum(data2, 14) * 100 / sum_tr14
-    alpha = pd.rolling_mean((sum1 - sum2).abs() / (sum1 + sum2) * 100, 6).iloc[-1, :]
+    sum2 = pd_rolling_sum(data2, 14) * 100 / sum_tr14
+    alpha = pd_rolling_mean((sum1 - sum2).abs() / (sum1 + sum2) * 100, 6).iloc[-1, :]
     return alpha
 
 
@@ -4231,10 +4261,10 @@ def alpha_173(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.ewma(close(code, end_date), span=12)
+    temp_1 = pd_ewma(close(code, end_date), span=12)
     part_1 = temp_1 * 3
-    part_2 = pd.ewma(temp_1, span=12) * 2
-    part_3 = pd.ewma(pd.ewma(pd.ewma(np.log(close(code, end_date)), span=12), span=12), span=12)
+    part_2 = pd_ewma(temp_1, span=12) * 2
+    part_3 = pd_ewma(pd_ewma(pd_ewma(np.log(close(code, end_date)), span=12), span=12), span=12)
     alpha = part_1 - part_2 + part_3
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -4254,9 +4284,9 @@ def alpha_174(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     cond1 = close(code, end_date) < close(code, end_date).shift()
-    data1 = pd.rolling_std(close(code, end_date), 20)
+    data1 = pd_rolling_std(close(code, end_date), 20)
     data1[cond1] = 0
-    alpha = pd.ewma(data1, span=39)
+    alpha = pd_ewma(data1, span=39)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4277,7 +4307,7 @@ def alpha_175(code, end_date=None):
     temp_1 = np.maximum((high(code, end_date) - low(code, end_date)),
                         abs(close(code, end_date).shift() - high(code, end_date)))
     temp_2 = np.maximum(temp_1, abs(close(code, end_date).shift() - low(code, end_date)))
-    alpha = pd.rolling_mean(temp_2, 6)
+    alpha = pd_rolling_mean(temp_2, 6)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4295,9 +4325,9 @@ def alpha_176(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = (close(code, end_date) - pd.rolling_min(low(code, end_date), 12)) / (
-                pd.rolling_max(high(code, end_date), 12) - pd.rolling_min(low(code, end_date), 12))
-    alpha = pd.rolling_corr(part_1.rank(pct=True), volume(code, end_date).rank(pct=True), 6)
+    part_1 = (close(code, end_date) - pd_rolling_min(low(code, end_date), 12)) / (
+                pd_rolling_max(high(code, end_date), 12) - pd_rolling_min(low(code, end_date), 12))
+    alpha = pd_rolling_corr(part_1.rank(pct=True), volume(code, end_date).rank(pct=True), 6)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4353,9 +4383,9 @@ def alpha_179(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    temp_1 = pd.rolling_corr(vwap(code, end_date), volume(code, end_date), 4).rank(pct=True)
-    temp_2 = pd.rolling_corr(low(code, end_date).rank(pct=True),
-                             pd.rolling_mean(volume(code, end_date), 60).rank(pct=True), 12).rank(pct=True)
+    temp_1 = pd_rolling_corr(vwap(code, end_date), volume(code, end_date), 4).rank(pct=True)
+    temp_2 = pd_rolling_corr(low(code, end_date).rank(pct=True),
+                             pd_rolling_mean(volume(code, end_date), 60).rank(pct=True), 12).rank(pct=True)
     alpha = temp_1 * temp_2
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -4374,7 +4404,7 @@ def alpha_180(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    ma = pd.rolling_mean(volume(code, end_date), window=20)
+    ma = pd_rolling_mean(volume(code, end_date), 20)
     cond = (ma < volume(code, end_date)).iloc[-20:, :]
     sign = delta_close_7 = close(code, end_date).diff(7)
     sign[sign.iloc[:, :] < 0] = -1
@@ -4403,10 +4433,10 @@ def alpha_181(code, benchmark='000300.XSHG', end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     temp_1 = close(code, end_date) / close(code, end_date).shift()
-    temp_2 = benchmark_index_close(code, benchmark, end_date) - pd.rolling_mean(
+    temp_2 = benchmark_index_close(code, benchmark, end_date) - pd_rolling_mean(
         benchmark_index_close(code, benchmark, end_date), 20)
-    part_1 = pd.rolling_sum((temp_1 - pd.rolling_mean(temp_1, 20) - temp_2) ** 2, 20)
-    part_2 = pd.rolling_sum(temp_2 ** 3, 20)
+    part_1 = pd_rolling_sum((temp_1 - pd_rolling_mean(temp_1, 20) - temp_2) ** 2, 20)
+    part_2 = pd_rolling_sum(temp_2 ** 3, 20)
     alpha = part_1 / part_2
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -4433,7 +4463,7 @@ def alpha_182(code, benchmark='000300.XSHG', end_date=None):
     data1 = close(code, end_date)
     data1[cond5] = 1
     data1[cond5] = 0
-    alpha = pd.rolling_sum(data1, 20) / 20
+    alpha = pd_rolling_sum(data1, 20) / 20
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4470,7 +4500,7 @@ def alpha_184(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    part_1 = pd.rolling_corr((open(code, end_date) - close(code, end_date)).shift(), close(code, end_date), 200).rank(
+    part_1 = pd_rolling_corr((open(code, end_date) - close(code, end_date)).shift(), close(code, end_date), 200).rank(
         pct=True)
     part_2 = (open(code, end_date) - close(code, end_date)).rank(pct=True)
     alpha = (part_1 + part_2).iloc[-1, :]
@@ -4518,20 +4548,20 @@ def alpha_186(code, end_date=None):
     cond2 = temp2 > temp3
     temp3[cond2] = temp2[cond2]
     tr = temp3
-    sum_tr14 = pd.rolling_sum(tr, 14)
+    sum_tr14 = pd_rolling_sum(tr, 14)
     cond3 = ld > 0
     cond4 = ld > hd
     cond3[~cond4] = False
     data1 = ld
     data1[~cond3] = 0
-    sum1 = pd.rolling_sum(data1, 14) * 100 / sum_tr14
+    sum1 = pd_rolling_sum(data1, 14) * 100 / sum_tr14
     cond5 = hd > 0
     cond6 = hd > ld
     cond5[~cond6] = False
     data2 = hd
     data2[~cond5] = 0
-    sum2 = pd.rolling_sum(data2, 14) * 100 / sum_tr14
-    mean1 = pd.rolling_mean((sum1 - sum2).abs() / (sum1 + sum2) * 100, 6)
+    sum2 = pd_rolling_sum(data2, 14) * 100 / sum_tr14
+    mean1 = pd_rolling_mean((sum1 - sum2).abs() / (sum1 + sum2) * 100, 6)
     alpha = ((mean1 + mean1.shift(6)) / 2).iloc[-1, :]
     return alpha
 
@@ -4553,7 +4583,7 @@ def alpha_187(code, end_date=None):
     data1 = np.maximum(high(code, end_date) - open(code, end_date),
                        (open(code, end_date) - open(code, end_date).shift()))
     data1[cond1] = 0
-    alpha = pd.rolling_sum(data1, 20).iloc[-1, :]
+    alpha = pd_rolling_sum(data1, 20).iloc[-1, :]
     return alpha
 
 
@@ -4571,8 +4601,8 @@ def alpha_188(code, end_date=None):
     if isinstance(code, six.string_types):
         code = [code]
     temp = high(code, end_date) - low(code, end_date)
-    part_1 = temp - pd.ewma(temp, span=10)
-    alpha = part_1 / pd.ewma(temp, span=10) * 100
+    part_1 = temp - pd_ewma(temp, span=10)
+    alpha = part_1 / pd_ewma(temp, span=10) * 100
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4590,7 +4620,7 @@ def alpha_189(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = pd.rolling_mean(abs(close(code, end_date) - pd.rolling_mean(close(code, end_date), 6)), 6)
+    alpha = pd_rolling_mean(abs(close(code, end_date) - pd_rolling_mean(close(code, end_date), 6)), 6)
     alpha = alpha.iloc[-1, :]
     return alpha
 
@@ -4611,18 +4641,18 @@ def alpha_190(code, end_date=None):
         code = [code]
     temp1 = close(code, end_date) / close(code, end_date).shift() - 1
     temp2 = (close(code, end_date) / close(code, end_date).shift(19)) ** (1 / 20) - 1
-    part1 = (pd.rolling_sum(temp1 > temp2, 20) - 1).iloc[-1, :]
+    part1 = (pd_rolling_sum(temp1 > temp2, 20) - 1).iloc[-1, :]
 
     temp3 = (temp1 - temp2) ** 2
     cond1 = temp1 < temp2
     temp3[~cond1] = 0
-    part2 = pd.rolling_sum(temp3, 20).iloc[-1, :]
+    part2 = pd_rolling_sum(temp3, 20).iloc[-1, :]
 
-    part3 = pd.rolling_sum(cond1, 20).iloc[-1, :]
+    part3 = pd_rolling_sum(cond1, 20).iloc[-1, :]
     cond2 = temp1 > temp2
     temp4 = (temp1 - temp2) ** 2
     temp4[~cond2] = 0
-    part4 = pd.rolling_sum(temp4, 20).iloc[-1, :]
+    part4 = pd_rolling_sum(temp4, 20).iloc[-1, :]
 
     alpha = np.log(part1 * part2 / (part3 * part4))
     return alpha
@@ -4641,7 +4671,7 @@ def alpha_191(code, end_date=None):
     # 修复传入为单只股票的情况
     if isinstance(code, six.string_types):
         code = [code]
-    alpha = pd.rolling_corr(pd.rolling_mean(volume(code, end_date), 20), low(code, end_date), 5) + (
+    alpha = pd_rolling_corr(pd_rolling_mean(volume(code, end_date), 20), low(code, end_date), 5) + (
                 high(code, end_date) + low(code, end_date)) / 2 - close(code, end_date)
     alpha = alpha.iloc[-1, :]
     return alpha
@@ -4722,7 +4752,7 @@ def alpha(code, benchmark='000300.XSHG', end_date=None):
     alpha['alpha_072'] = alpha_072(code, end_date)
     alpha['alpha_073'] = alpha_073(code, end_date)
     alpha['alpha_074'] = alpha_074(code, end_date)
-    alpha['alpha_075'] = alpha_075(code, benchmark, end_date)
+    #alpha['alpha_075'] = alpha_075(code, benchmark, end_date)
     alpha['alpha_076'] = alpha_076(code, end_date)
     alpha['alpha_077'] = alpha_077(code, end_date)
     alpha['alpha_078'] = alpha_078(code, end_date)
@@ -4796,7 +4826,7 @@ def alpha(code, benchmark='000300.XSHG', end_date=None):
     alpha['alpha_146'] = alpha_146(code, end_date)
     alpha['alpha_147'] = alpha_147(code, end_date)
     alpha['alpha_148'] = alpha_148(code, end_date)
-    alpha['alpha_149'] = alpha_149(code, benchmark, end_date)
+    #alpha['alpha_149'] = alpha_149(code, benchmark, end_date)
     alpha['alpha_150'] = alpha_150(code, end_date)
     alpha['alpha_151'] = alpha_151(code, end_date)
     alpha['alpha_152'] = alpha_152(code, end_date)
@@ -4828,8 +4858,8 @@ def alpha(code, benchmark='000300.XSHG', end_date=None):
     alpha['alpha_178'] = alpha_178(code, end_date)
     alpha['alpha_179'] = alpha_179(code, end_date)
     alpha['alpha_180'] = alpha_180(code, end_date)
-    alpha['alpha_181'] = alpha_181(code, benchmark, end_date)
-    alpha['alpha_182'] = alpha_182(code, benchmark, end_date)
+    #alpha['alpha_181'] = alpha_181(code, benchmark, end_date)
+    #alpha['alpha_182'] = alpha_182(code, benchmark, end_date)
     alpha['alpha_183'] = alpha_183(code, end_date)
     alpha['alpha_184'] = alpha_184(code, end_date)
     alpha['alpha_185'] = alpha_185(code, end_date)
@@ -4844,8 +4874,10 @@ def alpha(code, benchmark='000300.XSHG', end_date=None):
 if __name__ == '__main__':
     import QUANTAXIS as QA
     pool = ['000001', '000002', '000005']
-    res = alpha_001(pool, '2018-06-30')
-    print(res)
+    #res = alpha_001(pool, '2018-06-30')
+    #print(res)
+    #res = alpha_075(pool, '000300.XSHG', '2018-06-30')
+    #print(res)
     #res = alpha_101(pool, '2018-06-30')
     #print(res)
     a = alpha(pool, end_date='2018-06-30')
