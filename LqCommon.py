@@ -426,7 +426,39 @@ def ALM(str):
 def INF(str):
     LOG(2, str)
     pass
+'''
+def IsPassLine(strLine):
+    #是否是可以忽略的行
+    #可忽略行的正则表达式列表
+    RegularExpressions=["""/'.*#.*/'""", """/".*#.*/"""", """/'/'/'.*#.*/'/'/'""", """/"/"/".*#.*/"/"/""""]
+    for One in RegularExpressions:
+        zz=re.compile(One)
+        if re.search(zz,strLine)==None:
+            continue
+        else:
+            return True#有匹配 则忽略
+        return False
 
+def ReadFile(FileName):
+    #读取并处理文件  
+    fobj=open(FileName,'r')
+    AllLines=fobj.readlines()
+    fobj.close()
+    NewStr=''
+    LogStr='/n%20s/n'%(FileName.split('//')[-1])#输出的日志
+    nline=0
+    for eachiline in AllLines:
+        index=eachline.find('#')#获取带注释句‘#’的位置索引
+        if index==-1 or nline<3 or IsPassLine(eachline):
+            if eachiline.strip()!='':#排除纯空的行
+                NewStr=NewStr+eachiline
+        else:
+            if index!=0:
+                NewStr=NewStr+eachiline[:index]+'/n'#截取后面的注释部分
+                LogStr+="ChangeLine: %s/t%s"%(nline,eachline[index:])
+        nline+=1
+    return NewStr,LogStr
+'''
 # 是否保留新生成的策略模板代码文件
 #gTaskFileReserve = True
 gTaskFileReserve = False
@@ -442,7 +474,7 @@ gFuncParaRightValueDict = {}
 gRightValueKeyDict = {}
 gPyExe = "python"
 gFuncTupleStr = ''
-gDBProc = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
+#gDBProc = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
 #按序号生成指标函数列表
 get_func_list()
 #生成多返回值指标函数字典
