@@ -16,7 +16,7 @@ import numpy as np
 from numpy import sign, sum, nan
 from sklearn.linear_model import LinearRegression
 import six
-
+import QUANTAXIS as QA
 
 # 版本
 def alpha191_version():

@@ -11,7 +11,7 @@ import random
 import re
 import itertools as its
 import LqIndicator
-import LqDB as lqdb
+#import LqDB as lqdb
 
 cwd = os.getcwd()
 print("LqCommon:".ljust(15), cwd)
@@ -272,14 +272,20 @@ def get_func_name_list(src):
         t = x.split('-')
         if len(t) == 1:
             n = int(t[0])
-            res.append(gFuncList[n])
+            if n > 0 and n <= gFuncNum:
+                res.append(gFuncList[n])
+            else:
+                ERR("Function number error: %d" %n)
         else:
             min = int(t[0])
             max = int(t[1]) + 1
             r = range(min, max)
             for y in r:
                 n = int(y)
-                res.append(gFuncList[n])
+                if n > 0 and n <= gFuncNum:
+                    res.append(gFuncList[n])
+                else:
+                    ERR("Function number error: %d" % n)
     return res
 
 def get_func_para_list(src):
@@ -340,7 +346,7 @@ def policy_task_proc(task, id, sp_id):
     py_fd = open(py_file, "w+", encoding='UTF-8')
     py_fd.write(taskCode)
     py_fd.close()
-    gDBProc.save_strategy(sp_id, id, taskCode, py_file)
+    #gDBProc.save_strategy(sp_id, id, taskCode, py_file)
     # 执行通过替换指标函数后的py代码文件
     try:
         os.system(gPyExe + " " + py_file + " " + "%d"%sp_id + " " + "%d"%id)
@@ -371,9 +377,8 @@ def get_func_doc_dict():
         pass
 
 def get_func_list():
-    f_l = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
-    #f_num = len(f_l)
-    f_num = 1000
+    func_list = list(filter(lambda x: callable(getattr(LqIndicator, x)), dir(LqIndicator)))
+    func_num = len(func_list)
     '''Find Duplicate Functions
     id_l = []
     for f in f_l:
@@ -390,18 +395,17 @@ def get_func_list():
                     print("Duplicate function: " + str(id1) + ", " + str(n))
     '''
     i = 0
-    while (i <= f_num):
-        for f in f_l:
-            l = getattr(LqIndicator, f).__doc__.split(',')
-            f_id = int(l[0])
-            if f_id == i:
-                gFuncList.append(f)
+    while (i <= func_num):
+        for func in func_list:
+            comments = getattr(LqIndicator, func).__doc__.split(',')
+            func_id = int(comments[0])
+            if func_id == i:
+                gFuncList.append(func)
                 break
-        pass
-        if f_id != i:
+        if func_id != i:
             gFuncList.append('NULL')
         i += 1
-    pass
+    return func_num
 
 def LOG(level, str):
     if level == 0:
@@ -476,10 +480,11 @@ gPyExe = "python"
 gFuncTupleStr = ''
 #gDBProc = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
 #按序号生成指标函数列表
-get_func_list()
+gFuncNum = get_func_list()
 #生成多返回值指标函数字典
 get_func_doc_dict()
 
 if __name__ == '__main__':
     print(gFuncDocDict)
     print(gFuncList)
+    print("Functions number: %d" %gFuncNum)

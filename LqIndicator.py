@@ -4,10 +4,8 @@
 # written by fuxuanhuang
 #function doc: id, parameter num, return num
 #==============================================================================
-#from hikyuu.indicator import *
+
 import talib
-import LqWQ101 as LQA101
-import LqAlpha191 as LQA191
 
 #import pickle
 #findat = pickle.load(open('fin_data.pkl', 'rb'))

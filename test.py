@@ -1,76 +1,23 @@
-from hikyuu.interactive.interactive import *
-import datetime
-from datetime import timedelta
-import pandas as pd
-import numpy as np
-import talib as tb
 
-#创建模拟交易账户进行回测，初始资金30万
-my_tm = crtTM(initCash = 300000)
+import LqHikyuuIndc as hky
+import LqFinance as fa
+import LqTalibIndc as ta
+import LqAlpha101 as alp101
+import LqAlpha191 as alp191
+import QUANTAXIS as QA
 
-#创建信号指示器（以5日EMA为快线，5日EMA自身的10日EMA最为慢线，快线向上穿越慢线时买入，反之卖出）
-my_sg = SG_Flex(OP(EMA(n=5)), slow_n=10)
+stocks = ['000001', '000002', '000005']
+begin_date = '2018-01-01'
+end_date = '2018-06-30'
+data = QA.QA_fetch_stock_day_adv(stocks, begin_date, end_date)
+close = data.close
 
-#固定每次买入1000股
-my_mm = MM_FixedCount(1000)
-
-#创建交易系统并运行
-sys = SYS_Simple(tm = my_tm, sg = my_sg, mm = my_mm)
-sys.run(sm['sz000001'], Query(-150))
-
-#绘制系统信号
-sys.plot()
-
-k = sm['sz000001'].getKData(Query(-150))
-print(k)
-c = CLOSE(k)
-print(c)
-d = CLOSE(c)
-print(d)
-fast = EMA(c, 5)
-slow = EMA(fast, 10)
-
-#绘制信号指示器使用两个指标
-fast.plot(new=False)
-slow.plot(new=False)
-
-#绘制资金收益曲线
-x = my_tm.getProfitCurve(k.getDatetimeList(), KQuery.DAY)
-x = PRICELIST(x)
-x.plot()
-
-per = Performance()
-print(per.report(my_tm, Datetime(datetime.datetime.today())))
-
-
-def test_func(stock, query):
-    """计算指定stock的系统策略胜率，系统策略为之前的简单双均线交叉系统（每次固定买入100股）
-    """
-    # 创建模拟交易账户进行回测，初始资金30万
-    my_tm = crtTM(initCash=1000000)
-
-    # 创建信号指示器（以5日EMA为快线，5日EMA自身的10日EMA最为慢线，快线向上穿越慢线时买入，反之卖出）
-    my_sg = SG_Flex(OP(EMA(n=5)), slow_n=10)
-
-    # 固定每次买入1000股
-    my_mm = MM_FixedCount(100)
-
-    # 创建交易系统并运行
-    sys = SYS_Simple(tm=my_tm, sg=my_sg, mm=my_mm)
-    sys.run(stock, query)
-
-    per = Performance()
-    per.statistics(my_tm, Datetime(datetime.datetime.today()))
-    return per.get("赢利交易比例%".encode('gb2312'))
-
-
-def total_func(blk, query):
-    """遍历指定板块的所有的股票，计算系统胜率"""
-    result = {}
-    for s in blk:
-        if s.valid and s.type != constant.STOCKTYPE_INDEX:
-            result[s.name] = test_func(s, query)
-    return result
-
-#a = total_func(sm, Query(-500))
-#l = len(a)
+#hky.LQ_Hikyuu_AMA(close)
+#a = fa.fa_acca_ttm(stocks[0])
+#print(a)
+a = ta.TALIB_APO(close)
+print(a)
+a = alp101.alpha_001(stocks, begin_date, end_date)
+print(a)
+a = alp191.alpha_002(stocks, end_date)
+print(a)
