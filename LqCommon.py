@@ -83,7 +83,7 @@ class PolicyTask:
         pos_s = 0
         pos_e = 0
         while (remain_len > 0):
-            cut_res = str_cut('$$PP:', '$', remain_str)
+            cut_res = str_cut('$$P:', '$', remain_str)
             if cut_res == -1:
                 break
             pos_s = cut_res[0]

@@ -23,7 +23,7 @@ taskQueueSize = 1000000
 threadList = []
 taskQueueLock = threading.Lock()
 taskQueue = queue.Queue(taskQueueSize)
-policyFileDefault = 'qa_demo5.py'
+policyFileDefault = 'test.py'
 policyFile = ''
 sp_name = 'LQ_Policy'
 author = 'LongQuant'
@@ -79,11 +79,12 @@ if __name__ == '__main__':
     if ret != True:
         lqc.ERR('Policy task generate failed')
     queSz = taskQueue.qsize()
-    db = lqdb.SqlDB('192.168.54.11', 3306, 'root', 'lq2018', 'lq')
-    sql = "update lq_strategy_pattern set task_total=%d where sp_id=%d;"%(queSz, sp_id)
-    db.update(sql)
+    db = lqdb.SqlDB('127.0.0.1', 3306, 'root', 'lq2018', 'lq')
     if arg_num == 0:
         db.save_strategy_pattern(sp_name, author, 2, queSz, 2, policyTemplate)
+    else:
+        sql = "update lq_strategy_pattern set task_total=%d where sp_id=%d;"%(queSz, sp_id)
+        db.update(sql)
     # 创建多线程列表
     i = 0
     while (i < taskThreadNum):
